@@ -15,7 +15,7 @@ function DashboardAside(props) {
     function signOut() {
         localStorage.removeItem('jwt');
         props.setIsLoggedIn(false)
-        history.push('/globalcar/login');
+        history.push('globalcar/');
         // history.go(0);
     }
     return(

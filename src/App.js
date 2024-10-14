@@ -71,17 +71,15 @@ function App() {
                 closeAllPopupsToolTip={closeAllPopupsToolTip}/>
               </ProtectedRoute>
           </Route>
-          <Route path="/globalcar/login">
-            <Login
-            setUser={setUser}
-            jwt={jwt}
-            setIsLoggedIn={setIsLoggedIn}/>
-          </Route>
           <Route path="/globalcar/register">
             <Register/>
           </Route>
           <Route path="/globalcar/">
-            {isLoggedIn ? <Redirect to="/globalcar/dashboard"/> : <Redirect to="/globalcar/login"/>}
+            {isLoggedIn ? <Redirect to="/globalcar/dashboard"/> :           
+            <Login
+            setUser={setUser}
+            jwt={jwt}
+            setIsLoggedIn={setIsLoggedIn}/>}
           </Route>
         </Switch>
       </BrowserRouter>

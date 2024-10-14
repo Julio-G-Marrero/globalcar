@@ -37,7 +37,7 @@ function Register() {
     }
 
     function handleRedirect() {
-        history.push('/globalcar/login')
+        history.push('globalcar/')
         // history.go(0)
     }
     return(
@@ -77,7 +77,7 @@ function Register() {
                     <div className="py-5">
                         <div className="grid justify-center gap-1">
                             <div className="text-center sm:text-left whitespace-nowrap">
-                                        <Link onClick={handleRedirect} to="/globalcar/login" lassName="inline-block ml-1">
+                                        <Link onClick={handleRedirect} to="globalcar/" lassName="inline-block ml-1">
                                             ¿Ya tienes cuneta? Inicia Sesión
                                         </Link>
                             </div>

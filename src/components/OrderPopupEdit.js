@@ -77,7 +77,7 @@ function OrderPopupEdit(props){
                         if (result.isConfirmed) {
                             localStorage.removeItem('jwt');
                             props.setIsLoggedIn(false)                
-                            history.push('/globalcar/login')
+                            history.push('globalcar/')
                             // history.go(0)
                         } 
                       })

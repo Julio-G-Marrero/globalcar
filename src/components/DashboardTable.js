@@ -29,7 +29,7 @@ function DashboardTable(props) {
         }
         else{
             console.log('Acceos no autorizado')
-            history.push('/globalcar/login')
+            history.push('globalcar/')
             // history.go(0)
         }
     },[fetctInfo])
@@ -58,7 +58,7 @@ function DashboardTable(props) {
                     if (result.isConfirmed) {
                         localStorage.removeItem('jwt');
                         props.setIsLoggedIn(false)                
-                        history.push('/globalcar/login')
+                        history.push('globalcar/')
                         // history.go(0)
                     } 
                   });
@@ -94,7 +94,7 @@ function DashboardTable(props) {
                             if (result.isConfirmed) {
                                 localStorage.removeItem('jwt');
                                 props.setIsLoggedIn(false)                
-                                history.push('/globalcar/login')
+                                history.push('globalcar/')
                                 // history.go(0)
                             } 
                           });
@@ -133,7 +133,7 @@ function DashboardTable(props) {
                                 if (result.isConfirmed) {
                                     localStorage.removeItem('jwt');
                                     props.setIsLoggedIn(false)                
-                                    history.push('/globalcar/login')
+                                    history.push('globalcar/')
                                     // history.go(0)
                                 } 
                               });
@@ -171,7 +171,7 @@ function DashboardTable(props) {
                         if (result.isConfirmed) {
                             localStorage.removeItem('jwt');
                             props.setIsLoggedIn(false)                
-                            history.push('/globalcar/login')
+                            history.push('globalcar/')
                             // history.go(0)
                         } 
                       });
@@ -203,7 +203,7 @@ function DashboardTable(props) {
                         if (result.isConfirmed) {
                             localStorage.removeItem('jwt');
                             props.setIsLoggedIn(false)                
-                            history.push('/globalcar/login')
+                            history.push('globalcar/')
                             // history.go(0)
                         } 
                       });
@@ -235,7 +235,7 @@ function DashboardTable(props) {
                         if (result.isConfirmed) {
                             localStorage.removeItem('jwt');
                             props.setIsLoggedIn(false)                
-                            history.push('/globalcar/login')
+                            history.push('globalcar/')
                             // history.go(0)
                         } 
                       });
@@ -267,7 +267,7 @@ function DashboardTable(props) {
                         if (result.isConfirmed) {
                             localStorage.removeItem('jwt');
                             props.setIsLoggedIn(false)                
-                            history.push('/globalcar/login')
+                            history.push('globalcar/')
                             // history.go(0)
                         } 
                       });
@@ -311,7 +311,7 @@ function DashboardTable(props) {
                         if (result.isConfirmed) {
                             localStorage.removeItem('jwt');
                             props.setIsLoggedIn(false)                
-                            history.push('/globalcar/login')
+                            history.push('globalcar/')
                             // history.go(0)
                         } 
                       });
@@ -343,7 +343,7 @@ function DashboardTable(props) {
                         if (result.isConfirmed) {
                             localStorage.removeItem('jwt');
                             props.setIsLoggedIn(false)                
-                            history.push('/globalcar/login')
+                            history.push('globalcar/')
                             // history.go(0)
                         } 
                       });
