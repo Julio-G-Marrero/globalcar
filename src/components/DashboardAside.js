@@ -15,7 +15,7 @@ function DashboardAside(props) {
     function signOut() {
         localStorage.removeItem('jwt');
         props.setIsLoggedIn(false)
-        history.push('/back-orders/login');
+        history.push('/globalcar/login');
         history.go(0);
     }
     return(
@@ -38,7 +38,7 @@ function DashboardAside(props) {
         </div>
         <div className="m-4 h-2/3 flex flex-col justify-between">
             <nav className="mb-4 flex flex-col gap-1">
-                <NavLink to="/back-orders/dashboard">
+                <NavLink to="/globalcar/dashboard">
                     <button id="dashboard" className="middle none font-sans font-bold center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 rounded-lg text-white bg-globalcar hover:shadow-lg bg-globalcar w-full flex items-center gap-4 px-4 capitalize" type="button" onClick={handleChangeDisplay}>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className="w-5 h-5 text-inherit">
                         <path d="M11.47 3.84a.75.75 0 011.06 0l8.69 8.69a.75.75 0 101.06-1.06l-8.689-8.69a2.25 2.25 0 00-3.182 0l-8.69 8.69a.75.75 0 001.061 1.06l8.69-8.69z"></path>

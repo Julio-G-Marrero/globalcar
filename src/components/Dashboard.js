@@ -27,7 +27,7 @@ function Dashboard(props) {
     
     function tokenCheck() {
         if (!props.jwt) {
-            history.push('/back-orders/login')
+            history.push('/globalcar/login')
             history.go(0)
         }
       }
@@ -49,7 +49,7 @@ function Dashboard(props) {
                     if (result.isConfirmed) {
                         localStorage.removeItem('jwt');
                         props.setIsLoggedIn(false)                
-                        history.push('/back-orders/login')
+                        history.push('/globalcar/login')
                         history.go(0)
                     } 
                   });
@@ -82,7 +82,7 @@ function Dashboard(props) {
                     if (result.isConfirmed) {
                         localStorage.removeItem('jwt');
                         props.setIsLoggedIn(false)                
-                        history.push('/back-orders/login')
+                        history.push('/globalcar/login')
                         history.go(0)
                     } 
                   });

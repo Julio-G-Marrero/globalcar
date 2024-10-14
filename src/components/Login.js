@@ -48,7 +48,7 @@ function Login(props) {
                       });
                        props.setIsLoggedIn(true)
                         setTimeout(() => {
-                            history.push('/back-orders/dashboard')
+                            history.push('/globalcar/dashboard')
                             history.go(0)
                         }, "1500");
                 }else if(data.error) {
@@ -61,7 +61,7 @@ function Login(props) {
         }
     }
     function handleRedirect() {
-        history.push('/back-orders/register')
+        history.push('/globalcar/register')
         history.go(0)
     }
     const handleChange = (event) => {
@@ -97,7 +97,7 @@ function Login(props) {
                     <div className="py-5">
                         <div className="grid justify-center gap-1">
                             <div className="text-center sm:text-left whitespace-nowrap">
-                                    <Link onClick={handleRedirect} to="/back-orders/register" lassName="inline-block ml-1">
+                                    <Link onClick={handleRedirect} to="/globalcar/register" lassName="inline-block ml-1">
                                         ¿Aún no tienes una cuneta? Registrate
                                     </Link>
                             </div>

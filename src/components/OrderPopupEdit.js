@@ -77,7 +77,7 @@ function OrderPopupEdit(props){
                         if (result.isConfirmed) {
                             localStorage.removeItem('jwt');
                             props.setIsLoggedIn(false)                
-                            history.push('/back-orders/login')
+                            history.push('/globalcar/login')
                             history.go(0)
                         } 
                       })

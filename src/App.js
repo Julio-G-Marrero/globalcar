@@ -52,8 +52,8 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <Switch>
-          <Route path="/back-orders/dashboard">
-              <ProtectedRoute isLoggedIn={jwt} path="/back-orders/dashboard">
+          <Route path="/globalcar/dashboard">
+              <ProtectedRoute isLoggedIn={jwt} path="/globalcar/dashboard">
                 <Dashboard 
                 rol={rol}
                 user={user}
@@ -71,17 +71,17 @@ function App() {
                 closeAllPopupsToolTip={closeAllPopupsToolTip}/>
               </ProtectedRoute>
           </Route>
-          <Route path="/back-orders/login">
+          <Route path="/globalcar/login">
             <Login
             setUser={setUser}
             jwt={jwt}
             setIsLoggedIn={setIsLoggedIn}/>
           </Route>
-          <Route path="/back-orders/register">
+          <Route path="/globalcar/register">
             <Register/>
           </Route>
-          <Route path="/back-orders/">
-            {isLoggedIn ? <Redirect to="/back-orders/dashboard"/> : <Redirect to="/back-orders/login"/>}
+          <Route path="/globalcar/">
+            {isLoggedIn ? <Redirect to="/globalcar/dashboard"/> : <Redirect to="/globalcar/login"/>}
           </Route>
         </Switch>
       </BrowserRouter>
