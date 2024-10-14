@@ -51,7 +51,7 @@ function App() {
   return (
     <div className="App">
       <BrowserRouter>
-        <Switch>
+        {/* <Switch> */}
           <Route path="/globalcar/dashboard">
               <ProtectedRoute isLoggedIn={jwt} path="/globalcar/dashboard">
                 <Dashboard 
@@ -81,7 +81,7 @@ function App() {
             jwt={jwt}
             setIsLoggedIn={setIsLoggedIn}/>}
           </Route>
-        </Switch>
+        {/* </Switch> */}
       </BrowserRouter>
     </div>
   );
