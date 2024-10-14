@@ -49,7 +49,7 @@ function Login(props) {
                        props.setIsLoggedIn(true)
                         setTimeout(() => {
                             history.push('/globalcar/dashboard')
-                            history.go(0)
+                            // history.go(0)
                         }, "1500");
                 }else if(data.error) {
                     Toast.fire({
@@ -62,7 +62,7 @@ function Login(props) {
     }
     function handleRedirect() {
         history.push('/globalcar/register')
-        history.go(0)
+        // history.go(0)
     }
     const handleChange = (event) => {
         const { name,value } = event.target;

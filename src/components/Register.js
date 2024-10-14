@@ -38,7 +38,7 @@ function Register() {
 
     function handleRedirect() {
         history.push('/globalcar/login')
-        history.go(0)
+        // history.go(0)
     }
     return(
         <>

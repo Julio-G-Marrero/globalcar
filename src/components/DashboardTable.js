@@ -30,7 +30,7 @@ function DashboardTable(props) {
         else{
             console.log('Acceos no autorizado')
             history.push('/globalcar/login')
-            history.go(0)
+            // history.go(0)
         }
     },[fetctInfo])
     setTimeout(() => {
@@ -59,7 +59,7 @@ function DashboardTable(props) {
                         localStorage.removeItem('jwt');
                         props.setIsLoggedIn(false)                
                         history.push('/globalcar/login')
-                        history.go(0)
+                        // history.go(0)
                     } 
                   });
                 setIndexsOrders(0)
@@ -95,7 +95,7 @@ function DashboardTable(props) {
                                 localStorage.removeItem('jwt');
                                 props.setIsLoggedIn(false)                
                                 history.push('/globalcar/login')
-                                history.go(0)
+                                // history.go(0)
                             } 
                           });
                           props.setInitalOrders([])
@@ -134,7 +134,7 @@ function DashboardTable(props) {
                                     localStorage.removeItem('jwt');
                                     props.setIsLoggedIn(false)                
                                     history.push('/globalcar/login')
-                                    history.go(0)
+                                    // history.go(0)
                                 } 
                               });
                               props.setInitalOrders([])
@@ -172,7 +172,7 @@ function DashboardTable(props) {
                             localStorage.removeItem('jwt');
                             props.setIsLoggedIn(false)                
                             history.push('/globalcar/login')
-                            history.go(0)
+                            // history.go(0)
                         } 
                       });
                       props.setInitalOrders([])
@@ -204,7 +204,7 @@ function DashboardTable(props) {
                             localStorage.removeItem('jwt');
                             props.setIsLoggedIn(false)                
                             history.push('/globalcar/login')
-                            history.go(0)
+                            // history.go(0)
                         } 
                       });
                       props.setInitalOrders([])
@@ -236,7 +236,7 @@ function DashboardTable(props) {
                             localStorage.removeItem('jwt');
                             props.setIsLoggedIn(false)                
                             history.push('/globalcar/login')
-                            history.go(0)
+                            // history.go(0)
                         } 
                       });
                       props.setInitalOrders([])
@@ -268,7 +268,7 @@ function DashboardTable(props) {
                             localStorage.removeItem('jwt');
                             props.setIsLoggedIn(false)                
                             history.push('/globalcar/login')
-                            history.go(0)
+                            // history.go(0)
                         } 
                       });
                       props.setInitalOrders([])
@@ -312,7 +312,7 @@ function DashboardTable(props) {
                             localStorage.removeItem('jwt');
                             props.setIsLoggedIn(false)                
                             history.push('/globalcar/login')
-                            history.go(0)
+                            // history.go(0)
                         } 
                       });
                       props.setInitalOrders([])
@@ -344,7 +344,7 @@ function DashboardTable(props) {
                             localStorage.removeItem('jwt');
                             props.setIsLoggedIn(false)                
                             history.push('/globalcar/login')
-                            history.go(0)
+                            // history.go(0)
                         } 
                       });
                       props.setInitalOrders([])

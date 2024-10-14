@@ -28,7 +28,7 @@ function Dashboard(props) {
     function tokenCheck() {
         if (!props.jwt) {
             history.push('/globalcar/login')
-            history.go(0)
+            // history.go(0)
         }
       }
     function fetchOrders() {
@@ -50,7 +50,7 @@ function Dashboard(props) {
                         localStorage.removeItem('jwt');
                         props.setIsLoggedIn(false)                
                         history.push('/globalcar/login')
-                        history.go(0)
+                        // history.go(0)
                     } 
                   });
                   setInitalOrders([])
@@ -83,7 +83,7 @@ function Dashboard(props) {
                         localStorage.removeItem('jwt');
                         props.setIsLoggedIn(false)                
                         history.push('/globalcar/login')
-                        history.go(0)
+                        // history.go(0)
                     } 
                   });
             }else {
