@@ -46,9 +46,8 @@ function Login(props) {
                         icon: "success",
                         title: "Incio de sesión exitoso"
                       });
-                       props.setIsLoggedIn(true)
                         setTimeout(() => {
-                            history.go(0)
+                            props.setIsLoggedIn(true)
                         }, "1500");
                 }else if(data.error) {
                     Toast.fire({
