@@ -37,6 +37,9 @@ function App() {
       setIsLoggedIn(true)
     }
     setUser(userInit)
+    if(userInit.email) {
+      console.log(userInit.email)
+    }
     setRol(userInit.departament)
   },[])
   function closeAllPopups() {

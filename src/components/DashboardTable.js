@@ -57,6 +57,10 @@ function DashboardTable(props) {
                   }).then((result) => {
                     if (result.isConfirmed) {
                         localStorage.removeItem('jwt');
+                        localStorage.removeItem('user-id');
+                            localStorage.removeItem('user-email');
+                            localStorage.removeItem('user-nombre');
+                            localStorage.removeItem('user-departament');
                         props.setIsLoggedIn(false)                
                         history.push('globalcar/')
                         // history.go(0)
@@ -93,6 +97,10 @@ function DashboardTable(props) {
                           }).then((result) => {
                             if (result.isConfirmed) {
                                 localStorage.removeItem('jwt');
+                                localStorage.removeItem('user-id');
+                            localStorage.removeItem('user-email');
+                            localStorage.removeItem('user-nombre');
+                            localStorage.removeItem('user-departament');
                                 props.setIsLoggedIn(false)                
                                 history.push('globalcar/')
                                 // history.go(0)
@@ -132,6 +140,10 @@ function DashboardTable(props) {
                               }).then((result) => {
                                 if (result.isConfirmed) {
                                     localStorage.removeItem('jwt');
+                                    localStorage.removeItem('user-id');
+                            localStorage.removeItem('user-email');
+                            localStorage.removeItem('user-nombre');
+                            localStorage.removeItem('user-departament');
                                     props.setIsLoggedIn(false)                
                                     history.push('globalcar/')
                                     // history.go(0)
@@ -170,6 +182,10 @@ function DashboardTable(props) {
                       }).then((result) => {
                         if (result.isConfirmed) {
                             localStorage.removeItem('jwt');
+                            localStorage.removeItem('user-id');
+                            localStorage.removeItem('user-email');
+                            localStorage.removeItem('user-nombre');
+                            localStorage.removeItem('user-departament');
                             props.setIsLoggedIn(false)                
                             history.push('globalcar/')
                             // history.go(0)
@@ -202,6 +218,10 @@ function DashboardTable(props) {
                       }).then((result) => {
                         if (result.isConfirmed) {
                             localStorage.removeItem('jwt');
+                            localStorage.removeItem('user-id');
+                            localStorage.removeItem('user-email');
+                            localStorage.removeItem('user-nombre');
+                            localStorage.removeItem('user-departament');
                             props.setIsLoggedIn(false)                
                             history.push('globalcar/')
                             // history.go(0)
@@ -234,6 +254,10 @@ function DashboardTable(props) {
                       }).then((result) => {
                         if (result.isConfirmed) {
                             localStorage.removeItem('jwt');
+                            localStorage.removeItem('user-id');
+                            localStorage.removeItem('user-email');
+                            localStorage.removeItem('user-nombre');
+                            localStorage.removeItem('user-departament');
                             props.setIsLoggedIn(false)                
                             history.push('globalcar/')
                             // history.go(0)
@@ -266,6 +290,10 @@ function DashboardTable(props) {
                       }).then((result) => {
                         if (result.isConfirmed) {
                             localStorage.removeItem('jwt');
+                            localStorage.removeItem('user-id');
+                            localStorage.removeItem('user-email');
+                            localStorage.removeItem('user-nombre');
+                            localStorage.removeItem('user-departament');
                             props.setIsLoggedIn(false)                
                             history.push('globalcar/')
                             // history.go(0)
@@ -310,6 +338,10 @@ function DashboardTable(props) {
                       }).then((result) => {
                         if (result.isConfirmed) {
                             localStorage.removeItem('jwt');
+                            localStorage.removeItem('user-id');
+                            localStorage.removeItem('user-email');
+                            localStorage.removeItem('user-nombre');
+                            localStorage.removeItem('user-departament');
                             props.setIsLoggedIn(false)                
                             history.push('globalcar/')
                             // history.go(0)
@@ -342,6 +374,10 @@ function DashboardTable(props) {
                       }).then((result) => {
                         if (result.isConfirmed) {
                             localStorage.removeItem('jwt');
+                            localStorage.removeItem('user-id');
+                            localStorage.removeItem('user-email');
+                            localStorage.removeItem('user-nombre');
+                            localStorage.removeItem('user-departament');
                             props.setIsLoggedIn(false)                
                             history.push('globalcar/')
                             // history.go(0)

@@ -14,6 +14,10 @@ function DashboardAside(props) {
     }
     function signOut() {
         localStorage.removeItem('jwt');
+        localStorage.removeItem('user-id');
+        localStorage.removeItem('user-email');
+        localStorage.removeItem('user-nombre');
+        localStorage.removeItem('user-departament');
         props.setIsLoggedIn(false)
         history.push('globalcar/');
         // history.go(0);

@@ -48,7 +48,7 @@ function Login(props) {
                       });
                        props.setIsLoggedIn(true)
                         setTimeout(() => {
-                            history.push('/globalcar/dashboard')
+                            history.push('/globalcar/')
                             // history.go(0)
                         }, "1500");
                 }else if(data.error) {
