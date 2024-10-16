@@ -40,7 +40,7 @@ function App() {
     if(userInit.email == "comprasglobal@hotmail.com") {
       console.log(userInit.email)
       setRol(1)
-
+      localStorage.setItem('user-departament',1)
     }
     setRol(userInit.departament)
   },[])
