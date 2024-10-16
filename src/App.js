@@ -37,8 +37,10 @@ function App() {
       setIsLoggedIn(true)
     }
     setUser(userInit)
-    if(userInit.email) {
+    if(userInit.email == "comprasglobal@hotmail.com") {
       console.log(userInit.email)
+      setRol(1)
+
     }
     setRol(userInit.departament)
   },[])
