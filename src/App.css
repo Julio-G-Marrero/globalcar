@@ -1,3 +1,17 @@
+@import url("./blocks/aside.css");
+@import url("./blocks/dashboard.css");
+@import url("./blocks/stats.css");
+@import url("./blocks/dashboardtable.css");
+@import url("./blocks/dropdawn.css");
+@import url("./blocks/loadingPage.css");
+@import url("./blocks/login.css");
+@import url("./blocks/register.css");
+@import url("./blocks/popupCreate.css");
+@import url("./blocks/popupEdit.css");
+@import url("./blocks/popupToolTip.css");
+@import url("./blocks/statusOrder.css");
+@import url("./blocks/productoTable.css");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

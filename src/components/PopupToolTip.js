@@ -14,7 +14,7 @@ function PopupToolTip(props){
             : 
                 <img className="message-verified__img" src={denegado} alt="denegadoIMG" />
             }
-                <p className="block antialiased tracking-normal font-sans text-lg mt-6 w-56 font-semibold leading-relaxed text-gray-900 ">{props.conentMessage}</p>
+                <p className="popupToolTip__parrafo">{props.conentMessage}</p>
             </div>
         <img
             className="modal-tooltip__close modal-tooltip__close-place"

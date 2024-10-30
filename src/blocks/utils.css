@@ -1,0 +1,21 @@
+.capitalize {
+    text-transform: capitalize; 
+}
+.text-rigth {
+    font-size: 0.875rem;
+    line-height: 1.25rem; 
+    text-align: left; 
+}
+.relative {
+    position: relative; 
+}
+.hidden {
+    display: none;
+}
+.text-left {
+    text-align: left; 
+
+}
+.font-semibold {
+    font-weight:600;
+}

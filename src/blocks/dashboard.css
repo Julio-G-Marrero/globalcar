@@ -1,0 +1,18 @@
+.dashboard {
+    display: flex; 
+    flex-direction: row; 
+}
+
+@media (min-width: 1280px) { 
+    .dashboard__aside {
+        flex-basis: 16.666667%; 
+    }
+}
+.dashboard__component {
+    flex-basis: 83.333333%; 
+}
+.dashboard__table {
+    display: table; 
+    width: 100%; 
+}
+  

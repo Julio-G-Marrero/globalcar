@@ -1,0 +1,186 @@
+.stats__header{
+    display: block; 
+    padding-left: 0;
+    padding-right: 0; 
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem; 
+    border-radius: 0.75rem; 
+    width: 100%; 
+    max-width: 100%; 
+    color: #ffffff; 
+    background-color: transparent; 
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 300ms; 
+    box-shadow: none; 
+}
+.stats__header--container {
+    display: flex; 
+    flex-direction: column-reverse; 
+    gap: 1.5rem; 
+    justify-content: space-between; 
+}
+@media (min-width: 768px) { 
+    .stats__header--container {
+        flex-direction: row; 
+        align-items: center; 
+    }
+}
+.stats__header--element {
+    display: flex; 
+    margin-right: 5rem; 
+    align-items: center; 
+}
+.stats__router {
+    display: flex; 
+    padding: 0; 
+    flex-wrap: wrap; 
+    align-items: center; 
+    border-radius: 0.375rem; 
+    width: 100%; 
+    background-color: transparent; 
+    --bg-opacity: 0.6; 
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 300ms; 
+}
+.stats__router--home {
+    display: flex; 
+    align-items: center; 
+    font-size: 0.875rem;
+    line-height: 1.25rem; 
+    font-weight: 400; 
+    line-height: 1.5; 
+    cursor: pointer; 
+}
+.stats__router--element {
+    margin-left: 0.5rem;
+    margin-right: 0.5rem; 
+    font-size: 0.875rem;
+    line-height: 1.25rem; 
+    font-weight: 400; 
+    line-height: 1.5; 
+    color: #6B7280; 
+    pointer-events: none; 
+}
+.stats__title {
+    display: block; 
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; 
+    font-size: 1rem;
+    line-height: 1.5rem; 
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale; 
+    font-weight: 600; 
+    letter-spacing: 0; 
+    line-height: 1.625; 
+    color: #111827; 
+}
+.stats__notificaciones {
+    display: flex; 
+    margin-right: 5rem; 
+    align-items: center; 
+
+}
+.stats__grid {
+    display: grid;
+    column-gap: 1.5rem; 
+    row-gap: 2.5rem; 
+    margin: 0 auto;
+    margin-top: 2rem; 
+    margin-bottom: 2.5rem; 
+}
+@media (min-width: 768px) { 
+    .stats__grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)); 
+    }
+}  
+@media (min-width: 1280px) { 
+    .stats__grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr)); 
+        width: 83.333333%; 
+    }
+}
+@media (min-width: 1280px) { 
+    .stats__element {
+        display: flex; 
+        justify-content: center; 
+    }
+}
+
+.stats__element--flex {
+    display: flex; 
+    position: relative; 
+    flex-direction: column; 
+    border-radius: 0.75rem; 
+    color: #374151; 
+    background-clip: border-box; 
+    background-color: #ffffff; 
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); 
+}
+
+@media (min-width: 1280px) { 
+    .stats__element--flex {
+        width: 18rem; 
+    }
+}
+.stats__logo {
+    display: grid;
+    overflow: hidden; 
+    position: absolute; 
+    margin-left: 1rem;
+    margin-right: 1rem; 
+    margin-top: -1rem; 
+    place-items: center; 
+    border-radius: 0.75rem; 
+    width: 4rem; 
+    height: 4rem; 
+    color: #ffffff; 
+    background-clip: border-box; 
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); 
+}
+.stats__logo--green {
+    background-color: rgb(0, 197, 0);
+}
+.stats__logo--orange {
+    background-color: rgb(255, 94, 0);
+}
+.stats__logo--blue {
+    background-color: rgb(0, 68, 255);
+}
+.stats__logo--pink {
+    background-color: rgb(231, 1, 212);
+}
+.stats__svg {
+    width: 1.5rem; 
+    height: 1.5rem; 
+    color: #ffffff; 
+}
+.stats__textrigt {
+    padding: 1rem; 
+    text-align: right; 
+}
+.stats__label {
+    display: block; 
+    font-size: 0.875rem;
+    line-height: 1.25rem; 
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale; 
+    font-weight: 400; 
+    line-height: 1.5; 
+}
+.stats__value {
+    display: block; 
+    font-size: 1.5rem;
+    line-height: 2rem; 
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale; 
+    font-weight: 600; 
+    letter-spacing: 0; 
+    line-height: 1.375; 
+}
+.stats__subinfo {
+    display: flex; 
+    padding: 1rem; 
+    justify-content: space-between; 
+    border-top-width: 1px; 
+}

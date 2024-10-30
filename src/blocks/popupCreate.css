@@ -1,0 +1,156 @@
+.popup-create {
+    z-index: 50;
+    margin: 0 auto;
+    left: 27%;
+    position: absolute;
+    top: 2%;
+}
+.popup-create-product {
+    left: 30%;
+    top: 8%;
+}
+.popup-create__container {
+    padding: 2.5rem; 
+    margin: 5rem; 
+    margin-top: 2.5rem; 
+    margin-bottom: 2.5rem; 
+    border-radius: 0.5rem; 
+    width: 100%; 
+    max-width: 64rem; 
+    background-color: #ffffff; 
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); 
+}
+.popup-create__title {
+    margin-top: 0.25rem; 
+    margin-bottom: 0.5rem; 
+    align-items: center; 
+    font-size: 1.5rem;
+    line-height: 2rem; 
+    font-weight: 600; 
+    color: #6B7280; 
+}
+.popup-create__margin {
+    margin-bottom: 1rem; 
+}
+.popup-create__input-name{
+    display: block; 
+    margin-bottom: 0.5rem; 
+    font-size: 0.875rem;
+    line-height: 1.25rem; 
+    color: #4B5563; 
+}
+.popup-create__input {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem; 
+    padding-left: 1rem;
+    padding-right: 1rem; 
+    border-radius: 0.5rem; 
+    border-width: 1px; 
+    width: 100%; 
+}
+.popup-create__fieldset {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr)); 
+    gap: 1rem; 
+}
+.popup-create__input--2 {
+    display: block; 
+    margin-bottom: 0.5rem; 
+    font-size: 0.875rem;
+    line-height: 1.25rem; 
+    color: #4B5563; 
+}
+.product-list__container {
+    overflow-y: scroll; 
+    height: 13rem; 
+}
+.product-list__table {
+    border-radius: 0.75rem; 
+    min-width: 100%; 
+    background-color: #ffffff; 
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); 
+}
+.product-list__tr {
+    color: #4B5563; 
+}
+.product-list__th {
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem; 
+    padding-left: 1rem;
+    padding-right: 1rem; 
+    font-size: 0.875rem;
+    line-height: 1.25rem; 
+    text-align: left; 
+    color: #4B5563; 
+}
+.popup-create__form {
+    display: flex; 
+    justify-content: space-around; 
+    border-bottom-width: 1px; 
+       
+}
+.popup-create__currency {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem; 
+    padding-left: 0.5rem;
+    padding-right: 0.5rem; 
+    border-radius: 0.5rem; 
+    border-width: 1px; 
+    width: 8rem; 
+}
+.popup-create__number {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem; 
+    padding-left: 0.5rem;
+    padding-right: 0.5rem; 
+    border-radius: 0.5rem; 
+    border-width: 1px; 
+    width: 4rem; 
+    text-align: center; 
+}
+.popup-create__form--add {
+    display: flex; 
+    gap: 1rem; 
+    justify-content: space-between; 
+    align-items: center; 
+}
+.popup-create__buttonAdd {
+    width: 100%; 
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem; 
+    padding-left: 1rem;
+    padding-right: 1rem; 
+    margin-right: 1rem; 
+    border-radius: 0.5rem; 
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; 
+    font-size: 0.75rem;
+    line-height: 1rem; 
+    font-weight: 700; 
+    color: #ffffff; 
+    text-transform: uppercase; 
+    background-color: #10B981; 
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 300ms; 
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); 
+}
+.popup-create__buttonAdd:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); 
+}
+.popup-create__montoTotal {
+    display: block; 
+    font-size: 0.875rem;
+    line-height: 1.25rem; 
+    color: #4B5563; 
+}
+.popup-create__buttonCreate {
+    display: block; 
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem; 
+    margin-bottom: 0.5rem; 
+    border-radius: 0.5rem; 
+    width: 8rem; 
+    font-weight: 600; 
+    color: #ffffff; 
+    margin: 0 auto;
+}

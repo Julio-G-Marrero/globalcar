@@ -1,0 +1,26 @@
+.element {
+    border-bottom-width: 1px; 
+}
+.element:hover {
+    cursor: pointer; 
+}
+.element__content {
+    padding: 1rem; 
+    padding-top: 1.25rem;
+    padding-bottom: 1.25rem;
+}
+.element__info {
+    display: block; 
+    font-size: 0.875rem;
+    line-height: 1.25rem; 
+    font-weight: 600; 
+}
+.element__info--number {
+    font-size: 0.875rem;
+    line-height: 1.25rem; 
+}
+.element__productos {
+    font-size: 0.875rem;
+    line-height: 1.25rem; 
+    text-align: center; 
+}

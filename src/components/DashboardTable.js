@@ -311,10 +311,8 @@ function DashboardTable(props) {
         }else if(e.target.value == "reiniciar") {
             props.fetchOrders()
             setStatusOrderFilter(0)
-            
             var ele = document.getElementsByName("statusOrder");
             var inputSearch = document.getElementById("inputSearch");
-            console.log(inputSearch.value)
             inputSearch.value = ""
             for(var i=0;i<ele.length;i++)
                 ele[i].checked = false;
@@ -398,54 +396,43 @@ function DashboardTable(props) {
     }else {
         return(
             <>
-            <div className= "w-11/12 mx-auto">
-                <div class="w-full flex justify-between items-center mb-3 mt-1 pl-3">
+            <div className= "dashboardTable">
+                <div class="dashboardTable__header">
                     <div>
-                        <div class="m-3">
-                            <button class="bg-white text-gray-800 font-semibold rounded border-b-2 hover:border-green-600 hover:bg-green-500 hover:text-white shadow-md py-2 px-6 inline-flex items-center bg-gradient-to-tr "
+                        <div class="dashboardTable__containerButton">
+                            <button class="dashboardTable__button"
                             onClick={handleOrderPopup}>
-                                <span class="mr-2">Crear</span>
-                                <svg class="w-6 h-6  dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                <span class="dashboardTable__titleButton">Crear</span>
+                                <svg class="dashboardTable__svg" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                                 <path fill-rule="evenodd" d="M9 7V2.221a2 2 0 0 0-.5.365L4.586 6.5a2 2 0 0 0-.365.5H9Zm2 0V2h7a2 2 0 0 1 2 2v6.41A7.5 7.5 0 1 0 10.5 22H6a2 2 0 0 1-2-2V9h5a2 2 0 0 0 2-2Z" clip-rule="evenodd"/>
                                 <path fill-rule="evenodd" d="M9 16a6 6 0 1 1 12 0 6 6 0 0 1-12 0Zm6-3a1 1 0 0 1 1 1v1h1a1 1 0 1 1 0 2h-1v1a1 1 0 1 1-2 0v-1h-1a1 1 0 1 1 0-2h1v-1a1 1 0 0 1 1-1Z" clip-rule="evenodd"/>
                                 </svg>
                             </button>
                         </div>
                     </div>
-                    <div class="ml-3 w-4/12 ">
-                        <div class="w-full flex justify-center items-center gap-2 relative">
-                            <div class="grid w-60  gap-2 rounded-xl p-2">
-                                <div className="flex gap-8 justify-end">
+                    <div class="dashboardTable__search">
+                        <div class="dashboardTable__searchFlex">
+                            
+                            <div class="dashboardTable__states">
+                                <div className="dashboardTable__states--info">
                                     <div className="relative">
-                                        <details className="group [&_summary::-webkit-details-marker]:hidden">
-                                        <summary
-                                            className="flex cursor-pointer items-center gap-2 border-b border-gray-400 pb-1 text-gray-900 transition hover:border-gray-600"
-                                        >
-                                            <span className="text-sm font-medium"> Estados </span>
-                                            <span className="transition group-open:-rotate-180">
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                strokeWidth="1.5"
-                                                stroke="currentColor"
-                                                className="size-4"
-                                            >
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                                            </svg>
-                                            </span>
-                                        </summary>
-                                        <div className="z-50 group-open:absolute group-open:right-0  group-open:top-auto group-open:mt-2">
-                                            <div className="w-56 rounded border border-gray-200 bg-white">
-                                                <header className="flex items-center justify-between p-4">
-                                                    <span className="text-sm text-gray-700">Opciones </span>
-                                                    <button type="button" className="text-sm text-gray-900 underline underline-offset-4"
-                                                    value="reiniciar"
-                                                    onClick={hanldeFetchOrderByStatus}>
-                                                    Limpiar
-                                                    </button>
-                                                </header>
-                                                <ul className="space-y-1 border-t border-gray-200 p-4 text-justify">
+                                        <details class="dropdown">
+                                            <summary className="dashboardTable__summary">
+                                                <p>Estados</p>
+                                                <span className="transition group-open:-rotate-180">
+                                                    <svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        fill="none"
+                                                        viewBox="0 0 24 24"
+                                                        strokeWidth="1.5"
+                                                        stroke="currentColor"
+                                                        className="size-4"
+                                                    >
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                                    </svg>
+                                                </span>
+                                            </summary>
+                                            <ul className="dashboardTable__list">
                                                     <li>
                                                         <label className="inline-flex items-center gap-2"
                                                         >
@@ -488,8 +475,6 @@ function DashboardTable(props) {
                                                         </label>
                                                     </li>
                                                 </ul>
-                                            </div>
-                                        </div>
                                         </details>
                                     </div>
                                 </div>
@@ -497,55 +482,62 @@ function DashboardTable(props) {
 
                             <div class="relative">
                                 <input
-                                class="bg-white w-full pr-11 h-10 pl-3 py-2 bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded transition duration-200 ease focus:outline-none focus:border-slate-400 hover:border-slate-400 shadow-sm focus:shadow-md"
+                                class="dashboardTable__input"
                                 placeholder="Busqueda General..."
                                 id="inputSearch"
                                 onChange={handleChangeSearchInput}
                                 />
                                 <button
-                                class="absolute h-8 w-8 right-1 top-1 my-auto px-2 flex items-center bg-white rounded "
+                                class="dashboardTable__button--stats"
                                 type="button"
                                 >
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-8 h-8 text-slate-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="dashboardTable__icon">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
                                 </svg>
                                 </button>
                             </div>
+                            <button
+                                class="dashboardTable__button--statsxl"
+                                type="button"
+                                value="reiniciar"
+                                onClick={hanldeFetchOrderByStatus}>
+                                ↻
+                            </button>
                         </div>
                     </div>
                 </div>
                 
-                <div class="relative flex flex-col w-full h-full text-gray-700 bg-white shadow-md rounded-lg bg-clip-border">
-                <table class="w-full text-left table-auto min-w-max">
+                <div class="dashboardTable__orders">
+                <table class="dashboardTable__table">
                     <thead>
                     <tr>
-                        <th class="p-4 border-b border-slate-200 bg-slate-50">
-                            <p class="text-sm font-normal leading-none text-slate-500">
+                        <th class="dashboardTable__tr">
+                            <p class="dashboardTable__text">
                                 Nombre Cliente
                             </p>
                         </th>
-                        <th class="p-4 border-b border-slate-200 bg-slate-50">
-                            <p class="text-sm font-normal leading-none text-slate-500">
+                        <th class="dashboardTable__tr">
+                            <p class="dashboardTable__text">
                                 Correo Cliente
                             </p>
                         </th>
-                        <th class="p-4 border-b border-slate-200 bg-slate-50">
-                            <p class="text-sm font-normal leading-none text-slate-500">
+                        <th class="dashboardTable__tr">
+                            <p class="dashboardTable__text">
                                 Fecha Apertura
                             </p>
                         </th>
-                        <th class="p-4 border-b border-slate-200 bg-slate-50">
-                            <p class="text-sm font-normal text-center leading-none text-slate-500">
+                        <th class="dashboardTable__tr">
+                            <p class="dashboardTable__text-qty">
                                 Qty Productos
                             </p>
                         </th>
-                        <th class="p-4 border-b border-slate-200 bg-slate-50">
-                            <p class="text-sm font-normal leading-none text-slate-500">
+                        <th class="dashboardTable__tr">
+                            <p class="dashboardTable__text">
                                 Monto Total
                             </p>
                         </th>
-                        <th class="p-4 border-b border-slate-200 bg-slate-50">
-                            <p class="text-sm font-normal leading-none text-slate-500">
+                        <th class="dashboardTable__tr">
+                            <p class="dashboardTable__text">
                                 Status
                             </p>
                         </th>
@@ -563,21 +555,21 @@ function DashboardTable(props) {
                     </tbody>
                 </table>
                 
-                <div class="flex justify-between items-center px-4 py-3">
-                    <div class="text-sm text-slate-500">
+                <div class="dashboardTable__paginator">
+                    <div class="dashboardTable__paginator--div">
                     Mostrando <b>{props.numeroDeOrdenes}</b> de {indexsOrders.totalOrders} - Pagina <b>{pageIndex}</b>/{numeroDePaginas}
                     </div>
-                    <div class="flex space-x-1">
-                    <button class="px-3 py-1 min-w-9 min-h-9 text-sm font-normal text-slate-500 bg-white border border-slate-200 rounded hover:bg-slate-50 hover:border-slate-400 transition duration-200 ease"
-                    id="Prev"
-                    onClick={handleChangePageOrders}>
-                        Prev
-                    </button>
-                    <button class="px-3 py-1 min-w-9 min-h-9 text-sm font-normal text-slate-500 bg-white border border-slate-200 rounded hover:bg-slate-50 hover:border-slate-400 transition duration-200 ease"
-                    id="next"
-                    onClick={handleChangePageOrders}>
-                        Next
-                    </button>
+                    <div class="dashboardTable__buttonsPaginator">
+                        <button class="dashboardTable__buttonPaginator"
+                        id="Prev"
+                        onClick={handleChangePageOrders}>
+                            Prev
+                        </button>
+                        <button class="dashboardTable__buttonPaginator"
+                        id="next"
+                        onClick={handleChangePageOrders}>
+                            Next
+                        </button>
                     </div>
                 </div>
                 </div>

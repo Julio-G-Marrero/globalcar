@@ -244,10 +244,10 @@ function OrderPopupEdit(props){
     },[props.orderSelected])
     return(
         <>
-            <div className={props.popupEditOrder ?"popup absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50" : "popup absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 hidden"}>
-                <div className="max-w-5xl w-full p-10 bg-white rounded-lg shadow-lg m-20 mt-10 mb-10 ">
-                    <div className="flex justify-between">
-                        <h1 className="items-center text-2xl font-semibold text-gray-500 mt-1 mb-2">Editar Orden #{props.orderSelected._id}</h1>
+            <div className={props.popupEditOrder ?"popupEdit" : "popupEdit hidden"}>
+                <div className="popupEdit__header">
+                    <div className="popupEdit__elements">
+                        <h1 className="popupEdit__titile">Editar Orden #{props.orderSelected._id}</h1>
                         <StatusSetterOrder
                         rol={props.rol}
                         productosAutorizados={productosAutorizados}
@@ -257,43 +257,43 @@ function OrderPopupEdit(props){
                         handleEliminarOrden={handleEliminarOrden}
                         order={props.orderSelected} statusId={statusOrder} renderStatusOrder={renderStatusOrder}/>
                     </div>
-                <form className="text-left">
-                    <div className="mb-4">
-                        <label for="nombre-cliente" className="block  mb-2 text-sm text-gray-600">Nombre Cliente</label>
-                        <input type="text" id="nombre-cliente" value={nombreCliente} name="nombre-cliente" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 " disabled={true}/>
+                <form className="popupEdit__form">
+                    <div className="popupEdit__margin">
+                        <label for="nombre-cliente" className="popupEdit__label--nombre">Nombre Cliente</label>
+                        <input type="text" id="nombre-cliente" value={nombreCliente} name="nombre-cliente" className="popupEdit__input" disabled={true}/>
                     </div>
-                    <div className="clienteInfo grid grid-cols-2 gap-4">
-                        <div className="mb-4">
-                            <label for="numeroTel" className="block mb-2 text-sm text-gray-600">Tel Cliente</label>
-                            <input type="text" value={telefonoCliente} id="numeroTel" name="numeroTel" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500" disabled={true}/>
+                    <div className="clienteInfo popupEdit__elemntForm">
+                        <div className="popupEdit__margin">
+                            <label for="numeroTel" className="popupEdit__label">Tel Cliente</label>
+                            <input type="text" value={telefonoCliente} id="numeroTel" name="numeroTel" className="popupEdit__input" disabled={true}/>
                         </div>
-                        <div className="mb-4">
-                            <label for="emialCliente" className="block mb-2 text-sm text-gray-600">Email Cliente</label>
-                            <input type="text" value={emailCliente} id="emialCliente" name="emialCliente" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 " disabled={true}/>
+                        <div className="popupEdit__margin">
+                            <label for="emialCliente" className="popupEdit__label">Email Cliente</label>
+                            <input type="text" value={emailCliente} id="emialCliente" name="emialCliente" className="popupEdit__input" disabled={true}/>
                         </div>
                     </div>
-                    <div className="fechas grid grid-cols-2 gap-4">
-                        <div className="mb-4">
-                            <label for="fechaPromesa" className="block mb-2 text-sm text-gray-600">Fecha Promesa</label>
-                            <input type="date" value={fechaPromesa} disabled={fechaPromesaSwitch} onChange={handleOnChange} id="fechaPromesa" name="fechaPromesa" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"/>
+                    <div className="fechas popupEdit__elemntForm">
+                        <div className="popupEdit__margin">
+                            <label for="fechaPromesa" className="popupEdit__label">Fecha Promesa</label>
+                            <input type="date" value={fechaPromesa} disabled={fechaPromesaSwitch} onChange={handleOnChange} id="fechaPromesa" name="fechaPromesa" className="popupEdit__input"/>
                         </div>
-                        <div className="mb-4">
-                            <label for="date" className="block mb-2 text-sm text-gray-600">Ubicacion Cliente</label>
-                            <input type="text" value={ubicacionCliente} id="ubicacion-cliente" name="ubicacion-cliente" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500" disabled={true}/>
+                        <div className="popupEdit__margin">
+                            <label for="date" className="popupEdit__label">Ubicacion Cliente</label>
+                            <input type="text" value={ubicacionCliente} id="ubicacion-cliente" name="ubicacion-cliente" className="popupEdit__input" disabled={true}/>
                         </div>
                     </div>
                     <div className="product-list">
-                        <div className="overflow-y-scroll h-52">
+                        <div className="product-list__container">
           
-                            <table className="min-w-full bg-white shadow-md rounded-xl">
+                            <table className="product-list__table">
                             <thead>
-                                <tr className="bg-blue-gray-100 text-gray-600">
-                                <th className="py-3 px-4 text-left text-sm text-gray-600">SKU</th>
-                                <th className="py-3 px-4 text-left text-sm text-gray-600">Producto</th>
-                                <th className="py-3 px-4 text-left text-sm text-gray-600">Precio</th>
-                                <th className="py-3 px-4 text-left text-sm text-gray-600">Cantidad</th>
-                                <th className="py-3 px-4 text-center text-sm text-gray-600">Total</th>
-                                <th className="py-3 px-4 text-center text-sm text-gray-600">Provedor</th>
+                                <tr className="product-list__tr">
+                                <th className="product-list__th">SKU</th>
+                                <th className="product-list__th">Producto</th>
+                                <th className="product-list__th">Precio</th>
+                                <th className="product-list__th">Cantidad</th>
+                                <th className="product-list__th">Total</th>
+                                <th className="product-list__th">Provedor</th>
                                 </tr>
                             </thead>
                             <tbody className="text-blue-gray-900">
@@ -312,18 +312,18 @@ function OrderPopupEdit(props){
                             </table>
                         </div>
                     </div>
-                    <div className="mb-4 flex items-center justify-between gap-4">
+                    <div className="popupEdit__margin popup-create__form">
                         <div className="add">
                                         
                         </div>
                         <div>
-                            <label for="nombre" className="block text-sm text-gray-600">Monto Total</label>
+                            <label for="nombre" className="popupEdit__montoTotal">Monto Total</label>
                             <h2 className="font-semibold">${Math.round(totalMonto)}</h2>
                         </div>
                     </div>
-                    <div className="mb-4">
-                        <label for="nombre-cliente" className="block  mb-2 text-sm text-gray-600" >Comentarios</label>
-                        <textarea type="text" disabled={true} value={comentarios} onChange={handleOnChange} id="comentarios" name="comentarios" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"/>
+                    <div className="popupEdit__margin">
+                        <label for="nombre-cliente" className="popupEdit__label--nombre" >Comentarios</label>
+                        <textarea type="text" disabled={true} value={comentarios} onChange={handleOnChange} id="comentarios" name="comentarios" className="popupEdit__input"/>
                     </div>
                     {/* <button type="submit" className="w-32 background-globalcar text-white py-2 rounded-lg mx-auto block focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 mb-2 bg-globalcar font-semibold"
                     >Guardar</button> */}

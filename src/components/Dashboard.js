@@ -41,6 +41,8 @@ function Dashboard(props) {
           })
           .then((response) => response.json())
           .then((data) => {
+            console.log(data)
+            console.log(props.jwt)
               if(data.message) {
                 MySwal.fire({
                     title: `Ocurrio un error, contacte con soporte`,
@@ -130,16 +132,16 @@ function Dashboard(props) {
     }
     return(
         <>
-            <div className="flex flex-row">
-                <div className="xl:basis-2/12">
+            <div className="dashboard">
+                <div className="dashboard__aside">
                     <DashboardAside
                     setIsLoggedIn={props.setIsLoggedIn}/>
                 </div>
-                <div className="basis-10/12 mx-auto">
+                <div className="dashboard__component">
                     <DashboardStats
                         stats={stats}
                     />
-                    <div className="table w-full">
+                    <div className="dashboard__table">
                         <DashboardTable
                          isLoggedIn={props.isLoggedIn}
                          jwt={props.jwt}

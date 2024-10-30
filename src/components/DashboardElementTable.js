@@ -12,24 +12,24 @@ function DashboardElementTable(props) {
         props.setOverlay(!props.overlay)
     }
     return(
-        <tr class="hover:bg-slate-50 border-b border-slate-200 hover:cursor-pointer" 
+        <tr class="element" 
             onClick={handleOpenOrder}
         >
-            <td class="p-4 py-5">
+            <td class="element__content">
                 <p class="block font-semibold text-sm text-slate-800">{props.order.cliente_nombre}</p>
             </td>
-            <td class="p-4 py-5">
+            <td class="element__content">
                 <p class="block font-semibold text-sm text-slate-800">{props.order.cliente_email}</p>
             </td>
-            <td class="p-4 py-5">
+            <td class="element__content">
                 <p class="text-sm text-slate-500">
                 <Moment fromNow>{props.order.fecha_apertura}</Moment>
                 </p>
             </td>
-            <td class="p-4 py-5">
+            <td class="element__content">
                 <p class="text-sm text-center text-slate-500">{props.order.cantidad_productos}</p>
             </td>
-            <td class="p-4 py-5">
+            <td class="element__content">
                 {
                     precioAutorizado ? 
                     <p class="text-sm text-slate-500">${Math.round(props.order.monto_autorizado)}</p>
@@ -38,7 +38,7 @@ function DashboardElementTable(props) {
 
                 }
             </td>
-            <td class="p-4 py-5">
+            <td class="element__content">
                 <p class="text-sm text-slate-500">{props.orderStatus[props.order.id_estatus]}</p>
             </td>
         </tr>

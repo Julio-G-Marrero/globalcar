@@ -1,0 +1,14 @@
+.popupToolTip__parrafo {
+    display: block; 
+    margin-top: 1.5rem; 
+    width: 14rem; 
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; 
+    font-size: 1.125rem;
+    line-height: 1.75rem; 
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale; 
+    font-weight: 600; 
+    letter-spacing: 0; 
+    line-height: 1.625; 
+    color: #111827; 
+}

@@ -181,45 +181,45 @@ function OrderPopupCreate(props) {
     }
     return(
         <>
-            <div className={props.popupCreateOrder ?"popup absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50" : "popup absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 hidden"}>
-                <div className="max-w-5xl w-full p-10 bg-white rounded-lg shadow-lg m-20 mt-10 mb-10 ">
+            <div className={props.popupCreateOrder ?"popup-create" : "popup-create hidden"}>
+                <div className="popup-create__container">
                 <h1 className="items-center text-2xl font-semibold text-gray-500 mt-1 mb-2">Crear Orden</h1>
                 <form className="text-left">
-                    <div className="mb-4">
-                        <label for="nombre-cliente" className="block  mb-2 text-sm text-gray-600">Nombre Cliente</label>
-                        <input type="text" id="nombre-cliente" value={nombreCliente} onChange={handleOnChange} name="nombre-cliente" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"/>
+                    <div className="popup-create__margin">
+                        <label for="nombre-cliente" className="popup-create__input-name">Nombre Cliente</label>
+                        <input type="text" id="nombre-cliente" value={nombreCliente} onChange={handleOnChange} name="nombre-cliente" className="popup-create__input"/>
                     </div>
-                    <div className="clienteInfo grid grid-cols-2 gap-4">
-                        <div className="mb-4">
-                            <label for="numeroTel" className="block mb-2 text-sm text-gray-600">Tel Cliente</label>
-                            <input type="text" value={telefonoCliente} onChange={handleOnChange} id="numeroTel" name="numeroTel" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"/>
+                    <div className="clienteInfo popup-create__fieldset">
+                        <div className="popup-create__margin">
+                            <label for="numeroTel" className="popup-create__input--2">Tel Cliente</label>
+                            <input type="text" value={telefonoCliente} onChange={handleOnChange} id="numeroTel" name="numeroTel" className="popup-create__input"/>
                         </div>
-                        <div className="mb-4">
-                            <label for="emialCliente" className="block mb-2 text-sm text-gray-600">Email Cliente</label>
-                            <input type="text" value={emailCliente} onChange={handleOnChange} id="emialCliente" name="emialCliente" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 "/>
+                        <div className="popup-create__margin">
+                            <label for="emialCliente" className="popup-create__input--2">Email Cliente</label>
+                            <input type="text" value={emailCliente} onChange={handleOnChange} id="emialCliente" name="emialCliente" className="popup-create__input "/>
                         </div>
                     </div>
-                    <div className="fechas grid grid-cols-2 gap-4">
-                        <div className="mb-4">
-                            <label for="fechaPromesa" className="block mb-2 text-sm text-gray-600">Fecha Promesa</label>
-                            <input type="date" value={fechaPromesa} onChange={handleOnChange} id="fechaPromesa" name="fechaPromesa" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500" disabled={true}/>
+                    <div className="fechas popup-create__fieldset">
+                        <div className="popup-create__margin">
+                            <label for="fechaPromesa" className="popup-create__input--2">Fecha Promesa</label>
+                            <input type="date" value={fechaPromesa} onChange={handleOnChange} id="fechaPromesa" name="fechaPromesa" className="popup-create__input" disabled={true}/>
                         </div>
-                        <div className="mb-4">
-                            <label for="date" className="block mb-2 text-sm text-gray-600">Ubicacion Cliente</label>
-                            <input type="text" value={ubicacionCliente} onChange={handleOnChange} id="ubicacion-cliente" name="ubicacion-cliente" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"/>
+                        <div className="popup-create__margin">
+                            <label for="date" className="popup-create__input--2">Ubicacion Cliente</label>
+                            <input type="text" value={ubicacionCliente} onChange={handleOnChange} id="ubicacion-cliente" name="ubicacion-cliente" className="popup-create__input"/>
                         </div>
                     </div>
                     <div className="product-list">
-                        <div className="overflow-y-scroll h-52">
+                        <div className="product-list__container">
           
-                            <table className="min-w-full bg-white shadow-md rounded-xl">
+                            <table className="product-list__table">
                             <thead>
-                                <tr className="bg-blue-gray-100 text-gray-600">
-                                <th className="py-3 px-4 text-left text-sm text-gray-600">SKU</th>
-                                <th className="py-3 px-4 text-left text-sm text-gray-600">Producto</th>
-                                <th className="py-3 px-4 text-left text-sm text-gray-600">Precio</th>
-                                <th className="py-3 px-4 text-left text-sm text-gray-600">Cantidad</th>
-                                <th className="py-3 px-4 text-left text-sm text-gray-600">Total</th>
+                                <tr className="product-list__tr">
+                                <th className="product-list__th">SKU</th>
+                                <th className="product-list__th">Producto</th>
+                                <th className="product-list__th">Precio</th>
+                                <th className="product-list__th">Cantidad</th>
+                                <th className="product-list__th">Total</th>
                                 </tr>
                             </thead>
                             <tbody className="text-blue-gray-900">
@@ -231,12 +231,12 @@ function OrderPopupCreate(props) {
                             </tbody>
                             </table>
                         </div>
-                            <div className="flex border-b justify-around border-blue-gray-200 gap-2" id="new-product">
+                            <div className="popup-create__form">
                                 <div>
-                                    <input value={skuProducto} onChange={handleOnChange} type="text" id="skuProducto" name="skuProducto" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"/>
+                                    <input value={skuProducto} onChange={handleOnChange} type="text" id="skuProducto" name="skuProducto" className="popup-create__input"/>
                                 </div>
                                 <div className="flex-1">
-                                    <input value={nombreProducto} onChange={handleOnChange} type="text" id="nombreProducto" name="nombreProducto" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"/>
+                                    <input value={nombreProducto} onChange={handleOnChange} type="text" id="nombreProducto" name="nombreProducto" className="popup-create__input"/>
                                 </div>
                                 <div>
                                     <CurrencyInput
@@ -254,20 +254,20 @@ function OrderPopupCreate(props) {
                                         disableAbbreviations
                                         decimalSeparator="." 
                                         groupSeparator=","
-                                    className="w-32 px-2 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 "
+                                    className="popup-create__currency"
                                     />
                                 </div>
                                 <div>
                                 </div>
                                 <div>
-                                    <input type="number" value={cantidadProducto} onChange={handleOnChange} min={1} id="cantidadProducto" name="cantidadProducto" className="w-16 text-center px-2 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 "/>
+                                    <input type="number" value={cantidadProducto} onChange={handleOnChange} min={1} id="cantidadProducto" name="cantidadProducto" className="popup-create__number"/>
                                 </div>
                             </div>
                     </div>
-                    <div className="mb-4 flex items-center justify-between gap-4">
+                    <div className="popup-create__form--add">
                         <div className="add">
                             <button
-                            className="middle none center mr-4 rounded-lg bg-green-500 py-2 px-4 font-sans text-xs font-bold uppercase text-white shadow-md shadow-green-500/20 transition-all hover:shadow-lg hover:shadow-green-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                            className="popup-create__buttonAdd"
                             data-ripple-light="true"
                             onClickCapture={handleAddProduct}
                             >
@@ -275,15 +275,15 @@ function OrderPopupCreate(props) {
                             </button>
                         </div>
                         <div>
-                            <label for="nombre" className="block text-sm text-gray-600">Monto Total</label>
+                            <label for="nombre" className="popup-create__montoTotal">Monto Total</label>
                             <h2 className="font-semibold">${Math.round(totalMonto)}</h2>
                         </div>
                     </div>
-                    <div className="mb-4">
-                        <label for="comentarios" className="block  mb-2 text-sm text-gray-600">Comentarios</label>
-                        <textarea type="text" value={comentarios} onChange={handleOnChange} id="comentarios" name="comentarios" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"/>
+                    <div className="popup-create__margin">
+                        <label for="comentarios" className="popup-create__input-name">Comentarios</label>
+                        <textarea type="text" value={comentarios} onChange={handleOnChange} id="comentarios" name="comentarios" className="popup-create__input"/>
                     </div>
-                    <button type="submit" className="w-32 background-globalcar text-white py-2 rounded-lg mx-auto block focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 mb-2 bg-globalcar font-semibold"
+                    <button type="submit" className="popup-create__buttonCreate bg-globalcar"
                     onClick={handleOrderCreate}
                     >Crear</button>
                 </form>

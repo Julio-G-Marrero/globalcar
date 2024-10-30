@@ -1,0 +1,135 @@
+.aside {
+    position: fixed; 
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0; 
+    z-index: 50; 
+    margin-top: 1rem;
+    margin-bottom: 1rem; 
+    margin-left: 1rem; 
+    border-radius: 0.75rem; 
+    width: 18rem; 
+    background-color: #1F2937; 
+    background-color: #111827; 
+    transition-property: transform;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 300ms; 
+    transition-duration: 300ms; 
+    height: calc(100vh-32px);
+}
+.aside__header {
+    position: relative; 
+}
+.aside__top {
+    display: flex; 
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem; 
+    padding-left: 2rem;
+    padding-right: 2rem; 
+    gap: 1rem; 
+    align-items: center; 
+}
+.aside__info {
+    display: flex; 
+    margin-bottom: 1rem; 
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center; 
+}
+.aside__logo {
+    width: 33.333333%; 
+}
+.aside__title {
+    margin-top: 0.5rem; 
+    font-weight: 600; 
+    color: #ffffff; 
+}
+.aside__button {
+    width: 100%; 
+    display: grid;
+    position: absolute; 
+    top: 0; 
+    right: 0; 
+    border-radius: 0.5rem; 
+    border-top-left-radius: 0; 
+    border-bottom-right-radius: 0; 
+    width: 2rem; 
+    height: 2rem; 
+    font-size: 0.75rem;
+    line-height: 1rem; 
+    font-weight: 500; 
+    text-align: center; 
+    color: #ffffff; 
+    text-transform: uppercase; 
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 300ms; 
+    max-width: 32px;
+    max-height: 32px;
+}
+.aside__button--title {
+    top: 50%; 
+    left: 50%; 
+}
+.aside__container {
+    display: flex; 
+    margin: 1rem; 
+    flex-direction: column; 
+    justify-content: space-between; 
+    height: 66.666667%; 
+}
+.aside__nav {
+    display: flex; 
+    margin-bottom: 1rem; 
+    flex-direction: column; 
+    gap: 0.25rem; 
+}
+.aside__button--nav {
+    width: 100%; 
+    display: flex; 
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem; 
+    padding-left: 1rem;
+    padding-right: 1rem; 
+    gap: 1rem; 
+    align-items: center; 
+    border-radius: 0.5rem; 
+    width: 100%; 
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; 
+    font-size: 0.75rem;
+    line-height: 1rem; 
+    font-weight: 700; 
+    color: #ffffff; 
+    text-transform: capitalize; 
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 300ms; 
+}
+.aside__icon {
+    width: 1.25rem; 
+    height: 1.25rem; 
+}
+.aisde__title--button {
+    display: block; 
+    font-size: 1rem;
+    line-height: 1.5rem; 
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale; 
+    font-weight: 500; 
+    line-height: 1.625; 
+    text-transform: capitalize; 
+}
+.aside__list {
+    display: flex; 
+    margin-bottom: 1rem; 
+    flex-direction: column; 
+    gap: 0.25rem; 
+}
+.globalcar-bg {
+    background-color: #1c478b;
+}
+.globalcar-bg-button {
+    background-color: #1c478b;
+    border-radius: 6px;
+}

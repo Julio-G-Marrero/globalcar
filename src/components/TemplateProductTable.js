@@ -120,12 +120,12 @@ function TemplateProductTable(props){
         return(
             <>
             <tr class="border-b border-blue-gray-200">
-                <td class="py-3 px-4">{props.producto.sku}</td>
-                <td class="py-3 px-4">{props.producto.nombre}</td>
+                <td class="productoTable__space">{props.producto.sku}</td>
+                <td class="productoTable__space">{props.producto.nombre}</td>
                 {isEditOn ?
                     <div>
                         {isEditOnActive ?
-                            <div className="flex justify-center">
+                            <div className="productoTable__currency">
                                 <CurrencyInput
                                 prefix={prefix}
                                 name="nuevoPrecioProducto"
@@ -144,36 +144,36 @@ function TemplateProductTable(props){
                                 />
                             </div>
                         :
-                            <td class="py-3 px-4 text-center">{nuevoPrecioProducto}</td>
+                            <td class="productoTable__value">{nuevoPrecioProducto}</td>
                         }
          
                     </div>
                 :
-                    <td class="py-3 px-4 text-center">{props.producto.precio}</td>
+                    <td class="productoTable__value">{props.producto.precio}</td>
                 }
                 {isEditOn ?
                     <td>
-                        <div className="flex justify-center">
+                        <div className="productoTable__edit">
                             {isEditOnActive ?
-                                <input type="number" value={nuevaCantidadProducto} onChange={handleChange} min={1} id="nuevaCantidadProducto" name="nuevaCantidadProducto" className="w-24 m-auto text-center px-2 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 "/>
+                                <input type="number" value={nuevaCantidadProducto} onChange={handleChange} min={1} id="nuevaCantidadProducto" name="nuevaCantidadProducto" className="productoTable__input"/>
                             :
-                            <td class="py-3 px-4 text-center">{nuevaCantidadProducto}</td>
+                            <td class="productoTable__value">{nuevaCantidadProducto}</td>
                             }
                  
                         </div>
                     </td>
                     
                 :
-                    <td class="py-3 px-4 text-center">{props.producto.cantidad}</td>
+                    <td class="productoTable__value">{props.producto.cantidad}</td>
                 }
                 {isEditOn ?
-                    <td class="py-3 px-4">${Math.round(nuevoMontoTotal)}</td>
+                    <td class="productoTable__space">${Math.round(nuevoMontoTotal)}</td>
                 :
-                    <td class="py-3 px-4">${Math.round(montoTotal)}</td>
+                    <td class="productoTable__space">${Math.round(montoTotal)}</td>
                 }
-                <td className={props.isCreatePopup ? 'flex h-10 items-center' : 'hidden'}
+                <td className={props.isCreatePopup ? 'productoTable__delete' : 'hidden'}
                 onClick={ props.isCreatePopup ? handleDeleteButton : ""}>
-                    <svg class="w-3 h-3 text-red-900 hover:cursor-pointer" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <svg class="productoTable__deleteBtn" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"
                     />
                     </svg>
@@ -187,21 +187,21 @@ function TemplateProductTable(props){
                                         <input type="text" value={provedoresProducto} 
                                         onChange={handleChange} id="provedoresProducto" name="provedoresProducto" className="w-24 m-auto text-center px-2 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 "/>
                                     :
-                                    <td class="py-3 px-4 text-center">{provedoresProducto}</td>
+                                    <td class="productoTable__value">{provedoresProducto}</td>
                                     }
                         
                                 </div>
                             </td>
                             
                         :
-                            <td class="py-3 px-4 text-center">{props.producto.provedor}</td>
+                            <td class="productoTable__value">{props.producto.provedor}</td>
                         }
                         </td>
                     
                     :
                     ""
                     }
-                <td className={props.isEditPopup ? 'flex h-10 items-center' : 'hidden'}>
+                <td className={props.isEditPopup ? 'productoTable__delete' : 'hidden'}>
                     <div className="hover:cursor-pointer"
                         >
                             {isCheked 

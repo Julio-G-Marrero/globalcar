@@ -1,0 +1,49 @@
+.productoTable__tr {
+    border-bottom-width: 1px;    
+}
+.productoTable__space {
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem; 
+    padding-left: 1rem;
+    padding-right: 1rem;    
+}
+.productoTable__currency {
+    display: flex; 
+    justify-content: center;    
+}
+.productoTable__value {
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem; 
+    padding-left: 1rem;
+    padding-right: 1rem; 
+    text-align: center; 
+    
+}
+.productoTable__edit {
+    display: flex; 
+    justify-content: center; 
+}
+.productoTable__input {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem; 
+    padding-left: 0.5rem;
+    padding-right: 0.5rem; 
+    border-radius: 0.5rem; 
+    border-width: 1px; 
+    width: 6rem; 
+    text-align: center; 
+}
+.productoTable__delete {
+    display: flex; 
+    align-items: center; 
+    height: 2.5rem; 
+}
+.productoTable__deleteBtn {
+    width: 0.75rem; 
+    height: 0.75rem; 
+    color: #7F1D1D; 
+}
+.productoTable__deleteBtn:hover {
+    cursor: pointer; 
+
+}

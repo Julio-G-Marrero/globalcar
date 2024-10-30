@@ -1,0 +1,119 @@
+.statusOrder {
+    display: inline-flex; 
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem; 
+    padding-left: 1rem;
+    padding-right: 1rem; 
+    margin-left: 0.25rem; 
+    align-items: center; 
+    border-top-left-radius: 0.5rem;
+    border-bottom-left-radius: 0.5rem; 
+    border-width: 1px; 
+    font-size: 0.875rem;
+    line-height: 1.25rem; 
+    font-weight: 500; 
+    background-color: #ffffff;    
+}
+.statusOrder:hover {
+    color: #D97706; 
+}
+.statusOrder__svg {
+    margin-right: 0.25rem; 
+    width: 1rem; 
+    height: 1rem; 
+}
+.statusOrder__button {
+    display: inline-flex; 
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem; 
+    padding-left: 1rem;
+    padding-right: 1rem; 
+    margin-left: 0.25rem; 
+    align-items: center; 
+    border-top-right-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem; 
+    border-width: 1px; 
+    font-size: 0.875rem;
+    line-height: 1.25rem; 
+    font-weight: 500; 
+    background-color: #ffffff; 
+}
+.statusOrder__button:hover {
+    color: #059669; 
+}
+.statusOrder__svg--autorizar {
+    margin-right: 0.25rem; 
+    width: 1rem; 
+    height: 1rem; 
+}
+.statusOrder__svg--autorizar:hover {
+    color: #059669; 
+
+}
+.statusOrder__container {
+    display: flex; 
+    align-items: center;    
+}
+.statusOrder__setStatus {
+    display: flex; 
+    margin-right: 1rem; 
+    align-items: center; 
+    color: #059669;    
+}
+.statusOrder__svg--2 {
+    margin-right: 0.25rem; 
+    width: 1rem; 
+    height: 1rem;    
+}
+.statusOrder__button--surtir {
+    display: inline-flex; 
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem; 
+    padding-left: 1rem;
+    padding-right: 1rem; 
+    margin-left: 0.25rem; 
+    align-items: center; 
+    border-top-left-radius: 0.5rem;
+    border-bottom-left-radius: 0.5rem; 
+    border-width: 1px; 
+    font-size: 0.875rem;
+    line-height: 1.25rem; 
+    font-weight: 500; 
+    background-color: #ffffff;    
+}
+.statusOrder__button--surtir:hover {
+    color: #059669; 
+}
+.statusOrder__svg--3 {
+    margin-right: 0.25rem; 
+    width: 1rem; 
+    height: 1rem; 
+}
+.statusOrder__container--denegada {
+    display: flex; 
+    align-items: center; 
+    font-weight: 600; 
+    color: #D97706;    
+}
+.statusOrder__button--eliminar {
+    display: inline-flex; 
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem; 
+    padding-left: 1rem;
+    padding-right: 1rem; 
+    margin-left: 0.25rem; 
+    align-items: center; 
+    border-width: 1px; 
+    font-size: 0.875rem;
+    line-height: 1.25rem; 
+    font-weight: 500; 
+    background-color: #ffffff; 
+}
+.statusOrder__button--eliminar:hover {
+    color: #DC2626; 
+   
+}
+.statusOrder__svgW {
+    width: 1rem; 
+    height: 1rem; 
+}

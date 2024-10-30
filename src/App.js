@@ -7,6 +7,8 @@ import Login from './components/Login';
 import Register from './components/Register';
 import { OrdersContext } from './contexts/OrdersContext';
 import ProtectedRoute from './components/ProtectedRoute';
+import ProductPage from './components/ProductsPage';
+
 function App() {
   const orderStatus = {
     "1" : "En Revisión",
@@ -16,6 +18,7 @@ function App() {
   }
   
   const [popupCreateOrder, setPopupCreateOrder] = React.useState(false)
+  const [popupCreatProduct, setPopupCreateProduct] = React.useState(false)
   const [popupEditOrder, setPopupEditOrder] = React.useState(false)
   const [overlay, setOverlay] = React.useState(false)
   const [overlayToolTip, setOverlayToolTip] = React.useState(false)
@@ -48,6 +51,7 @@ function App() {
     setPopupCreateOrder(false)
     setOverlay(false)
     setPopupEditOrder(false)
+    setPopupCreateProduct(false)
   }
   function closeAllPopupsToolTip() {
     setOverlayToolTip(false)
@@ -56,7 +60,7 @@ function App() {
   return (
     <div className="App">
       <BrowserRouter>
-        {/* <Switch> */}
+        <Switch>
           <Route path="/globalcar/dashboard">
               <ProtectedRoute isLoggedIn={jwt} path="/globalcar/dashboard">
                 <Dashboard 
@@ -76,8 +80,19 @@ function App() {
                 closeAllPopupsToolTip={closeAllPopupsToolTip}/>
               </ProtectedRoute>
           </Route>
-          <Route path="/globalcar/register">
-            <Register/>
+          <Route path="/globalcar/dashboard">
+          </Route>
+          <Route path="/globalcar/products">
+            <ProductPage
+                setIsLoggedIn={setIsLoggedIn}
+                popupCreatProduct={popupCreatProduct}
+                setPopupCreateProduct={setPopupCreateProduct}
+                closeAllPopups={closeAllPopups}
+                setOverlay={setOverlay}
+                overlay={overlay}
+                jwt={jwt}
+
+                />
           </Route>
           <Route path="/globalcar/">
             {isLoggedIn ? <Redirect to="/globalcar/dashboard"/> :           
@@ -86,7 +101,7 @@ function App() {
             jwt={jwt}
             setIsLoggedIn={setIsLoggedIn}/>}
           </Route>
-        {/* </Switch> */}
+        </Switch>
       </BrowserRouter>
     </div>
   );
