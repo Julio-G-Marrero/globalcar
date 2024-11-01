@@ -37,8 +37,8 @@ function Register() {
     }
 
     function handleRedirect() {
-        history.push('globalcar/')
-        // history.go(0)
+        history.push('/globalcar')
+        history.go(0)
     }
     return(
         <>

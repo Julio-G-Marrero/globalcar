@@ -82,7 +82,7 @@ function OrderPopupEdit(props){
                             localStorage.removeItem('user-departament');
                             props.setIsLoggedIn(false)                
                             history.push('globalcar/')
-                            // history.go(0)
+                            history.go(0)
                         } 
                       })
                 }

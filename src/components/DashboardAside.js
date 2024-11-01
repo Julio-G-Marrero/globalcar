@@ -11,8 +11,8 @@ function DashboardAside(props) {
         localStorage.removeItem('user-nombre');
         localStorage.removeItem('user-departament');
         props.setIsLoggedIn(false)
-        history.push('/');
-        // history.go(0);
+        history.push('/globalcar');
+        history.go(0);
     }
     console.log()
     return(

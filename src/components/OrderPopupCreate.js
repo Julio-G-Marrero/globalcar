@@ -18,6 +18,9 @@ function OrderPopupCreate(props) {
     const [fechaPromesa, setFechaPromesa] = React.useState()
     const [comentarios, setComentarios] = React.useState()
 
+    const [newProductForm,setNewProductForm] = React.useState(false)
+    const [searchedProducts,setSearchedProducts] = React.useState([])
+    const [selectedSearchedProducts,setSelectedSearchedProducts] = React.useState([])
     const [productosPedido, setProductosPedidos] = React.useState([])
     const [nombreProducto, setNombreProducto] = React.useState("")
     const [skuProducto, setSkuProducto] = React.useState("")
@@ -88,6 +91,46 @@ function OrderPopupCreate(props) {
         }
         
     }
+    function handleSearchProducts(e) {
+        if(e.target.value == "") {
+            setSearchedProducts([])
+        }else{
+            fetch(`${api.addressEndpoints}/products/search/all?value=${e.target.value}&limit=4`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${props.jwt}`,
+                }
+                })
+                .then((response) => response.json())
+                .then((data) => {
+                    if(data.message) {
+                        MySwal.fire({
+                            title: `Ocurrio un error, contacte con soporte`,
+                            confirmButtonText: "Ok",
+                            }).then((result) => {
+                            if (result.isConfirmed) {
+                                localStorage.removeItem('jwt');
+                                localStorage.removeItem('user-id');
+                                localStorage.removeItem('user-email');
+                                localStorage.removeItem('user-nombre');
+                                localStorage.removeItem('user-departament');
+                                props.setIsLoggedIn(false)                
+                                history.push('globalcar/')
+                            } 
+                            });
+                    }else {
+                        setSearchedProducts(data.products)
+                    }
+                })
+                .catch((err) => console.log(err));
+        }
+    }
+
+    function handleCreateNewProduct() {
+        setNewProductForm(true)
+    }
+ 
     function handleCleanForm(){
         setNombreCliente("")
         setPrecioProducto(0)
@@ -115,7 +158,6 @@ function OrderPopupCreate(props) {
         )
         setTotalMonto(totalMonto)
     },[productosPedido])
-  
     function handleOrderCreate(e){
         e.preventDefault()
         if(productosPedido.length <= 0){
@@ -162,7 +204,7 @@ function OrderPopupCreate(props) {
                             localStorage.removeItem('user-departament');
                             props.setIsLoggedIn(false)                
                             history.push('globalcar/')
-                            // history.go(0)
+                            history.go(0)
                         } 
                       });
                 }else {
@@ -231,7 +273,8 @@ function OrderPopupCreate(props) {
                             </tbody>
                             </table>
                         </div>
-                            <div className="popup-create__form">
+                            {/* Formulario Nuevo Producto */}
+                            <div className={newProductForm ? "popup-create__form" : "hidden"}>
                                 <div>
                                     <input value={skuProducto} onChange={handleOnChange} type="text" id="skuProducto" name="skuProducto" className="popup-create__input"/>
                                 </div>
@@ -262,18 +305,100 @@ function OrderPopupCreate(props) {
                                 <div>
                                     <input type="number" value={cantidadProducto} onChange={handleOnChange} min={1} id="cantidadProducto" name="cantidadProducto" className="popup-create__number"/>
                                 </div>
+                                <div className="add">
+                                    <button
+                                    className="popup-create__buttonAdd"
+                                    data-ripple-light="true"
+                                    onClickCapture={handleAddProduct}
+                                    >
+                                        Agregar
+                                    </button>
+                                </div>
                             </div>
-                    </div>
-                    <div className="popup-create__form--add">
-                        <div className="add">
-                            <button
-                            className="popup-create__buttonAdd"
-                            data-ripple-light="true"
-                            onClickCapture={handleAddProduct}
-                            >
-                                Agregar
-                            </button>
+                            {/* Formulario Buscar Producto */}
+                            <div className="relative top-10">
+                                <div className="mb-2">
+                                    <h1>Buscar Productos</h1>
+                                </div>
+                                <div className="popup-create__form--add ">
+                                    <div className="w-72">
+                                        <div class="w-full">
+                                            <div class=" w-6/6">
+                                                <div class="relative">
+                                                    <input
+                                                    class="dashboardTable__input"
+                                                    placeholder="Busqueda General..."
+                                                    id="inputSearch"
+                                                    onChange={handleSearchProducts}
+                                                    />
+                                                    <button
+                                                    class="dashboardTable__button--stats"
+                                                    type="button"
+                                                    >
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="dashboardTable__icon">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                                                    </svg>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h2>Agregar</h2>
+                                    </div>
+                                </div>
+                                    <div>
+                                        <table className="product-list__table">
+                                            <thead>
+                                                <tr className="product-list__tr">
+                                                    <th className="product-list__th">SKU</th>
+                                                    <th className="product-list__th">Producto</th>
+                                                    <th className="product-list__th">Precio</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {searchedProducts.length > 0 ?
+                                                    ""
+                                                    :
+                                                    <>
+                                                    <div className="flex items-center underline text-green-700" 
+                                                    onClick={handleCreateNewProduct}>
+                                                        <p className="p-2">Crear Produto Personalizado</p>
+                                                        <div>
+                                                            <svg class="w-4 h-4 text-green-700 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24">
+                                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5"/>
+                                                            </svg>
+                                                        </div>
+                                                    </div>
+
+                                                    </>
+                                                }
+                                                {searchedProducts.reverse().map(producto => {     
+                                                    function handleSelectSearchProduct(){
+                                                        const filtrados = selectedSearchedProducts.filter(item => item._id !== producto._id)
+                                                        setSelectedSearchedProducts([...filtrados,producto])
+                                                        setProductosPedidos(filtrados)
+                                                        console.log(productosPedido)
+                                                    }
+                                                    return(
+                                                        <>
+                                                            <tr className=" hover:cursor-pointer hover:bg-gray-100"
+                                                                onClick={handleSelectSearchProduct}
+                                                            >
+                                                                <td className="p-2">{producto.codigo_interno}</td>
+                                                                <td className="p-2">{producto.descripcion}</td>
+                                                                <td className="text-center p-2">{producto.precio}</td>
+                                                            </tr>
+                                                        </>
+                                                    )
+                                                })}
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+                            </div>
                         </div>
+                    <div className="popup-create__form--add justify-end">
                         <div>
                             <label for="nombre" className="popup-create__montoTotal">Monto Total</label>
                             <h2 className="font-semibold">${Math.round(totalMonto)}</h2>
@@ -281,7 +406,7 @@ function OrderPopupCreate(props) {
                     </div>
                     <div className="popup-create__margin">
                         <label for="comentarios" className="popup-create__input-name">Comentarios</label>
-                        <textarea type="text" value={comentarios} onChange={handleOnChange} id="comentarios" name="comentarios" className="popup-create__input"/>
+                        <textarea type="text" value={comentarios} onChange={handleOnChange} id="comentarios" name="comentarios" className="popup-create__input h-10" />
                     </div>
                     <button type="submit" className="popup-create__buttonCreate bg-globalcar"
                     onClick={handleOrderCreate}

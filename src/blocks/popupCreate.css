@@ -62,7 +62,7 @@
 }
 .product-list__container {
     overflow-y: scroll; 
-    height: 13rem; 
+    height: 9rem; 
 }
 .product-list__table {
     border-radius: 0.75rem; 

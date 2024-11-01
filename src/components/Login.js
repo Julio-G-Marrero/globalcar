@@ -40,7 +40,6 @@ function Login(props) {
         if(values.email && values.password) {
             auth.authorize(values)
             .then((data) => {
-                console.log(data)
                 if(data.token){
                     Toast.fire({
                         icon: "success",
@@ -48,6 +47,8 @@ function Login(props) {
                       });
                         setTimeout(() => {
                             props.setIsLoggedIn(true)
+                            history.push('/globalcar/dashboard')
+                            history.go(0)
                         }, "1500");
                 }else if(data.error) {
                     Toast.fire({
@@ -60,7 +61,7 @@ function Login(props) {
     }
     function handleRedirect() {
         history.push('/globalcar/register')
-        // history.go(0)
+        history.go(0)
     }
     const handleChange = (event) => {
         const { name,value } = event.target;

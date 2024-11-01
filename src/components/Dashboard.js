@@ -28,7 +28,7 @@ function Dashboard(props) {
     function tokenCheck() {
         if (!props.jwt) {
             history.push('globalcar/')
-            // history.go(0)
+            history.go(0)
         }
       }
     function fetchOrders() {
@@ -56,7 +56,7 @@ function Dashboard(props) {
                         localStorage.removeItem('user-departament');
                         props.setIsLoggedIn(false)                
                         history.push('globalcar/')
-                        // history.go(0)
+                        history.go(0)
                     } 
                   });
                   setInitalOrders([])
@@ -93,7 +93,7 @@ function Dashboard(props) {
                         localStorage.removeItem('user-departament');
                         props.setIsLoggedIn(false)                
                         history.push('globalcar/')
-                        // history.go(0)
+                        history.go(0)
                     } 
                   });
             }else {
@@ -143,6 +143,7 @@ function Dashboard(props) {
                     />
                     <div className="dashboard__table">
                         <DashboardTable
+                        setIsLoggedIn={props.setIsLoggedIn}
                          isLoggedIn={props.isLoggedIn}
                          jwt={props.jwt}
                          fetchOrders={fetchOrders}

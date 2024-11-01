@@ -1,9 +1,9 @@
-import logo from './logo.svg';
 import React from 'react';
 import './App.css';
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 import Dashboard from './components/Dashboard';
 import Login from './components/Login';
+import ReactDOM from "react-dom";
 import Register from './components/Register';
 import { OrdersContext } from './contexts/OrdersContext';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -80,8 +80,6 @@ function App() {
                 closeAllPopupsToolTip={closeAllPopupsToolTip}/>
               </ProtectedRoute>
           </Route>
-          <Route path="/globalcar/dashboard">
-          </Route>
           <Route path="/globalcar/products">
             <ProductPage
                 setIsLoggedIn={setIsLoggedIn}
@@ -93,6 +91,9 @@ function App() {
                 jwt={jwt}
 
                 />
+          </Route>
+          <Route path="/globalcar/register">
+            <Register/>
           </Route>
           <Route path="/globalcar/">
             {isLoggedIn ? <Redirect to="/globalcar/dashboard"/> :           

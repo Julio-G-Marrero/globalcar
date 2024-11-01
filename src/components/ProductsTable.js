@@ -2,7 +2,6 @@ import React from "react";
 import LoadingPage from "./LoadingPage.js"
 
 function ProductsTable(props) {
-    console.log(props.producto)
         return(
             <>
                 <tr class="element" 

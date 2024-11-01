@@ -30,7 +30,7 @@ function DashboardTable(props) {
         else{
             console.log('Acceos no autorizado')
             history.push('globalcar/')
-            // history.go(0)
+            history.go(0)
         }
     },[fetctInfo])
     setTimeout(() => {
@@ -63,7 +63,7 @@ function DashboardTable(props) {
                             localStorage.removeItem('user-departament');
                         props.setIsLoggedIn(false)                
                         history.push('globalcar/')
-                        // history.go(0)
+                        history.go(0)
                     } 
                   });
                 setIndexsOrders(0)
@@ -103,7 +103,7 @@ function DashboardTable(props) {
                             localStorage.removeItem('user-departament');
                                 props.setIsLoggedIn(false)                
                                 history.push('globalcar/')
-                                // history.go(0)
+                                history.go(0)
                             } 
                           });
                           props.setInitalOrders([])
@@ -146,7 +146,7 @@ function DashboardTable(props) {
                             localStorage.removeItem('user-departament');
                                     props.setIsLoggedIn(false)                
                                     history.push('globalcar/')
-                                    // history.go(0)
+                                    history.go(0)
                                 } 
                               });
                               props.setInitalOrders([])
@@ -188,7 +188,7 @@ function DashboardTable(props) {
                             localStorage.removeItem('user-departament');
                             props.setIsLoggedIn(false)                
                             history.push('globalcar/')
-                            // history.go(0)
+                            history.go(0)
                         } 
                       });
                       props.setInitalOrders([])
@@ -224,7 +224,7 @@ function DashboardTable(props) {
                             localStorage.removeItem('user-departament');
                             props.setIsLoggedIn(false)                
                             history.push('globalcar/')
-                            // history.go(0)
+                            history.go(0)
                         } 
                       });
                       props.setInitalOrders([])
@@ -260,7 +260,7 @@ function DashboardTable(props) {
                             localStorage.removeItem('user-departament');
                             props.setIsLoggedIn(false)                
                             history.push('globalcar/')
-                            // history.go(0)
+                            history.go(0)
                         } 
                       });
                       props.setInitalOrders([])
@@ -296,7 +296,7 @@ function DashboardTable(props) {
                             localStorage.removeItem('user-departament');
                             props.setIsLoggedIn(false)                
                             history.push('globalcar/')
-                            // history.go(0)
+                            history.go(0)
                         } 
                       });
                       props.setInitalOrders([])
@@ -342,7 +342,7 @@ function DashboardTable(props) {
                             localStorage.removeItem('user-departament');
                             props.setIsLoggedIn(false)                
                             history.push('globalcar/')
-                            // history.go(0)
+                            history.go(0)
                         } 
                       });
                       props.setInitalOrders([])
@@ -378,7 +378,7 @@ function DashboardTable(props) {
                             localStorage.removeItem('user-departament');
                             props.setIsLoggedIn(false)                
                             history.push('globalcar/')
-                            // history.go(0)
+                            history.go(0)
                         } 
                       });
                       props.setInitalOrders([])
