@@ -41,8 +41,6 @@ function Dashboard(props) {
           })
           .then((response) => response.json())
           .then((data) => {
-            console.log(data)
-            console.log(props.jwt)
               if(data.message) {
                 MySwal.fire({
                     title: `Ocurrio un error, contacte con soporte`,

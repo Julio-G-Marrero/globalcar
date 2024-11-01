@@ -378,7 +378,6 @@ function OrderPopupCreate(props) {
                                                         const filtrados = selectedSearchedProducts.filter(item => item._id !== producto._id)
                                                         setSelectedSearchedProducts([...filtrados,producto])
                                                         setProductosPedidos(filtrados)
-                                                        console.log(productosPedido)
                                                     }
                                                     return(
                                                         <>

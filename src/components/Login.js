@@ -96,7 +96,7 @@ function Login(props) {
                     <div className="login__links">
                         <div className="login__link">
                             <div className="login__link--comtainer">
-                                    <Link onClick={handleRedirect} to="/globalcar/register" lassName="login__linTitle">
+                                    <Link onClick={handleRedirect} to="/globalcar/register" className="login__linTitle">
                                         ¿Aún no tienes una cuneta? Registrate
                                     </Link>
                             </div>

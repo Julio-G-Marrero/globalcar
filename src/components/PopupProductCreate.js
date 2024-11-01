@@ -86,7 +86,6 @@ function PopupProductCreate(props) {
                         sub_familia: sub_familia,
                       }
                       props.setProductos([...props.productos,producto])
-                      console.log(props.productos)
                 }else {
                     Toast.fire({
                         icon: "error",

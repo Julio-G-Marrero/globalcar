@@ -134,7 +134,6 @@ function OrderPopupEdit(props){
     }
 
     function handleSurtirOrden() {
-        console.log('surtiendo')
         fetch(`${api.addressEndpoints}/orders/${props.orderSelected._id}/estatus`, {
             method: "PATCH",
             headers: {

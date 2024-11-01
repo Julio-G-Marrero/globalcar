@@ -11,7 +11,6 @@ function ProductPage(props) {
     const MySwal = withReactContent(Swal)
     const [productos,setProductos] = React.useState([])
     const history = useHistory();
-    console.log(productos)
     React.useEffect(() => {
         fetchProductos()
     },[])
@@ -26,7 +25,6 @@ function ProductPage(props) {
             })
             .then((response) => response.json())
             .then((data) => {
-            console.log(data)
                 if(data.message) {
                     MySwal.fire({
                         title: `Ocurrio un error, contacte con soporte`,
@@ -50,7 +48,6 @@ function ProductPage(props) {
     }
     
     function handleSearchProducts(e) {
-        console.log(e.target.value)
         fetch(`${api.addressEndpoints}/products/search/all?value=${e.target.value}`, {
             method: "GET",
             headers: {
@@ -60,7 +57,6 @@ function ProductPage(props) {
             })
             .then((response) => response.json())
             .then((data) => {
-            console.log(data)
                 if(data.message) {
                     MySwal.fire({
                         title: `Ocurrio un error, contacte con soporte`,

@@ -28,7 +28,6 @@ function DashboardTable(props) {
             fetchOrdersIndexs()
         }
         else{
-            console.log('Acceos no autorizado')
             history.push('globalcar/')
             history.go(0)
         }
@@ -49,7 +48,6 @@ function DashboardTable(props) {
         })
         .then((response) => response.json())
         .then((data) => {
-            console.log(data)
             if(data.message) {
                 MySwal.fire({
                     title: `Ocurrio un error, contacte con soporte`,
@@ -109,7 +107,6 @@ function DashboardTable(props) {
                           props.setInitalOrders([])
                           props.setNumeroDeOrdenes(0)
                     }else {
-                        console.log(data)
                         props.setInitalOrders(data.data)
                         props.setNumeroDeOrdenes(data.data.length)
                     }
@@ -152,7 +149,6 @@ function DashboardTable(props) {
                               props.setInitalOrders([])
                               props.setNumeroDeOrdenes(0)
                         }else {
-                            console.log(data)
                             props.setInitalOrders(data.data)
                             props.setNumeroDeOrdenes(data.data.length)
                         }
@@ -194,7 +190,6 @@ function DashboardTable(props) {
                       props.setInitalOrders([])
                       props.setNumeroDeOrdenes(0)
                 }else {
-                    console.log(data)
                     props.setInitalOrders(data.data)
                     props.setNumeroDeOrdenes(data.data.length)
                 }
@@ -230,7 +225,6 @@ function DashboardTable(props) {
                       props.setInitalOrders([])
                       props.setNumeroDeOrdenes(0)
                 }else {
-                    console.log(data)
                     props.setInitalOrders(data.data)
                     props.setNumeroDeOrdenes(data.data.length)
                 }
@@ -266,7 +260,6 @@ function DashboardTable(props) {
                       props.setInitalOrders([])
                       props.setNumeroDeOrdenes(0)
                 }else {
-                    console.log(data)
                     props.setInitalOrders(data.data)
                     props.setNumeroDeOrdenes(data.data.length)
                 }
@@ -302,7 +295,6 @@ function DashboardTable(props) {
                       props.setInitalOrders([])
                       props.setNumeroDeOrdenes(0)
                 }else {
-                    console.log(data)
                     props.setInitalOrders(data.data)
                     props.setNumeroDeOrdenes(data.data.length)
                 }
@@ -348,14 +340,12 @@ function DashboardTable(props) {
                       props.setInitalOrders([])
                       props.setNumeroDeOrdenes(0)
                 }else {
-                    console.log(data)
                     props.setInitalOrders(data.data)
                     props.setNumeroDeOrdenes(data.data.length)
                 }
               })
               .catch((err) => console.log(err));
         }else {
-            console.log('fetch')
             fetch(`${api.addressEndpoints}/orders/search/all?value=${e.target.value}&page=${pageIndex + 1}&id=${props.user.id}&departament=${props.rol}`, {
                 method: "GET",
                 headers: {
