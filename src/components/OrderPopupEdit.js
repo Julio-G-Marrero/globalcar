@@ -9,7 +9,6 @@ import withReactContent from 'sweetalert2-react-content'
 
 function OrderPopupEdit(props){
     const MySwal = withReactContent(Swal)
-
     const history = useHistory()
     const [nombreCliente, setNombreCliente] = React.useState(props.orderSelected.cliente_nombre)
     const [telefonoCliente, setTelefonoCliente] = React.useState(props.orderSelected.cliente_tel)
@@ -20,7 +19,6 @@ function OrderPopupEdit(props){
     
     const [renderStatusOrder,setRenderStatusOrder] = React.useState(false)
     const [statusOrder, setStatusOrder] = React.useState(props.orderSelected.id_estatus)
-
     const [productosPedido, setProductosPedidos] = React.useState(props.orderSelected.productos)
     const [nombreProducto, setNombreProducto] = React.useState("")
     const [skuProducto, setSkuProducto] = React.useState("")
@@ -29,7 +27,6 @@ function OrderPopupEdit(props){
     const [totalMonto, setTotalMonto] = React.useState(props.orderSelected.precio_pactado)
 
     const [productosAutorizados, setProductosAutorizados] = React.useState({})
-
     function handleAutorizarOrden(){
         if(Object.keys(productosAutorizados).length === 0 || fechaPromesa == undefined) {
             props.setSuccessMessage(false)
@@ -44,10 +41,9 @@ function OrderPopupEdit(props){
         } else{
             let monto_autorizado = 0;
             let cantidad_productos_autorizados = 0;
-            let productosDenegados = {}
-            productosPedido.forEach((producto) => {
-                productosDenegados = productosPedido.filter(product => product.idProducto == producto.idProducto);
-            })
+            const productosDenegados = productosPedido.filter(productoPedido => 
+                !productosAutorizados.some(producto => producto.idProducto === productoPedido._id)
+            );
             productosAutorizados.forEach((producto) => {
                 cantidad_productos_autorizados = cantidad_productos_autorizados + parseInt(producto.cantidad)
                 const montoProducto = parseInt(producto.cantidad) * parseInt(producto.precio)
@@ -219,12 +215,13 @@ function OrderPopupEdit(props){
         setComentarios(props.orderSelected.comentarios)
         setProductosPedidos(props.orderSelected.productos)
         setTotalMonto(props.orderSelected.precio_pactado)
+        setFechaPromesa()
         setStatusOrder(props.orderSelected.id_estatus)
     }
 
     let autorizarHabilitado = true;
     let fechaPromesaSwitch = true;
-    if(statusOrder == 1) {
+    if(statusOrder == 1 && props.rol == 1) {
         fechaPromesaSwitch = false;
         autorizarHabilitado = false
     }
@@ -298,6 +295,7 @@ function OrderPopupEdit(props){
                             <tbody className="text-blue-gray-900">
                                 { Object.values(productosPedido).map(producto =>  {
                                         return <TemplateProductTable
+                                        rol={props.rol}
                                         autorizarHabilitado={autorizarHabilitado}
                                         statusId={statusOrder}
                                         producto={producto} isCreatePopup={false}

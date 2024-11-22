@@ -161,6 +161,7 @@ function Dashboard(props) {
                     </div>
                 </div>
                 <OrderPopupCreate
+                 rol={props.rol}
                  jwt={props.jwt}
                  user={props.user}
                  setIsLoggedIn={props.setIsLoggedIn}

@@ -32,6 +32,7 @@
     border-width: 1px; 
     width: 6rem; 
     text-align: center; 
+    border: none;
 }
 .productoTable__delete {
     display: flex; 

@@ -1,7 +1,6 @@
 import React from "react";
 
 function StatusSetterOrder(props) {
-    console.log(props.rol)
     React.useEffect(() => {
         comprobarStatus()
     },[props.renderStatusOrder])

@@ -18,6 +18,7 @@ function DashboardTable(props) {
     const [numeroDePaginas,setNumeroDePaginas] = React.useState(0)
     const [statusOrderFilter,setStatusOrderFilter] = React.useState(0)
     const [fetctInfo,setFetchInfo] = React.useState(false)
+    const [selectedTypeOrder,setSelectedTypeOrder] = React.useState("")
     React.useEffect(() => {
         setInterval(() => {
             setFetchInfo(true);
@@ -160,8 +161,9 @@ function DashboardTable(props) {
             }
     }
     function hanldeFetchOrderByStatus(e) {
-        if(e.target.value == "pteRevison") {
+        if(e.target.id == "pteRevison") {
             setStatusOrderFilter(1)
+            setSelectedTypeOrder("pteRevison")
             fetch(`${api.addressEndpoints}/orders/idstatus?statusid=${1}&id=${props.user.id}&departament=${props.rol}`, {
                 method: "GET",
                 headers: {
@@ -195,8 +197,9 @@ function DashboardTable(props) {
                 }
               })
               .catch((err) => console.log(err));
-        }else if(e.target.value == "pteSurtir") {
+        }else if(e.target.id == "pteSurtir") {
             setStatusOrderFilter(2)
+            setSelectedTypeOrder("pteSurtir")
             fetch(`${api.addressEndpoints}/orders/idstatus?statusid=${2}&id=${props.user.id}&departament=${props.rol}`, {
                 method: "GET",
                 headers: {
@@ -230,8 +233,9 @@ function DashboardTable(props) {
                 }
               })
               .catch((err) => console.log(err));
-        }else if(e.target.value == "surtida") {
+        }else if(e.target.id == "surtida") {
             setStatusOrderFilter(3)
+            setSelectedTypeOrder("surtida")
             fetch(`${api.addressEndpoints}/orders/idstatus?statusid=${3}&id=${props.user.id}&departament=${props.rol}`, {
                 method: "GET",
                 headers: {
@@ -265,8 +269,9 @@ function DashboardTable(props) {
                 }
               })
               .catch((err) => console.log(err));
-        }else if(e.target.value == "denegada") {
+        }else if(e.target.id == "denegada") {
             setStatusOrderFilter(4)
+            setSelectedTypeOrder("denegada")
             fetch(`${api.addressEndpoints}/orders/idstatus?statusid=${4}&id=${props.user.id}&departament=${props.rol}`, {
                 method: "GET",
                 headers: {
@@ -302,6 +307,7 @@ function DashboardTable(props) {
               .catch((err) => console.log(err));
         }else if(e.target.value == "reiniciar") {
             props.fetchOrders()
+            setSelectedTypeOrder("")
             setStatusOrderFilter(0)
             var ele = document.getElementsByName("statusOrder");
             var inputSearch = document.getElementById("inputSearch");
@@ -388,7 +394,7 @@ function DashboardTable(props) {
             <>
             <div className= "dashboardTable">
                 <div class="dashboardTable__header">
-                    <div>
+                    <div className="flex items-center gap-4">
                         <div class="dashboardTable__containerButton">
                             <button class="dashboardTable__button"
                             onClick={handleOrderPopup}>
@@ -399,77 +405,60 @@ function DashboardTable(props) {
                                 </svg>
                             </button>
                         </div>
+                        <div>
+                            <div class="sm:hidden">
+                                <label for="Tab" class="sr-only">Tab</label>
+
+                                <select id="Tab" class="w-full rounded-md border-gray-200">
+                                <option>Settings</option>
+                                <option>Messages</option>
+                                <option>Archive</option>
+                                <option select>Notifications</option>
+                                </select>
+                            </div>
+
+                            <div class="hidden sm:block">
+                                <div class="border-b border-gray-200">
+                                <nav class="-mb-px flex gap-6" aria-label="Tabs">
+                                    <a
+                                    href="#"
+                                    className={selectedTypeOrder == "pteRevison" ? "shrink-0 border-b-2 border-sky-500 px-1 pb-4 text-sm font-medium text-sky-600" : "shrink-0 border-b-2  px-1 pb-4 text-sm font-medium text-gray-700"}                             
+                                    id="pteRevison"
+                                    onClick={hanldeFetchOrderByStatus}>
+                                    Pendiente Revision
+                                    </a>
+
+                                    <a
+                                    href="#"
+                                    className={selectedTypeOrder == "pteSurtir" ? "shrink-0 border-b-2 border-sky-500 px-1 pb-4 text-sm font-medium text-sky-600" : "shrink-0 border-b-2  px-1 pb-4 text-sm font-medium text-gray-700"}                                    
+                                    id="pteSurtir"
+                                    onClick={hanldeFetchOrderByStatus}>
+                                    Pendiente Surtir
+                                    </a>
+
+                                    <a
+                                    href="#"
+                                    className={selectedTypeOrder == "surtida" ? "shrink-0 border-b-2 border-sky-500 px-1 pb-4 text-sm font-medium text-sky-600" : "shrink-0 border-b-2  px-1 pb-4 text-sm font-medium text-gray-700"}                                    
+                                    id="surtida"
+                                    onClick={hanldeFetchOrderByStatus}>
+                                    Surtida
+                                    </a>
+
+                                    <a
+                                    href="#"
+                                    className={selectedTypeOrder == "denegada" ? "shrink-0 border-b-2 border-sky-500 px-1 pb-4 text-sm font-medium text-sky-600" : "shrink-0 border-b-2  px-1 pb-4 text-sm font-medium text-gray-700 "}
+                                    aria-current="page"
+                                    id="denegada"
+                                    onClick={hanldeFetchOrderByStatus}>
+                                    Denegada
+                                    </a>
+                                </nav>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="dashboardTable__search">
                         <div class="dashboardTable__searchFlex">
-                            
-                            <div class="dashboardTable__states">
-                                <div className="dashboardTable__states--info">
-                                    <div className="relative">
-                                        <details class="dropdown">
-                                            <summary className="dashboardTable__summary">
-                                                <p>Estados</p>
-                                                <span className="transition group-open:-rotate-180">
-                                                    <svg
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        fill="none"
-                                                        viewBox="0 0 24 24"
-                                                        strokeWidth="1.5"
-                                                        stroke="currentColor"
-                                                        className="size-4"
-                                                    >
-                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                                                    </svg>
-                                                </span>
-                                            </summary>
-                                            <ul className="dashboardTable__list">
-                                                    <li>
-                                                        <label className="inline-flex items-center gap-2"
-                                                        >
-                                                            <input type="radio" value="pteRevison" name="statusOrder" className="size-5 rounded border-gray-300"
-                                                            onClick={hanldeFetchOrderByStatus}
-                                                            />
-                                                            <span className="text-sm font-medium text-gray-700">Pendiente Revision</span>
-                                                        </label>
-                                                    </li>
-                                                    <li>
-                                                        <label className="inline-flex items-center gap-2">
-                                                            <input type="radio" value="pteSurtir"  name="statusOrder" className="size-5 rounded border-gray-300"
-                                                            onClick={hanldeFetchOrderByStatus}
-                                                            />
-                                                            <span className="text-sm font-medium text-gray-700">Pendiente Surtir </span>
-                                                        </label>
-                                                    </li>
-                                                    <li>
-                                                        <label className="inline-flex items-center gap-2">
-                                                            <input
-                                                            type="radio"
-                                                            name="statusOrder"
-                                                            value="surtida" 
-                                                            className="size-5 rounded border-gray-300"
-                                                            onClick={hanldeFetchOrderByStatus}
-                                                            />
-                                                            <span className="text-sm font-medium text-gray-700">Surtida </span>
-                                                        </label>
-                                                    </li>
-                                                    <li>
-                                                        <label className="inline-flex items-center gap-2">
-                                                            <input
-                                                            type="radio"
-                                                            name="statusOrder"
-                                                            value="denegada" 
-                                                            className="size-5 rounded border-gray-300"
-                                                            onClick={hanldeFetchOrderByStatus}
-                                                            />
-                                                            <span className="text-sm font-medium text-gray-700">Denegada </span>
-                                                        </label>
-                                                    </li>
-                                                </ul>
-                                        </details>
-                                    </div>
-                                </div>
-                            </div>
-
                             <div class="relative">
                                 <input
                                 class="dashboardTable__input"

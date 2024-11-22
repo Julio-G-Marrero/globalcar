@@ -19,7 +19,9 @@ function OrderPopupCreate(props) {
     const [comentarios, setComentarios] = React.useState()
 
     const [newProductForm,setNewProductForm] = React.useState(false)
+    const [newClientForm,setNewClientForm] = React.useState(false)
     const [searchedProducts,setSearchedProducts] = React.useState([])
+    const [searchedClients,setSearchedClients] = React.useState([])
     const [selectedSearchedProducts,setSelectedSearchedProducts] = React.useState([])
     const [productosPedido, setProductosPedidos] = React.useState([])
     const [nombreProducto, setNombreProducto] = React.useState("")
@@ -27,6 +29,23 @@ function OrderPopupCreate(props) {
     const [precioProducto, setPrecioProducto] = React.useState(0)
     const [cantidadProducto, setCantidadProducto] = React.useState(1)
     const [totalMonto, setTotalMonto] = React.useState(0)
+
+    const [inputSearchProduct,setInputSearchProduct] = React.useState("")
+    const [inputSearchClient,setInputSearchClient] = React.useState("")
+
+    const [clienteSeleccionado,setClienteSeleccionado] = React.useState("")
+
+    const Toast = MySwal.mixin({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.onmouseenter = MySwal.stopTimer;
+          toast.onmouseleave = MySwal.resumeTimer;
+        }
+      });
 
     const prefix = "$ ";
     const handleOnBlur = () => setPrecioProducto(Number(precioProducto).toFixed(2));
@@ -45,25 +64,37 @@ function OrderPopupCreate(props) {
         e.preventDefault()
         if(nombreProducto !== "" && precioProducto !== 0 && cantidadProducto !== 0) {
             setProductosPedidos([...productosPedido, {
-                'idProducto':Math.floor(Math.random() * 1000000),
-                "sku":skuProducto,
-                "nombre": nombreProducto,
+                '_id':Math.floor(Math.random() * 1000000),
+                "codigo_barras":skuProducto,
+                "codigo_interno":skuProducto,
+                "descripcion": nombreProducto,
+                "familia": "Diversa",
                 "precio": precioProducto,
+                "sub_familia": "Diversa",
                 "cantidad":cantidadProducto,
-                "proovedor": "Diverso"
+                "provedor": "Diverso"
                 }, ]);
                 setNombreProducto("")
                 setPrecioProducto(0)
                 setCantidadProducto(0)
                 setSkuProducto("")
+                setNewProductForm(false)
+                Toast.fire({
+                    icon: "success",
+                    title: "Producto agregado correctamente"
+                  });
         }else{
             alert('Hace falta un campo')
         }
     }
     function handleDeleteProducto(productElement){
-        const idProducto = productElement.idProducto;
-        const cleanProducts = productosPedido.filter(item => item.idProducto !== idProducto);
+        const idProducto = productElement._id;
+        const cleanProducts = productosPedido.filter(item => item._id !== idProducto);
         setProductosPedidos(cleanProducts)
+        setSelectedSearchedProducts([])
+        setTimeout(function(){
+            sumaDeMonto()
+        }, 100);
     }
     function handleOnChange(e) {
         if(e.target.id === "nombreProducto"){
@@ -94,7 +125,9 @@ function OrderPopupCreate(props) {
     function handleSearchProducts(e) {
         if(e.target.value == "") {
             setSearchedProducts([])
+            setInputSearchProduct("")
         }else{
+            setInputSearchProduct(e.target.value)
             fetch(`${api.addressEndpoints}/products/search/all?value=${e.target.value}&limit=4`, {
                 method: "GET",
                 headers: {
@@ -127,11 +160,61 @@ function OrderPopupCreate(props) {
         }
     }
 
-    function handleCreateNewProduct() {
-        setNewProductForm(true)
+    function handleSearchClients(e) {
+        if(e.target.value == "") {
+            setSearchedClients([])
+            setInputSearchClient("")
+        }else{
+            setInputSearchClient(e.target.value)
+            fetch(`${api.addressEndpoints}/clients/search/all?value=${e.target.value}&limit=4`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${props.jwt}`,
+                }
+                })
+                .then((response) => response.json())
+                .then((data) => {
+                    if(data.message) {
+                        MySwal.fire({
+                            title: `Ocurrio un error, contacte con soporte`,
+                            confirmButtonText: "Ok",
+                            }).then((result) => {
+                            if (result.isConfirmed) {
+                                localStorage.removeItem('jwt');
+                                localStorage.removeItem('user-id');
+                                localStorage.removeItem('user-email');
+                                localStorage.removeItem('user-nombre');
+                                localStorage.removeItem('user-departament');
+                                props.setIsLoggedIn(false)                
+                                history.push('globalcar/')
+                            } 
+                            });
+                    }else {
+                        setSearchedClients(data.clients)
+                    }
+                })
+                .catch((err) => console.log(err));
+        }
     }
+
+    function handleResetSearchProduct() {
+        setInputSearchProduct("")
+        setSearchedProducts([])
+    }
+
+    function handleResetSearchClient() {
+        setInputSearchClient("")
+        setSearchedClients([])
+    }
+
+    function handleCreateNewProduct() {
+        setNewProductForm(!newProductForm)
+    }
+    
  
     function handleCleanForm(){
+        setClienteSeleccionado("")
         setNombreCliente("")
         setPrecioProducto(0)
         setCantidadProducto(1)
@@ -151,17 +234,30 @@ function OrderPopupCreate(props) {
         )
         return totalProductos
     }
-    React.useEffect(() => {
-        let totalMonto = 0
-        Object.values(productosPedido).map(producto => 
-            totalMonto = totalMonto + (parseFloat(producto.precio) * parseFloat(producto.cantidad))
-        )
-        setTotalMonto(totalMonto)
-    },[productosPedido])
+  
+    function sumaDeMonto() {
+        let suma = 0
+        let cantidadesPrecios = document.querySelectorAll('.precioTotalCantidad')
+        cantidadesPrecios.forEach((element) =>  {
+            let precioMonto = element.innerHTML.split("$"); 
+            precioMonto = parseInt(precioMonto[1])
+            suma = suma + precioMonto
+        }
+        );
+        setTotalMonto(suma)
+    }
+
+    function handleCreateClient() {
+        setNewClientForm(!newClientForm)
+    }
+
     function handleOrderCreate(e){
         e.preventDefault()
-        if(productosPedido.length <= 0){
-            alert('Es necesario agregar por lo menos un producto.')
+        if(productosPedido.length <= 0  || nombreCliente == ""){
+            Toast.fire({
+                icon: "error",
+                title: "Es necesario añadir un producto y cliente"
+              });
         }else 
         if(nombreCliente !== "" && telefonoCliente !== 0 && emailCliente !== 0 && ubicacionCliente !== 0){
             fetch(`${api.addressEndpoints}/orders`, {
@@ -226,29 +322,127 @@ function OrderPopupCreate(props) {
             <div className={props.popupCreateOrder ?"popup-create" : "popup-create hidden"}>
                 <div className="popup-create__container">
                 <h1 className="items-center text-2xl font-semibold text-gray-500 mt-1 mb-2">Crear Orden</h1>
+                {/* Formulario para buscar cliente */}
+                <div className="text-left mb-16">
+                    <div className="relative top-10">
+                        <div className="mb-2">
+                            <h1 className="text-lg">Seleccionar Cliente</h1>
+                        </div>
+                        <div className="flex gap-4 items-center">
+                            <div className="popup-create__form--add ">
+                                <div className="w-80">
+                                    <div className="w-full">
+                                        <div className=" w-6/6">
+                                            <div className="relative">
+                                                <input
+                                                className="dashboardTable__input"
+                                                placeholder="Busqueda General..."
+                                                id="inputSearchClient"
+                                                onChange={handleSearchClients}
+                                                value={inputSearchClient}
+                                                />
+                                                <button
+                                                className="dashboardTable__button--stats"
+                                                type="button"
+                                                onClick={handleResetSearchClient}
+                                                >
+                                                    <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.651 7.65a7.131 7.131 0 0 0-12.68 3.15M18.001 4v4h-4m-7.652 8.35a7.13 7.13 0 0 0 12.68-3.15M6 20v-4h4"/>
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <h1>Cliente Seleccionado: <span className="font-semibold">{clienteSeleccionado}</span></h1>
+                            </div>
+                        </div>
+                     
+                        {clienteSeleccionado == "" 
+                        ?
+                            <div className="flex items-center hover:cursor-pointer"
+                                onClick={handleCreateClient}
+                            >
+                                {newClientForm ? 
+                                    <>
+                                        <p className="p-2 text-yellow-700">Cerrar Formulario</p>
+                                        <div>
+                                            <svg class="w-6 h-6 text-yellow-700 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/>
+                                            </svg>
+                                        </div>
+                                    </>
+                                    
+                                : 
+                                    <>
+                                        <p className="p-2 text-green-700">Crear cliente personalizado</p>
+                                        <div>
+                                            <svg className="w-4 h-4 text-green-700 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5"/>
+                                                </svg>
+                                        </div>
+                                </>                                
+                                }
+                            </div>
+                        :
+                            ""
+                        }
+                        {/* cliente */}
+                        {searchedClients.length > 0 ?
+                            <div class="relative">
+                                <div
+                                    class="absolute end-0 z-10 mt-2 left-0 w-80 rounded-md border border-gray-100 bg-white shadow-lg"
+                                    role="menu"
+                                >
+                                    <div class="">
+                                        {searchedClients.reverse().map(cliente => {     
+                                                function handleSelectSearchClient() {
+                                                    setClienteSeleccionado(cliente.nombre)
+                                                    setNombreCliente(cliente.nombre)
+                                                    setTelefonoCliente(cliente.telefono)
+                                                    setEmailCliente(cliente.email)
+                                                    setUbicacionCliente(cliente.direccion)
+                                                    handleResetSearchClient()
+                                                    setNewClientForm(false)
+                                                }
+                                                return(
+                                                    <>
+                                                    <p className="p-2 hover:bg-gray-100 hover:cursor-pointer" onClick={handleSelectSearchClient}>{cliente.nombre}</p>
+                                                    </>
+                                                )
+                                        })}
+                                    </div>
+                                </div>
+                            </div>
+                            :
+                            ""
+                        }
+                        <div>
+                        </div>
+                    </div>
+                </div>
+                
                 <form className="text-left">
-                    <div className="popup-create__margin">
-                        <label for="nombre-cliente" className="popup-create__input-name">Nombre Cliente</label>
-                        <input type="text" id="nombre-cliente" value={nombreCliente} onChange={handleOnChange} name="nombre-cliente" className="popup-create__input"/>
-                    </div>
-                    <div className="clienteInfo popup-create__fieldset">
+                    <div className={newClientForm ? "text-left" : "hidden"}>
                         <div className="popup-create__margin">
-                            <label for="numeroTel" className="popup-create__input--2">Tel Cliente</label>
-                            <input type="text" value={telefonoCliente} onChange={handleOnChange} id="numeroTel" name="numeroTel" className="popup-create__input"/>
-                        </div>
-                        <div className="popup-create__margin">
-                            <label for="emialCliente" className="popup-create__input--2">Email Cliente</label>
-                            <input type="text" value={emailCliente} onChange={handleOnChange} id="emialCliente" name="emialCliente" className="popup-create__input "/>
-                        </div>
-                    </div>
-                    <div className="fechas popup-create__fieldset">
-                        <div className="popup-create__margin">
-                            <label for="fechaPromesa" className="popup-create__input--2">Fecha Promesa</label>
-                            <input type="date" value={fechaPromesa} onChange={handleOnChange} id="fechaPromesa" name="fechaPromesa" className="popup-create__input" disabled={true}/>
+                            <label for="nombre-cliente" className="popup-create__input-name">Nombre Cliente</label>
+                            <input type="text" id="nombre-cliente" value={nombreCliente} onChange={handleOnChange} name="nombre-cliente" className="popup-create__input"/>
                         </div>
                         <div className="popup-create__margin">
                             <label for="date" className="popup-create__input--2">Ubicacion Cliente</label>
                             <input type="text" value={ubicacionCliente} onChange={handleOnChange} id="ubicacion-cliente" name="ubicacion-cliente" className="popup-create__input"/>
+                        </div>
+                        <div className="clienteInfo popup-create__fieldset">
+                            <div className="popup-create__margin">
+                                <label for="numeroTel" className="popup-create__input--2">Tel Cliente</label>
+                                <input type="text" value={telefonoCliente} onChange={handleOnChange} id="numeroTel" name="numeroTel" className="popup-create__input"/>
+                            </div>
+                            <div className="popup-create__margin">
+                                <label for="emialCliente" className="popup-create__input--2">Email Cliente</label>
+                                <input type="text" value={emailCliente} onChange={handleOnChange} id="emialCliente" name="emialCliente" className="popup-create__input "/>
+                            </div>
                         </div>
                     </div>
                     <div className="product-list">
@@ -267,21 +461,36 @@ function OrderPopupCreate(props) {
                             <tbody className="text-blue-gray-900">
                             {
                                 Object.values(productosPedido).map(producto =>  {
-                                    return <TemplateProductTable producto={producto} handleDeleteProducto={handleDeleteProducto} isCreatePopup={true}/>
+                                    return <TemplateProductTable
+                                    rol={props.rol}
+                                    sumaDeMonto={sumaDeMonto}
+                                    producto={producto} handleDeleteProducto={handleDeleteProducto} isCreatePopup={true}/>
                                 })
                             }  
                             </tbody>
                             </table>
                         </div>
+                        <div className="popup-create__form--add justify-end">
+                            <div>
+                                <label for="nombre" className="popup-create__montoTotal">Monto Total</label>
+                                <h2 className="font-semibold">${Math.round(totalMonto)}</h2>
+                            </div>
+                        </div>
                             {/* Formulario Nuevo Producto */}
-                            <div className={newProductForm ? "popup-create__form" : "hidden"}>
-                                <div>
-                                    <input value={skuProducto} onChange={handleOnChange} type="text" id="skuProducto" name="skuProducto" className="popup-create__input"/>
+                            <div className={newProductForm ? "flex" : "hidden"}>
+                                <div className="flex-grow w-1/12 pr-2">
+                                    <input placeholder="SKU" 
+                                    id="skuProducto" name="skuProducto"
+                                    value={skuProducto} onChange={handleOnChange}
+                                    className="text-black placeholder-gray-600 w-full px-4 py-2.5 mt-2 text-base   transition duration-500 ease-in-out transform border-transparent rounded-lg border-gray-950 border-b-2  dark:focus:bg-gray-800 focus:outline-none focus:shadow-outline " />
                                 </div>
-                                <div className="flex-1">
-                                    <input value={nombreProducto} onChange={handleOnChange} type="text" id="nombreProducto" name="nombreProducto" className="popup-create__input"/>
+                                <div className="flex-grow w-3/12 pr-2">
+                                    <input placeholder="Descripción" 
+                                    value={nombreProducto} onChange={handleOnChange}
+                                    id="nombreProducto" name="nombreProducto"
+                                    className="text-black placeholder-gray-600 w-full px-4 py-2.5 mt-2 text-base   transition duration-500 ease-in-out transform border-transparent rounded-lg border-gray-950 border-b-2  dark:focus:bg-gray-800 focus:outline-none focus:shadow-outline " />
                                 </div>
-                                <div>
+                                <div className="flex-grow w-1/12 pr-2">
                                     <CurrencyInput
                                         prefix={prefix}
                                         name="precioProducto"
@@ -297,54 +506,78 @@ function OrderPopupCreate(props) {
                                         disableAbbreviations
                                         decimalSeparator="." 
                                         groupSeparator=","
-                                    className="popup-create__currency"
+                                    className="text-black placeholder-gray-600 w-full px-4 py-2.5 mt-2 text-base   transition duration-500 ease-in-out transform border-transparent rounded-lg border-gray-950 border-b-2  dark:focus:bg-gray-800 focus:outline-none focus:shadow-outline "
                                     />
                                 </div>
-                                <div>
+                                <div className="flex-grow w-1/12">
+                                    <input placeholder="Cantidad" className="text-black placeholder-gray-600 w-full px-4 py-2.5 mt-2 text-base   transition duration-500 ease-in-out transform border-transparent rounded-lg border-gray-950 border-b-2  dark:focus:bg-gray-800 focus:outline-none focus:shadow-outline "
+                                    type="number"
+                                    value={cantidadProducto} onChange={handleOnChange}
+                                    min={1} id="cantidadProducto" name="cantidadProducto" 
+                                    />
                                 </div>
-                                <div>
-                                    <input type="number" value={cantidadProducto} onChange={handleOnChange} min={1} id="cantidadProducto" name="cantidadProducto" className="popup-create__number"/>
-                                </div>
-                                <div className="add">
-                                    <button
-                                    className="popup-create__buttonAdd"
-                                    data-ripple-light="true"
-                                    onClickCapture={handleAddProduct}
-                                    >
-                                        Agregar
-                                    </button>
-                                </div>
+                                <button
+                                className="popup-create__buttonAdd w-28 m-2 mb-2"
+                                data-ripple-light="true"
+                                onClickCapture={handleAddProduct}
+                                >
+                                    Agregar
+                                </button>
+                            </div>
+                            <div className="flex items-center underline  hover:cursor-pointer" 
+                                onClick={handleCreateNewProduct}>
+                                    {newProductForm 
+                                    ?
+                                    <>
+                                        <p className="p-2 text-yellow-800">Cerrar Formulario</p>
+                                        <div>
+                                            <svg class="w-4 h-4 text-yellow-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/>
+                                        </svg>
+                                        </div>
+                                    </>
+                                    :   
+                                        <>
+                                            <p className="p-2 text-green-700">Crear Produto Personalizado</p>
+                                            <div>
+                                                <svg className="w-4 h-4 text-green-700 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24">
+                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5"/>
+                                                </svg>
+                                            </div>
+                                        </>
+                                        
+                                    }
                             </div>
                             {/* Formulario Buscar Producto */}
                             <div className="relative top-10">
                                 <div className="mb-2">
-                                    <h1>Buscar Productos</h1>
+                                    <h1 className="text-lg">Buscar Productos</h1>
+                                    <p className="text-xs font-semibold">*Seleccione el prodcuto con doble click</p>
                                 </div>
                                 <div className="popup-create__form--add ">
-                                    <div className="w-72">
-                                        <div class="w-full">
-                                            <div class=" w-6/6">
-                                                <div class="relative">
+                                    <div className="w-80">
+                                        <div className="w-full">
+                                            <div className=" w-6/6">
+                                                <div className="relative">
                                                     <input
-                                                    class="dashboardTable__input"
+                                                    className="dashboardTable__input"
                                                     placeholder="Busqueda General..."
-                                                    id="inputSearch"
+                                                    id="inputSearchProduct"
                                                     onChange={handleSearchProducts}
+                                                    value={inputSearchProduct}
                                                     />
                                                     <button
-                                                    class="dashboardTable__button--stats"
+                                                    className="dashboardTable__button--stats"
                                                     type="button"
+                                                    onClick={handleResetSearchProduct}
                                                     >
-                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="dashboardTable__icon">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-                                                    </svg>
+                                                        <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.651 7.65a7.131 7.131 0 0 0-12.68 3.15M18.001 4v4h-4m-7.652 8.35a7.13 7.13 0 0 0 12.68-3.15M6 20v-4h4"/>
+                                                        </svg>
                                                     </button>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div>
-                                        <h2>Agregar</h2>
                                     </div>
                                 </div>
                                     <div>
@@ -361,23 +594,21 @@ function OrderPopupCreate(props) {
                                                     ""
                                                     :
                                                     <>
-                                                    <div className="flex items-center underline text-green-700" 
-                                                    onClick={handleCreateNewProduct}>
-                                                        <p className="p-2">Crear Produto Personalizado</p>
-                                                        <div>
-                                                            <svg class="w-4 h-4 text-green-700 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24">
-                                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5"/>
-                                                            </svg>
-                                                        </div>
-                                                    </div>
-
+                                                        <p className="p-2 text-gray-400">No hay productos</p>
                                                     </>
                                                 }
                                                 {searchedProducts.reverse().map(producto => {     
                                                     function handleSelectSearchProduct(){
-                                                        const filtrados = selectedSearchedProducts.filter(item => item._id !== producto._id)
-                                                        setSelectedSearchedProducts([...filtrados,producto])
-                                                        setProductosPedidos(filtrados)
+                                                        if(productosPedido.length == 0 ) {
+                                                            producto.cantidad = 1
+                                                            setSelectedSearchedProducts([producto])
+                                                            setProductosPedidos(selectedSearchedProducts)
+                                                        }else {
+                                                            producto.cantidad = 1
+                                                            const filtrados = productosPedido.filter(item => item._id !== producto._id)
+                                                            setSelectedSearchedProducts([...filtrados,producto])
+                                                            setProductosPedidos([...filtrados,producto])
+                                                        }
                                                     }
                                                     return(
                                                         <>
@@ -386,7 +617,7 @@ function OrderPopupCreate(props) {
                                                             >
                                                                 <td className="p-2">{producto.codigo_interno}</td>
                                                                 <td className="p-2">{producto.descripcion}</td>
-                                                                <td className="text-center p-2">{producto.precio}</td>
+                                                                <td className="text-center p-2">${producto.precio}</td>
                                                             </tr>
                                                         </>
                                                     )
@@ -397,17 +628,11 @@ function OrderPopupCreate(props) {
                                     </div>
                             </div>
                         </div>
-                    <div className="popup-create__form--add justify-end">
-                        <div>
-                            <label for="nombre" className="popup-create__montoTotal">Monto Total</label>
-                            <h2 className="font-semibold">${Math.round(totalMonto)}</h2>
-                        </div>
-                    </div>
-                    <div className="popup-create__margin">
+                    {/* <div className="popup-create__margin">
                         <label for="comentarios" className="popup-create__input-name">Comentarios</label>
                         <textarea type="text" value={comentarios} onChange={handleOnChange} id="comentarios" name="comentarios" className="popup-create__input h-10" />
-                    </div>
-                    <button type="submit" className="popup-create__buttonCreate bg-globalcar"
+                    </div> */}
+                    <button type="submit" className=" mt-16 popup-create__buttonCreate bg-globalcar"
                     onClick={handleOrderCreate}
                     >Crear</button>
                 </form>

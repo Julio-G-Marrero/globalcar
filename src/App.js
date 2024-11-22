@@ -8,7 +8,7 @@ import Register from './components/Register';
 import { OrdersContext } from './contexts/OrdersContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import ProductPage from './components/ProductsPage';
-
+import ClientPage from './components/ClientPage';
 function App() {
   const orderStatus = {
     "1" : "En Revisión",
@@ -19,6 +19,7 @@ function App() {
   
   const [popupCreateOrder, setPopupCreateOrder] = React.useState(false)
   const [popupCreatProduct, setPopupCreateProduct] = React.useState(false)
+  const [popupCreatClient, setPopupCreateClient] = React.useState(false)
   const [popupEditOrder, setPopupEditOrder] = React.useState(false)
   const [overlay, setOverlay] = React.useState(false)
   const [overlayToolTip, setOverlayToolTip] = React.useState(false)
@@ -52,6 +53,7 @@ function App() {
     setOverlay(false)
     setPopupEditOrder(false)
     setPopupCreateProduct(false)
+    setPopupCreateClient(false)
   }
   function closeAllPopupsToolTip() {
     setOverlayToolTip(false)
@@ -89,7 +91,17 @@ function App() {
                 setOverlay={setOverlay}
                 overlay={overlay}
                 jwt={jwt}
-
+                />
+          </Route>
+          <Route path="/globalcar/clientes">
+            <ClientPage
+                setIsLoggedIn={setIsLoggedIn}
+                popupCreatClient={popupCreatClient}
+                setPopupCreateClient={setPopupCreateClient}
+                closeAllPopups={closeAllPopups}
+                setOverlay={setOverlay}
+                overlay={overlay}
+                jwt={jwt}
                 />
           </Route>
           <Route path="/globalcar/register">

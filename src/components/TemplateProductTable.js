@@ -1,35 +1,37 @@
 import React from "react";
 import CurrencyInput from 'react-currency-input-field';
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
 
 function TemplateProductTable(props){
-    const montoTotal = props.producto.precio * props.producto.cantidad;
+    const MySwal = withReactContent(Swal)
     const [isCheked, setIsCheked] = React.useState(false)
     const [isEditOn, setIsEditOn] = React.useState(false)
     const [isEditOnActive, setIsEditOnActive] = React.useState(false)
     const [nuevoPrecioProducto, setNuevoPrecioProducto] = React.useState(props.producto.precio)
     const [nuevaCantidadProducto, setNuevaCantidadProducto] = React.useState(props.producto.cantidad)
-    const [nuevoMontoTotal, setNuevoMontoTotal] = React.useState(props.producto.precio * props.producto.cantidad)
+    const [nuevoMontoTotal, setNuevoMontoTotal] = React.useState(parseInt(props.producto.precio) * parseInt(nuevaCantidadProducto))
     const [provedoresProducto, setProvedoresProducto] = React.useState(props.producto.provedor)
+    const [editQty, setEditQty] = React.useState(props.isCreatePopup || props.rol == 1)
+    const [isEditPopup, setIsEditPopup] = React.useState(props.isEditPopup && props.rol == 1)
     React.useEffect(() => {
-        if(props.producto.provedor) {
-            setProvedoresProducto(props.producto.provedor)
-        }
+        setProvedoresProducto(props.producto.provedor)
     },[])
+    React.useEffect(() => {
+        calcularMonto()
+    },[nuevaCantidadProducto])
+    React.useEffect(() => {
+        if(props.isCreatePopup == true) {
+            props.sumaDeMonto()
+        }
+    },[nuevoMontoTotal])
     React.useEffect(() => {
         setIsEditOn(false)
         setIsEditOnActive(false)
         setNuevoPrecioProducto(props.producto.precio)
         setNuevaCantidadProducto(props.producto.cantidad)
-        setNuevoMontoTotal(montoTotal)
-        setProvedoresProducto("Diverso")
-
-        if(props.producto.provedor) {
-            setProvedoresProducto(props.producto.provedor)
-        }
-
+        setProvedoresProducto(props.producto.provedor)
     },[props.orderSelected])
-    const prefix = "$ ";
-    const handleOnBlur = () => setNuevoPrecioProducto(Number(nuevoPrecioProducto).toFixed(2));
 
     function handleChange(e) {
         if(e.target.id == "nuevoPrecioProducto") {
@@ -37,47 +39,59 @@ function TemplateProductTable(props){
             const parsedValue = value.replace(/[^\d.]/gi, "");
             let newValue = parseInt(parsedValue)
             setNuevoPrecioProducto(newValue)
-        } else if(e.target.id == "nuevaCantidadProducto") {
+        }else if(e.target.id == "nuevaCantidadProducto") {
             const value = e.target.value
             let newValue = parseInt(value)
-
             setNuevaCantidadProducto(newValue)
+            props.producto.cantidad = nuevaCantidadProducto
         }else if(e.target.id == "provedoresProducto") {
             const value = e.target.value
             setProvedoresProducto(value)
+        }else if(e.target.id == "nuevaCantidadProductoResta") {
+            if(nuevaCantidadProducto > 1) {
+                setNuevaCantidadProducto(nuevaCantidadProducto - 1)
+                props.producto.cantidad = nuevaCantidadProducto
+            }
+        }else if(e.target.id == "nuevaCantidadProductoSuma") {
+            const cantidadCambio = (parseInt(nuevaCantidadProducto) + 1)
+            setNuevaCantidadProducto(cantidadCambio)
+            props.producto.cantidad = nuevaCantidadProducto
         }
     }
      
     function calcularMonto() {
-        let montoCalculado = nuevoPrecioProducto * nuevaCantidadProducto
+        let montoCalculado = parseInt(props.producto.precio) * parseInt(nuevaCantidadProducto)
         setNuevoMontoTotal(montoCalculado)
     }
 
     function handleDeleteButton(e){
+        e.preventDefault()
         props.handleDeleteProducto(props.producto)
     }
+
     function handleCheckProduct(e) {
         setIsCheked(true)
         if(Object.keys(props.productosAutorizados).length === 0 ) {
-            props.setProductosAutorizados(
-            [{
-                'idProducto':props.producto.idProducto,
+            props.setProductosAutorizados([{
+                'idProducto':props.producto._id,
                 "codigo_interno": props.producto.codigo_interno,
                 "descripcion": props.producto.descripcion,
                 "precio": props.producto.precio,
-                "cantidad": props.producto.cantidad,
+                "cantidad": parseInt(nuevaCantidadProducto),
                 "provedor" : provedoresProducto
             }]
             )
         } else {
+            console.log('segundo')
+            console.log(props.producto._id)
             props.setProductosAutorizados([...props.productosAutorizados, {
-                'idProducto':props.producto.idProducto,
+                'idProducto':props.producto._id,
                 "codigo_interno": props.producto.codigo_interno,
                 "descripcion": props.producto.descripcion,
                 "precio": props.producto.precio,
-                "cantidad": props.producto.cantidad,
+                "cantidad": parseInt(nuevaCantidadProducto),
                 "provedor" : provedoresProducto
-                }, ]);
+            }, ]);
         }
 
     }
@@ -91,11 +105,11 @@ function TemplateProductTable(props){
         const idProducto = e.target.id;
         const cleanProducts = props.productosAutorizados.filter(product => product.idProducto != idProducto);
         props.setProductosAutorizados([...cleanProducts,{
-            'idProducto':props.producto.idProducto,
+            'idProducto':props.producto._id,
             "codigo_interno": props.producto.codigo_interno,
             "descripcion": props.producto.descripcion,
             "precio": nuevoPrecioProducto,
-            "cantidad": nuevaCantidadProducto,
+            "cantidad": parseInt(nuevaCantidadProducto),
             "provedor" : provedoresProducto
 
         }])
@@ -105,9 +119,8 @@ function TemplateProductTable(props){
     }
     function handleDeleteProductList(e){
         setNuevoPrecioProducto(props.producto.precio)
-        setNuevaCantidadProducto(props.producto.cantidad)
-        setProvedoresProducto("Diverso")
-        setNuevoMontoTotal(montoTotal)
+        setNuevaCantidadProducto(nuevaCantidadProducto)
+        setNuevoMontoTotal(nuevoMontoTotal)
         setIsCheked(false)
         const idProducto = e.target.id;
         const cleanProducts = props.productosAutorizados.filter(product => product.idProducto != idProducto);
@@ -121,63 +134,63 @@ function TemplateProductTable(props){
             <tr class="border-b border-blue-gray-200">
                 <td class="productoTable__space">{props.producto.codigo_interno}</td>
                 <td class="productoTable__space">{props.producto.descripcion}</td>
-                {isEditOn ?
-                    <div>
-                        {isEditOnActive ?
-                            <div className="productoTable__currency">
-                                <CurrencyInput
-                                prefix={prefix}
-                                name="nuevoPrecioProducto"
-                                id="nuevoPrecioProducto"
-                                data-number-to-fixed="2"
-                                data-number-stepfactor="100"
-                                value={nuevoPrecioProducto}
-                                onChange={handleChange}
-                                onBlur={handleOnBlur}
-                                allowDecimals
-                                decimalsLimit="2"
-                                disableAbbreviations
-                                decimalSeparator="." 
-                                groupSeparator=","
-                                className="w-32 px-2 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 "
-                                />
+                <td class="productoTable__value">{props.producto.precio}</td>
+
+                {
+                    editQty && isEditOnActive || props.isCreatePopup
+                        ?
+                        <div class="py-2 px-2 bg-white rounded-l">
+                            <div class="w-full flex justify-between items-center">
+                                <div class="flex items-center">
+                                    <button type="button" class="size-6 inline-flex justify-center items-center text-sm font-medium rounded-md border bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-non dark:text-white dark:hover:bg-neutral-800 dark:focus:bg-neutral-800" tabindex="-1" aria-label="Decrease" data-hs-input-number-decrement=""
+                                    id="nuevaCantidadProductoResta"
+                                    onClick={handleChange}>
+                                        <svg 
+                                        id="nuevaCantidadProductoResta"
+                                        onClick={handleChange}
+                                        class="shrink-0 size-3.5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M5 12h14"></path>
+                                        </svg>
+                                    </button>
+                                    <input class="p-0 w-6 bg-transparent border-0 text-gray-800 text-center focus:ring-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none dark:text-white"  type="number" aria-roledescription="Number field" 
+                                    value={nuevaCantidadProducto}
+                                    id="nuevaCantidadProducto"
+                                    onChange={handleChange}
+                                        />
+                                    <button type="button" class="size-6 inline-flex justify-center items-center text-sm font-medium rounded-md border bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-non dark:text-white dark:hover:bg-neutral-800 dark:focus:bg-neutral-800" tabindex="-1" aria-label="Increase" data-hs-input-number-increment=""
+                                        id="nuevaCantidadProductoSuma"
+                                        onClick={handleChange}>
+                                        <svg
+                                        id="nuevaCantidadProductoSuma"
+                                        onClick={handleChange}
+                                        class="shrink-0 size-3.5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M5 12h14"></path>
+                                        <path d="M12 5v14"></path>
+                                        </svg>
+                                    </button>
+                                </div>
                             </div>
-                        :
-                            <td class="productoTable__value">{nuevoPrecioProducto}</td>
-                        }
-         
-                    </div>
-                :
-                    <td class="productoTable__value">{props.producto.precio}</td>
-                }
-                {isEditOn ?
-                    <td>
-                        <div className="productoTable__edit">
-                            {isEditOnActive ?
-                                <input type="number" value={nuevaCantidadProducto} onChange={handleChange} min={1} id="nuevaCantidadProducto" name="nuevaCantidadProducto" className="productoTable__input"/>
-                            :
-                            <td class="productoTable__value">{nuevaCantidadProducto}</td>
-                            }
-                 
                         </div>
-                    </td>
-                    
-                :
-                    <td class="productoTable__value">{props.producto.cantidad}</td>
+                    :
+                    <p className="text-center">{props.producto.cantidad}</p>
                 }
                 {isEditOn ?
-                    <td class="productoTable__space">${Math.round(nuevoMontoTotal)}</td>
+                    <td class="productoTable__space precioTotalCantidad">${Math.round(nuevoMontoTotal)}</td>
                 :
-                    <td class="productoTable__space">${Math.round(montoTotal)}</td>
+                    <td class="productoTable__space precioTotalCantidad">${Math.round(nuevoMontoTotal)}</td>
                 }
-                <td className={props.isCreatePopup ? 'productoTable__delete' : 'hidden'}
-                onClick={ props.isCreatePopup ? handleDeleteButton : ""}>
-                    <svg class="productoTable__deleteBtn" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"
-                    />
-                    </svg>
+                <td className={props.isCreatePopup ? 'productoTable__delete' : 'hidden'}>
+                    <button
+                    onClick={ props.isCreatePopup ? handleDeleteButton : ""}
+                    >
+                        <svg class="productoTable__deleteBtn w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"
+                        />
+                        </svg>
+                    </button>
                 </td>
-                    {props.isEditPopup ? 
+                    {isEditPopup 
+                    ? 
                         <td className="text-center">
                         {isEditOn ?
                             <td>
@@ -193,14 +206,14 @@ function TemplateProductTable(props){
                             </td>
                             
                         :
-                            <td class="productoTable__value">{props.producto.provedor}</td>
+                            <td class="productoTable__value">{provedoresProducto}</td>
                         }
                         </td>
                     
                     :
-                    ""
+                        ""
                     }
-                <td className={props.isEditPopup ? 'productoTable__delete' : 'hidden'}>
+                <td className={isEditPopup ? 'productoTable__delete' : 'hidden'}>
                     <div className="hover:cursor-pointer"
                         >
                             {isCheked 
@@ -209,14 +222,14 @@ function TemplateProductTable(props){
                                     {isEditOnActive ?
                                         <svg 
                                         onClick={handleSaveProductInfo} 
-                                        id={props.producto.idProducto}
+                                        id={props.producto._id}
                                         class="w-5 h-5 mr-2 text-green-700 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 11.917 9.724 16.5 19 7.5"/>
                                         </svg>
                                     :
                                         <svg
                                         onClick={handleEditProductInfo} 
-                                        id={props.producto.idProducto}
+                                        id={props.producto._id}
                                         class="w-4 h-4 mr-2 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.779 17.779 4.36 19.918 6.5 13.5m4.279 4.279 8.364-8.643a3.027 3.027 0 0 0-2.14-5.165 3.03 3.03 0 0 0-2.14.886L6.5 13.5m4.279 4.279L6.499 13.5m2.14 2.14 6.213-6.504M12.75 7.04 17 11.28"/>
                                         </svg>
@@ -237,7 +250,7 @@ function TemplateProductTable(props){
                     disabled={props.autorizarHabilitado}
                     onClick={isCheked ? handleDeleteProductList : handleCheckProduct }
                     className='h-5 w-5 ss'
-                    id={props.producto.idProducto}
+                    id={props.producto._id}
                     />
                 </td>
             </tr>

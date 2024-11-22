@@ -7,8 +7,8 @@ import withReactContent from 'sweetalert2-react-content'
 import { Link } from "react-router-dom";
 
 function Login(props) {
-    const MySwal = withReactContent(Swal)
     const history = useHistory()
+    const MySwal = withReactContent(Swal)
     const Toast = MySwal.mixin({
         toast: true,
         position: "top-end",
