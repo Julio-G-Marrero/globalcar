@@ -9,6 +9,7 @@ import { OrdersContext } from './contexts/OrdersContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import ProductPage from './components/ProductsPage';
 import ClientPage from './components/ClientPage';
+import InformesPage from './components/InformesPage';
 function App() {
   const orderStatus = {
     "1" : "En Revisión",
@@ -42,7 +43,6 @@ function App() {
     }
     setUser(userInit)
     if(userInit.email == "comprasglobal@hotmail.com") {
-      console.log(userInit.email)
       setRol(1)
       localStorage.setItem('user-departament',1)
     }
@@ -103,6 +103,11 @@ function App() {
                 overlay={overlay}
                 jwt={jwt}
                 />
+          </Route>
+          <Route path="/globalcar/informes">
+            <InformesPage
+                jwt={jwt}
+              />
           </Route>
           <Route path="/globalcar/register">
             <Register/>

@@ -226,6 +226,10 @@ function OrderPopupCreate(props) {
         setTotalMonto(0)
         setSkuProducto("")
         setComentarios("")
+        setSearchedProducts([])
+        setSearchedClients([])
+        setSelectedSearchedProducts([])
+        setNombreProducto("")
     }
     function countQtyProducts(){
         let totalProductos = 0

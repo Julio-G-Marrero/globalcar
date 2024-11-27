@@ -10,6 +10,7 @@
     justify-content: space-between; 
     align-items: center; 
     width: 100%;    
+    border-bottom: 2px solid #e5e7eb;
 }
 .dashboardTable__containerButton {
     margin: 0.75rem; 

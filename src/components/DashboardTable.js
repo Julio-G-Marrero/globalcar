@@ -394,7 +394,7 @@ function DashboardTable(props) {
             <>
             <div className= "dashboardTable">
                 <div class="dashboardTable__header">
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-end gap-4">
                         <div class="dashboardTable__containerButton">
                             <button class="dashboardTable__button"
                             onClick={handleOrderPopup}>
@@ -418,11 +418,11 @@ function DashboardTable(props) {
                             </div>
 
                             <div class="hidden sm:block">
-                                <div class="border-b border-gray-200">
+                                <div class="">
                                 <nav class="-mb-px flex gap-6" aria-label="Tabs">
                                     <a
                                     href="#"
-                                    className={selectedTypeOrder == "pteRevison" ? "shrink-0 border-b-2 border-sky-500 px-1 pb-4 text-sm font-medium text-sky-600" : "shrink-0 border-b-2  px-1 pb-4 text-sm font-medium text-gray-700"}                             
+                                    className={selectedTypeOrder == "pteRevison" ? "shrink-0 border-b-2 border-sky-500 pb-3 text-sm font-medium text-sky-600 " : "shrink-0  text-sm font-medium text-gray-700 pb-4"}                             
                                     id="pteRevison"
                                     onClick={hanldeFetchOrderByStatus}>
                                     Pendiente Revision
@@ -430,7 +430,7 @@ function DashboardTable(props) {
 
                                     <a
                                     href="#"
-                                    className={selectedTypeOrder == "pteSurtir" ? "shrink-0 border-b-2 border-sky-500 px-1 pb-4 text-sm font-medium text-sky-600" : "shrink-0 border-b-2  px-1 pb-4 text-sm font-medium text-gray-700"}                                    
+                                    className={selectedTypeOrder == "pteSurtir" ? "shrink-0 border-b-2 border-sky-500 pb-3 text-sm font-medium text-sky-600" : "shrink-0  text-sm font-medium text-gray-700 pb-4"}                                    
                                     id="pteSurtir"
                                     onClick={hanldeFetchOrderByStatus}>
                                     Pendiente Surtir
@@ -438,7 +438,7 @@ function DashboardTable(props) {
 
                                     <a
                                     href="#"
-                                    className={selectedTypeOrder == "surtida" ? "shrink-0 border-b-2 border-sky-500 px-1 pb-4 text-sm font-medium text-sky-600" : "shrink-0 border-b-2  px-1 pb-4 text-sm font-medium text-gray-700"}                                    
+                                    className={selectedTypeOrder == "surtida" ? "shrink-0 border-b-2 border-sky-500 pb-3 text-sm font-medium text-sky-600" : "shrink-0  text-sm font-medium text-gray-700 pb-4"}                                    
                                     id="surtida"
                                     onClick={hanldeFetchOrderByStatus}>
                                     Surtida
@@ -446,7 +446,7 @@ function DashboardTable(props) {
 
                                     <a
                                     href="#"
-                                    className={selectedTypeOrder == "denegada" ? "shrink-0 border-b-2 border-sky-500 px-1 pb-4 text-sm font-medium text-sky-600" : "shrink-0 border-b-2  px-1 pb-4 text-sm font-medium text-gray-700 "}
+                                    className={selectedTypeOrder == "denegada" ? "shrink-0 border-b-2 border-sky-500 pb-3 text-sm font-medium text-sky-600" : "shrink-0  text-sm font-medium text-gray-700 pb-4 "}
                                     aria-current="page"
                                     id="denegada"
                                     onClick={hanldeFetchOrderByStatus}>
