@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
+import { HashRouter, Route, Switch, Redirect } from 'react-router-dom';
 import Dashboard from './components/Dashboard';
 import Login from './components/Login';
 import ReactDOM from "react-dom";
@@ -61,7 +61,7 @@ function App() {
   }
   return (
     <div className="App">
-      <BrowserRouter>
+      <HashRouter>
         <Switch>
           <Route path="/globalcar/dashboard">
               <ProtectedRoute isLoggedIn={jwt} path="/globalcar/dashboard">
@@ -120,7 +120,7 @@ function App() {
             setIsLoggedIn={setIsLoggedIn}/>}
           </Route>
         </Switch>
-      </BrowserRouter>
+      </HashRouter>
     </div>
   );
 }
