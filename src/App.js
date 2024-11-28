@@ -63,8 +63,8 @@ function App() {
     <div className="App">
       <HashRouter>
         <Switch>
-          <Route path="/globalcar/dashboard">
-              <ProtectedRoute isLoggedIn={jwt} path="/globalcar/dashboard">
+          <Route path="/dashboard">
+              <ProtectedRoute isLoggedIn={jwt} path="/dashboard">
                 <Dashboard 
                 rol={rol}
                 user={user}
@@ -82,7 +82,7 @@ function App() {
                 closeAllPopupsToolTip={closeAllPopupsToolTip}/>
               </ProtectedRoute>
           </Route>
-          <Route path="/globalcar/products">
+          <Route path="/products">
             <ProductPage
                 setIsLoggedIn={setIsLoggedIn}
                 popupCreatProduct={popupCreatProduct}
@@ -93,7 +93,7 @@ function App() {
                 jwt={jwt}
                 />
           </Route>
-          <Route path="/globalcar/clientes">
+          <Route path="/clientes">
             <ClientPage
                 setIsLoggedIn={setIsLoggedIn}
                 popupCreatClient={popupCreatClient}
@@ -104,16 +104,16 @@ function App() {
                 jwt={jwt}
                 />
           </Route>
-          <Route path="/globalcar/informes">
+          <Route path="/informes">
             <InformesPage
                 jwt={jwt}
               />
           </Route>
-          <Route path="/globalcar/register">
+          <Route path="/register">
             <Register/>
           </Route>
-          <Route path="/globalcar/">
-            {isLoggedIn ? <Redirect to="/globalcar/dashboard"/> :           
+          <Route path="/">
+            {isLoggedIn ? <Redirect to="/dashboard"/> :           
             <Login
             setUser={setUser}
             jwt={jwt}
