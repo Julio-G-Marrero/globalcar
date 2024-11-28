@@ -37,7 +37,7 @@ function Register() {
     }
 
     function handleRedirect() {
-        history.push('/')
+        history.push('/globalcar')
         history.go(0)
     }
     return(
@@ -77,7 +77,7 @@ function Register() {
                         <div className="py-5">
                             <div className="register__links">
                                 <div className="register__link">
-                                    <Link onClick={handleRedirect} to="/" className="inline-block ml-1">
+                                    <Link onClick={handleRedirect} to="/globalcar/" className="inline-block ml-1">
                                         ¿Ya tienes cuneta? Inicia Sesión
                                     </Link>
                                 </div>

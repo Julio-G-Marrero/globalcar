@@ -47,7 +47,7 @@ function Login(props) {
                       });
                         setTimeout(() => {
                             props.setIsLoggedIn(true)
-                            history.push('/dashboard')
+                            history.push('/globalcar/dashboard')
                             history.go(0)
                         }, "1500");
                 }else if(data.error) {
@@ -60,7 +60,7 @@ function Login(props) {
         }
     }
     function handleRedirect() {
-        history.push('/register')
+        history.push('/globalcar/register')
         history.go(0)
     }
     const handleChange = (event) => {
@@ -96,7 +96,7 @@ function Login(props) {
                     <div className="login__links">
                         <div className="login__link">
                             <div className="login__link--comtainer">
-                                    <Link onClick={handleRedirect} to="/register" className="login__linTitle">
+                                    <Link onClick={handleRedirect} to="/globalcar/register" className="login__linTitle">
                                         ¿Aún no tienes una cuneta? Registrate
                                     </Link>
                             </div>
