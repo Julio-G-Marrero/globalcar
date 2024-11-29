@@ -7,6 +7,8 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { useHistory } from "react-router-dom";
 import api from "../utilis/api";
+import axios from 'axios';
+
 
 function ProductPage(props) {
     const MySwal = withReactContent(Swal);
@@ -73,46 +75,41 @@ function ProductPage(props) {
         setFileName(selectedFile.name); // Guarda el nombre del archivo seleccionado
       }
     };
-  
-    const handleUpload = async () => {
-      if (!file) {
-        MySwal.fire("Error", "Por favor selecciona un archivo primero.", "error");
-        return;
-      }
-  
-      const formData = new FormData();
-      formData.append("csv", file);
-  
-      setIsLoading(true); // Activa el loading antes de iniciar la operación
-  
-      try {
-        const response = await fetch(`${api.addressEndpoints}/products/import`, {
-          method: "POST",
-          body: formData,
-          headers: {
-            Authorization: `Bearer ${props.jwt}`, // Token de autorización
-          },
-        });
-  
-        if (response.ok) {
-          const data = await response.json();
-          MySwal.fire(
-            "Éxito",
-            `Archivo subido correctamente. Se importaron ${data.importedCount} registros.`,
-            "success"
-          );
-          fetchProductos(); // Actualiza los productos después de subir el archivo
-          setFileName(""); // Limpia el nombre del archivo después de subirlo
-        } else {
-          const errorText = await response.text();
-          MySwal.fire("Error", `Error al subir el archivo: ${errorText}`, "error");
+
+    const ImportCSV = () => {
+      const [file, setFile] = React.useState(null);
+    
+      const handleFileChange = (event) => {
+        setFile(event.target.files[0]);
+      };
+    
+      const handleFileUpload = async () => {
+        if (!file) {
+          alert('Por favor, selecciona un archivo CSV.');
+          return;
         }
-      } catch (err) {
-        console.error("Error uploading file:", err);
-        MySwal.fire("Error", "Ocurrió un error al subir el archivo. Revisa la consola para más detalles.", "error");
-      } finally {
-        setIsLoading(false); // Desactiva el loading al finalizar
-      }
+        const formData = new FormData();
+        formData.append('file', file);
+    
+        try {
+          const response = await axios.post('http://localhost:3000/api/products/import', formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          });
+          alert(response.data.message);
+        } catch (error) {
+          console.error('Error al subir el archivo:', error);
+          alert('Hubo un error al importar el archivo CSV.');
+        }
+      };
+    
+      return (
+        <div>
+          <input type="file" accept=".csv" onChange={handleFileChange} />
+          <button onClick={handleFileUpload}>Importar CSV</button>
+        </div>
+      );
     };
   
     return (
@@ -167,7 +164,7 @@ function ProductPage(props) {
   
                         {/* Botón para subir el archivo */}
                         <button
-                          onClick={handleUpload}
+                          onClick={ImportCSV}
                           className="bg-green-600 text-white px-4 py-2 rounded-md shadow-md hover:bg-green-700 transition"
                         >
                           Subir Archivo
