@@ -11,11 +11,12 @@ import axios from 'axios';
 
 
 function ProductPage(props) {
+  
     const MySwal = withReactContent(Swal);
     const [productos, setProductos] = React.useState([]);
-    const [file, setFile] = React.useState(null);
     const [fileName, setFileName] = React.useState(""); // Estado para guardar el nombre del archivo
     const [isLoading, setIsLoading] = React.useState(false);
+    const [file, setFile] = React.useState(null);
   
     const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB máximo
     const history = useHistory();
@@ -77,40 +78,36 @@ function ProductPage(props) {
     };
 
     const ImportCSV = async () => {
-      const [file, setFile] = React.useState(null);
+      if (!file) {
+        MySwal.fire('Error', 'Por favor, selecciona un archivo CSV.', 'error');
+        return;
+      }
+      const formData = new FormData();
+      formData.append('file', file);
     
-      const handleFileChange = (event) => {
-        setFile(event.target.files[0]);
-      };
+      setIsLoading(true);
     
-      const handleFileUpload = async () => {
-        if (!file) {
-          alert('Por favor, selecciona un archivo CSV.');
-          return;
-        }
-        const formData = new FormData();
-        formData.append('file', file);
-    
-        try {
-          const response = await axios.post('http://localhost:3000/api/products/import', formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            },
-          });
-          alert(response.data.message);
-        } catch (error) {
-          console.error('Error al subir el archivo:', error);
-          alert('Hubo un error al importar el archivo CSV.');
-        }
-      };
-    
-      return (
-        <div>
-          <input type="file" accept=".csv" onChange={handleFileChange} />
-          <button onClick={handleFileUpload}>Importar CSV</button>
-        </div>
-      );
+      try {
+        const response = await axios.post(`${api.addressEndpoints}/products/import`, formData, {
+          headers: {
+            Authorization: `Bearer ${props.jwt}`,
+          },
+        });
+        const { message, importedCount} = response.data;
+        console.log(response.data)
+        MySwal.fire('Importación Exitosa', `${message} Registros importados: ${importedCount || 0}`, 'success');
+      } catch (error) {
+        console.error('Error al subir el archivo:', error.response?.data || error.message);
+        MySwal.fire('Error', 'Hubo un error al importar el archivo CSV.', 'error');
+      } finally {
+        setIsLoading(false);
+        setTimeout(() => {
+          window.location.reload();
+        }, 3000);
+      }
     };
+    
+    
   
     return (
       <>
