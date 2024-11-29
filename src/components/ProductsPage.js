@@ -76,7 +76,7 @@ function ProductPage(props) {
       }
     };
 
-    const ImportCSV = () => {
+    const ImportCSV = async () => {
       const [file, setFile] = React.useState(null);
     
       const handleFileChange = (event) => {
