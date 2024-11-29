@@ -78,6 +78,7 @@ function DashboardTable(props) {
     }
 
     function handleChangePageOrders(e){
+        e.preventDefault()
         if(e.target.id == "Prev"){
             if(numeroDePaginas !== pageIndex) {
                 fetch(`${api.addressEndpoints}/orders?page=${pageIndex - 1}&id=${props.user.id}&departament=${props.rol}`, {
@@ -161,6 +162,7 @@ function DashboardTable(props) {
             }
     }
     function hanldeFetchOrderByStatus(e) {
+        e.preventDefault()
         if(e.target.id == "pteRevison") {
             setStatusOrderFilter(1)
             setSelectedTypeOrder("pteRevison")
@@ -317,6 +319,7 @@ function DashboardTable(props) {
             }
     }
     function handleChangeSearchInput(e) {
+        e.preventDefault()
         if(statusOrderFilter != 0) {
             fetch(`${api.addressEndpoints}/orders/search-status-value?value=${e.target.value}&status=${statusOrderFilter}&page=${pageIndex + 1}&id=${props.user.id}&departament=${props.rol}`, {
                 method: "GET",
@@ -420,38 +423,38 @@ function DashboardTable(props) {
                             <div class="hidden sm:block">
                                 <div class="">
                                 <nav class="-mb-px flex gap-6" aria-label="Tabs">
-                                    <a
+                                    <button
                                     href="#"
                                     className={selectedTypeOrder == "pteRevison" ? "shrink-0 border-b-2 border-sky-500 pb-3 text-sm font-medium text-sky-600 " : "shrink-0  text-sm font-medium text-gray-700 pb-4"}                             
                                     id="pteRevison"
                                     onClick={hanldeFetchOrderByStatus}>
                                     Pendiente Revision
-                                    </a>
+                                    </button>
 
-                                    <a
+                                    <button
                                     href="#"
                                     className={selectedTypeOrder == "pteSurtir" ? "shrink-0 border-b-2 border-sky-500 pb-3 text-sm font-medium text-sky-600" : "shrink-0  text-sm font-medium text-gray-700 pb-4"}                                    
                                     id="pteSurtir"
                                     onClick={hanldeFetchOrderByStatus}>
                                     Pendiente Surtir
-                                    </a>
+                                    </button>
 
-                                    <a
+                                    <button
                                     href="#"
                                     className={selectedTypeOrder == "surtida" ? "shrink-0 border-b-2 border-sky-500 pb-3 text-sm font-medium text-sky-600" : "shrink-0  text-sm font-medium text-gray-700 pb-4"}                                    
                                     id="surtida"
                                     onClick={hanldeFetchOrderByStatus}>
                                     Surtida
-                                    </a>
+                                    </button>
 
-                                    <a
+                                    <button
                                     href="#"
                                     className={selectedTypeOrder == "denegada" ? "shrink-0 border-b-2 border-sky-500 pb-3 text-sm font-medium text-sky-600" : "shrink-0  text-sm font-medium text-gray-700 pb-4 "}
                                     aria-current="page"
                                     id="denegada"
                                     onClick={hanldeFetchOrderByStatus}>
                                     Denegada
-                                    </a>
+                                    </button>
                                 </nav>
                                 </div>
                             </div>
