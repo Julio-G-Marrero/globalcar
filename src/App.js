@@ -93,7 +93,7 @@ function App() {
                 jwt={jwt}
                 />
           </Route>
-          <Route path="/clientes">
+          <Route path="/clients">
             <ClientPage
                 setIsLoggedIn={setIsLoggedIn}
                 popupCreatClient={popupCreatClient}

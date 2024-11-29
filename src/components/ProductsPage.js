@@ -86,7 +86,7 @@ function ProductPage(props) {
       setIsLoading(true); // Activa el loading antes de iniciar la operación
   
       try {
-        const response = await fetch(`${api.addressEndpoints}/productos/upload`, {
+        const response = await fetch(`${api.addressEndpoints}/products/upload`, {
           method: "POST",
           body: formData,
           headers: {
