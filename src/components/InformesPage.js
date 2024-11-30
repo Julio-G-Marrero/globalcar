@@ -5,25 +5,56 @@ import api from "../utilis/api";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { useHistory } from "react-router";
-import { Bar, Pie } from "react-chartjs-2";
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, ArcElement, Tooltip, Legend } from "chart.js";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import logo from "../images/logo.png";
+import { Chart, BarController, BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend } from "chart.js";
+import { useEffect, useRef } from "react";
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Tooltip, Legend);
+Chart.register(BarController, BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend);
 
 function InformesPage(props) {
   const [productosAutorizados, setProductosAutorizados] = React.useState([]);
   const [productosDenegados, setProductosDenegados] = React.useState([]);
   const [allProducts, setAllProducts] = React.useState([]);
+  const [productosDenegadosMonto, setProductosDenegadosMonto] = React.useState();
+  const [productosAutorizadosMonto, setProductosAutorizadosMonto] = React.useState();
+  const [productosAllMonto, setProductosAllMonto] = React.useState();
+  const [productosAutorizadosCantidad, setProductosAutorizadosCantidad] = React.useState();
+  const [productosDenegadosCantidad, setProductosDenegadosCantidad] = React.useState();
+  const [productosAllCantidad, setProductosAllCantidad] = React.useState();
+  const [cantidadPorFamilia, setCantidadPorFamilia] = React.useState({});
+  const [cantidadPorCliente, setCantidadPorCliente] = React.useState({});
   const history = useHistory();
+  const chartRef = useRef(null);
+  const quantityChartRef = useRef(null);
+  const familyChartRef = useRef(null);
+  const clientChartRef = useRef(null);
+  let chartInstance = useRef(null);
+  let quantityChartInstance = useRef(null);
+  let familyChartInstance = useRef(null);
+  let clientChartInstance = useRef(null);
 
   React.useEffect(() => {
     fetchProductosAutorizados();
     fetchProductosDenegados();
     fetchAllProductos();
   }, []);
+
+  React.useEffect(() => {
+    if (productosDenegadosMonto && productosAutorizadosMonto && productosAllMonto) {
+      generateChart();
+    }
+    if (productosDenegadosCantidad && productosAutorizadosCantidad && productosAllCantidad) {
+      generateQuantityChart();
+    }
+    if (Object.keys(cantidadPorFamilia).length > 0) {
+      generateFamilyChart();
+    }
+    if (Object.keys(cantidadPorCliente).length > 0) {
+      generateClientChart();
+    }
+  }, [productosDenegadosMonto, productosAutorizadosMonto, productosAllMonto, productosDenegadosCantidad, productosAutorizadosCantidad, productosAllCantidad, cantidadPorFamilia, cantidadPorCliente]);
 
   const MySwal = withReactContent(Swal);
 
@@ -36,7 +67,11 @@ function InformesPage(props) {
       },
     })
       .then((response) => response.json())
-      .then((data) => setProductosAutorizados(data.productosAutorizados))
+      .then((data) => {
+        setProductosAutorizados(data.productosAutorizados);
+        setProductosAutorizadosMonto(calcularMontoTotalAutorizado(data.productosAutorizados));
+        setProductosAutorizadosCantidad(calcularCantidadTotalAutorizado(data.productosAutorizados));
+      })
       .catch((err) => console.log(err));
   };
 
@@ -49,7 +84,11 @@ function InformesPage(props) {
       },
     })
       .then((response) => response.json())
-      .then((data) => setProductosDenegados(data.productosDenegados))
+      .then((data) => {
+        setProductosDenegados(data.productosDenegados);
+        setProductosDenegadosMonto(calcularMontoTotalDenegado(data.productosDenegados));
+        setProductosDenegadosCantidad(calcularCantidadTotalDenegado(data.productosDenegados));
+      })
       .catch((err) => console.log(err));
   };
 
@@ -62,61 +101,380 @@ function InformesPage(props) {
       },
     })
       .then((response) => response.json())
-      .then((data) => setAllProducts(data))
+      .then((data) => {
+        setAllProducts(data);
+        setProductosAllMonto(calcularMontoTotalSolicitado(data));
+        setProductosAllCantidad(calcularCantidadTotalSolicitado(data));
+        setCantidadPorFamilia(calcularCantidadPorFamilia(data));
+        console.log(data)
+        setCantidadPorCliente(calcularCantidadPorCliente(data));
+      })
       .catch((err) => console.log(err));
   };
-  console.log(allProducts)
 
-  const totalAutorizados = productosAutorizados.length;
-  const totalDenegados = productosDenegados.length;
-  const totalSolicitados = allProducts.length;
-
-  const barChartData = {
-    labels: ["Autorizados", "Denegados", "Solicitados"],
-    datasets: [
-      {
-        label: "Cantidad de Productos",
-        data: [totalAutorizados, totalDenegados, totalSolicitados],
-        backgroundColor: ["#4CAF50", "#F44336", "#2196F3"],
-      },
-    ],
+  const calcularMontoTotalDenegado = (data) => {
+    let totalMontoDenegado = 0;
+    data.forEach((pedido) => {
+      pedido.productosDenegados.forEach((productosGrupo) => {
+        productosGrupo.forEach((producto) => {
+          totalMontoDenegado += parseFloat(producto.precio) * producto.cantidad;
+        });
+      });
+    });
+    return totalMontoDenegado;
   };
 
-  const pieChartData = {
-    labels: ["Autorizados", "Denegados"],
-    datasets: [
-      {
-        label: "Proporción de Productos",
-        data: [totalAutorizados, totalDenegados],
-        backgroundColor: ["#4CAF50", "#F44336"],
-      },
-    ],
+  const calcularMontoTotalSolicitado = (data) => {
+    let totalMontoSolicitado = 0;
+    data.forEach((pedido) => {
+      pedido.productos.forEach((producto) => {
+        totalMontoSolicitado += parseFloat(producto.precio) * producto.cantidad;
+      });
+    });
+    return totalMontoSolicitado;
   };
 
-  const pieChartOptions = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: "top",
-      },
-      title: {
-        display: true,
-        text: "Proporción de Productos Autorizados y Denegados",
-      },
-    },
+  const calcularMontoTotalAutorizado = (data) => {
+    let totalMontoAutorizado = 0;
+    data.forEach((pedido) => {
+      totalMontoAutorizado += parseFloat(pedido.montoAutorizado);
+    });
+    return totalMontoAutorizado;
   };
 
-  const barChartOptions = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: "top",
+  const calcularCantidadTotalAutorizado = (data) => {
+    let totalCantidadAutorizado = 0;
+    data.forEach((pedido) => {
+      pedido.productos.forEach((productosGrupo) => {
+        productosGrupo.forEach((producto) => {
+          totalCantidadAutorizado += producto.cantidad;
+        });
+      });
+    });
+    return totalCantidadAutorizado;
+  };
+
+  const calcularCantidadTotalDenegado = (data) => {
+    let totalCantidadDenegado = 0;
+    data.forEach((pedido) => {
+      pedido.productosDenegados.forEach((productosGrupo) => {
+        productosGrupo.forEach((producto) => {
+          totalCantidadDenegado += producto.cantidad;
+        });
+      });
+    });
+    return totalCantidadDenegado;
+  };
+
+  const calcularCantidadTotalSolicitado = (data) => {
+    let totalCantidadSolicitado = 0;
+    data.forEach((pedido) => {
+      pedido.productos.forEach((producto) => {
+        totalCantidadSolicitado += producto.cantidad;
+      });
+    });
+    return totalCantidadSolicitado;
+  };
+
+  const calcularCantidadPorFamilia = (data) => {
+    const cantidadPorFamilia = {};
+    data.forEach((pedido) => {
+      pedido.productos.forEach((producto) => {
+        if (producto.familia in cantidadPorFamilia) {
+          cantidadPorFamilia[producto.familia] += producto.cantidad;
+        } else {
+          cantidadPorFamilia[producto.familia] = producto.cantidad;
+        }
+      });
+    });
+    return cantidadPorFamilia;
+  };
+
+  const calcularCantidadPorCliente = (data) => {
+    const cantidadPorCliente = {};
+    data.forEach((pedido) => {
+      let totalCantidad = 0;
+      pedido.productos.forEach((producto) => {
+        totalCantidad += producto.cantidad;
+      });
+      if (cantidadPorCliente[pedido.cliente_nombre]) {
+        cantidadPorCliente[pedido.cliente_nombre] += totalCantidad;
+      } else {
+        cantidadPorCliente[pedido.cliente_nombre] = totalCantidad;
+      }
+    });
+    return cantidadPorCliente;
+  };
+  const generateChart = () => {
+    if (chartInstance.current) {
+      chartInstance.current.destroy();
+    }
+    const ctx = chartRef.current.getContext("2d");
+    chartInstance.current = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: ["Denegados", "Autorizados", "Solicitados"],
+        datasets: [
+          {
+            label: "Montos Comparativos",
+            data: [productosDenegadosMonto, productosAutorizadosMonto, productosAllMonto],
+            backgroundColor: [
+              "rgba(255, 99, 132, 0.6)",
+              "rgba(54, 162, 235, 0.6)",
+              "rgba(75, 192, 192, 0.6)",
+            ],
+            borderColor: [
+              "rgba(255, 99, 132, 1)",
+              "rgba(54, 162, 235, 1)",
+              "rgba(75, 192, 192, 1)",
+            ],
+            borderWidth: 1,
+          },
+        ],
       },
-      title: {
-        display: true,
-        text: "Resumen de Productos",
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: "top",
+          },
+          title: {
+            display: true,
+            text: "Comparación de Montos Denegados, Autorizados y Solicitados",
+          },
+        },
       },
-    },
+    });
+  };
+
+  const generateQuantityChart = () => {
+    if (quantityChartInstance.current) {
+      quantityChartInstance.current.destroy();
+    }
+    const ctx = quantityChartRef.current.getContext("2d");
+    quantityChartInstance.current = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: ["Denegados", "Autorizados", "Solicitados"],
+        datasets: [
+          {
+            label: "Cantidades Comparativas",
+            data: [productosDenegadosCantidad, productosAutorizadosCantidad, productosAllCantidad],
+            backgroundColor: [
+              "rgba(255, 159, 64, 0.6)",
+              "rgba(75, 192, 192, 0.6)",
+              "rgba(153, 102, 255, 0.6)",
+            ],
+            borderColor: [
+              "rgba(255, 159, 64, 1)",
+              "rgba(75, 192, 192, 1)",
+              "rgba(153, 102, 255, 1)",
+            ],
+            borderWidth: 1,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: "top",
+          },
+          title: {
+            display: true,
+            text: "Comparación de Cantidades Denegadas, Autorizadas y Solicitadas",
+          },
+        },
+      },
+    });
+  };
+
+  const generateFamilyChart = () => {
+    if (familyChartInstance.current) {
+      familyChartInstance.current.destroy();
+    }
+    const ctx = familyChartRef.current.getContext("2d");
+    familyChartInstance.current = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: Object.keys(cantidadPorFamilia),
+        datasets: [
+          {
+            label: "Cantidad de Productos por Familia",
+            data: Object.values(cantidadPorFamilia),
+            backgroundColor: "rgba(54, 162, 235, 0.6)",
+            borderColor: "rgba(54, 162, 235, 1)",
+            borderWidth: 1,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: "top",
+          },
+          title: {
+            display: true,
+            text: "Cantidad de Productos por Familia",
+          },
+        },
+      },
+    });
+  };
+
+
+  const generateClientChart = () => {
+    if (clientChartInstance.current) {
+      clientChartInstance.current.destroy();
+    }
+    const ctx = clientChartRef.current.getContext("2d");
+    clientChartInstance.current = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: Object.keys(cantidadPorCliente),
+        datasets: [
+          {
+            label: "Cantidad de Productos por Cliente",
+            data: Object.values(cantidadPorCliente),
+            backgroundColor: "rgba(255, 206, 86, 0.6)",
+            borderColor: "rgba(255, 206, 86, 1)",
+            borderWidth: 1,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: "top",
+          },
+          title: {
+            display: true,
+            text: "Cantidad de Productos Solicitados por Cliente",
+          },
+        },
+      },
+    });
+  };
+
+  const renderProductTable = () => {
+    return (
+      <div className="bg-white p-4 rounded-lg shadow-md w-full">
+        <h3 className="text-lg font-semibold mb-4">Detalle de Productos Solicitados</h3>
+        <table className="min-w-full table-auto">
+          <thead>
+            <tr>
+              <th className="px-4 py-2 border">Descripción</th>
+              <th className="px-4 py-2 border">Cantidad</th>
+              <th className="px-4 py-2 border">Precio</th>
+            </tr>
+          </thead>
+          <tbody>
+            {allProducts.map((pedido, index) => (
+              pedido.productos.map((producto, productoIndex) => (
+                <tr key={`${index}-${productoIndex}`}>
+                  <td className="px-4 py-2 border">{producto.descripcion}</td>
+                  <td className="px-4 py-2 border">{producto.cantidad}</td>
+                  <td className="px-4 py-2 border">{producto.precio}</td>
+                </tr>
+              ))
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
+  };
+
+  const generarReporteDenegadosPDF = async () => {
+    const doc = new jsPDF();
+    const logoBase64 = await loadImageToBase64(`${logo}`);
+    doc.addImage(logoBase64, "PNG", 15, 12, 25, 25);
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "bold");
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const marginRight = 10;
+    const nombreNegocio = "FSP GLOBAL TOOLS";
+    const nombreNegocioWidth = doc.getTextWidth(nombreNegocio);
+    doc.text(nombreNegocio, pageWidth - nombreNegocioWidth - marginRight, 15);
+    doc.setFont("helvetica", "normal");
+    const infoNegocio = [
+      "Calle egipto 610, CP:25230, Saltillo Coahuila",
+      "Teléfono: +52 123 456 7890",
+      "Email: contacto@globalcar.mx",
+    ];
+    infoNegocio.forEach((linea, index) => {
+      const textWidth = doc.getTextWidth(linea);
+      doc.text(linea, pageWidth - textWidth - marginRight, 22 + index * 7);
+    });
+    doc.line(10, 45, 200, 45);
+    doc.setFontSize(14);
+    doc.setFont("helvetica", "bold");
+    doc.text("Reporte de Productos Denegados", 10, 55);
+    const reporteSimplificado = productosDenegados
+      .filter((item) => item.productosDenegados && item.productosDenegados.length > 0)
+      .map((item) => {
+        const productosDenegadosFlattened = item.productosDenegados.flat();
+        const montoTotal = productosDenegadosFlattened.reduce((total, producto) => {
+          const precioNumerico = parseFloat(producto.precio.replace(",", "."));
+          return total + producto.cantidad * precioNumerico;
+        }, 0);
+        return {
+          clienteNombre: item.clienteNombre,
+          productosDenegados: productosDenegadosFlattened.map((producto) => ({
+            descripcion: producto.descripcion,
+            cantidad: producto.cantidad,
+            precio: producto.precio,
+          })),
+          montoTotal,
+        };
+      });
+    if (reporteSimplificado.length === 0) {
+      doc.text("No hay productos denegados para mostrar.", 10, 70);
+      doc.save("reporte_productos_denegados.pdf");
+      return;
+    }
+    let yPosition = 65;
+    reporteSimplificado.forEach((cliente, index) => {
+      const montoTotal = formatoMoneda(cliente.montoTotal);
+      doc.setFontSize(12);
+      doc.setFont("helvetica", "bold");
+      doc.text(`Cliente: ${cliente.clienteNombre}`, 14, yPosition);
+      const productosDenegados = cliente.productosDenegados.map((producto) => [
+        producto.descripcion,
+        producto.cantidad,
+        producto.precio,
+      ]);
+      doc.autoTable({
+        startY: yPosition + 7,
+        head: [["Producto", "Cantidad", "Precio"]],
+        body: productosDenegados,
+      });
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "normal");
+      doc.text(`Monto Total: ${montoTotal}`, 14, doc.lastAutoTable.finalY + 10);
+      yPosition = doc.lastAutoTable.finalY + 20;
+    });
+    let totalMontoDenegado = 0;
+    reporteSimplificado.forEach((cliente) => {
+      totalMontoDenegado += parseFloat(cliente.montoTotal);
+    });
+    const totalMontoFormateado = new Intl.NumberFormat("es-MX", {
+      style: "currency",
+      currency: "MXN",
+    }).format(totalMontoDenegado);
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "bold");
+    doc.text(`Total de Monto Denegado: ${totalMontoFormateado}`, 10, doc.internal.pageSize.height - 30);
+    const totalPages = doc.internal.pages.length;
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10);
+    doc.text(
+      `Página ${doc.internal.getCurrentPageInfo().pageNumber} de ${totalPages}`,
+      pageWidth - 30,
+      doc.internal.pageSize.height - 10
+    );
+    doc.save("reporte_productos_denegados.pdf");
   };
 
   const loadImageToBase64 = (imagePath) => {
@@ -146,10 +504,9 @@ function InformesPage(props) {
     }).format(Number(monto));
 };
 
-
   const generarReporteSolicitadosPDF = async () => {
     const doc = new jsPDF();
-    
+
     // Logo del negocio (requiere un archivo base64 o imagen cargada)
     const logoBase64 = await loadImageToBase64(`${logo}`);  // Cambia 'logo' con la ruta de tu logo
     doc.addImage(logoBase64, "PNG", 15, 12, 25, 25); // Ajusta posición y tamaño (x, y, width, height)
@@ -286,7 +643,149 @@ function InformesPage(props) {
 
     // Descargar el PDF
     doc.save("reporte_productos_solicitados.pdf");
-};
+  };
+  const generarReporteAutorizadosPDF = async () => {
+    const doc = new jsPDF();
+
+    // Logo del negocio (requiere un archivo base64 o imagen cargada)
+    const logoBase64 = await loadImageToBase64(`${logo}`);  // Cambia 'logo' con la ruta de tu logo
+    doc.addImage(logoBase64, "PNG", 15, 12, 25, 25); // Ajusta posición y tamaño (x, y, width, height)
+
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "bold");
+
+    // Información del negocio alineada a la derecha
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const marginRight = 10;
+
+    // Nombre del negocio (en negritas)
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(12);
+    const nombreNegocio = "FSP GLOBAL TOOLS";
+    const nombreNegocioWidth = doc.getTextWidth(nombreNegocio);
+    doc.text(nombreNegocio, pageWidth - nombreNegocioWidth - marginRight, 15);
+
+    // Resto de la información (en fuente normal)
+    doc.setFont("helvetica", "normal");
+    const infoNegocio = [
+        "Calle egipto 610, CP:25230, Saltillo Coahuila",
+        "Teléfono: +52 123 456 7890",
+        "Email: contacto@globalcar.mx",
+    ];
+
+    infoNegocio.forEach((linea, index) => {
+        const textWidth = doc.getTextWidth(linea);
+        doc.text(linea, pageWidth - textWidth - marginRight, 22 + index * 7); // Ajustar 'y' con un offset
+    });
+
+    // Línea divisoria
+    doc.line(10, 45, 200, 45); // Línea de separación (x1, y1, x2, y2)
+
+    // Título principal
+    doc.setFontSize(14);
+    doc.setFont("helvetica", "bold");
+    doc.text("Reporte de Productos Solicitados", 10, 55);
+
+    // Filtrar y mapear los productos solicitados
+    const reporteSimplificado = productosAutorizados
+        .filter((item) => item.productos && item.productos.length > 0) // Filtrar solo aquellos con productos
+        .map((item) => {
+            // Aplanar los productos solicitados
+            const productosSolicitadosFlattened = item.productos.flat();
+
+            // Calcular el monto total solicitado por cliente
+            const montoTotal = productosSolicitadosFlattened.reduce((total, producto) => {
+                // Convertir precio a número
+                const precioNumerico = parseFloat(producto.precio.replace(',', '.'));
+                return total + (producto.cantidad * precioNumerico); // Sumar cantidad * precio de cada producto
+            }, 0);
+
+            return {
+                clienteNombre: item.clienteNombre,
+                productosSolicitados: productosSolicitadosFlattened.map((producto) => ({
+                    descripcion: producto.descripcion,
+                    cantidad: producto.cantidad,
+                    precio: producto.precio,
+                })),
+                montoTotal, // Agregar el monto total solicitado
+            };
+        });
+
+    // Si no hay productos solicitados, salimos de la función sin generar el PDF
+    if (reporteSimplificado.length === 0) {
+        doc.text("No hay productos solicitados para mostrar.", 10, 70);
+        doc.save("reporte_productos_solicitados.pdf");
+        return;
+    }
+
+    // Contenido del reporte
+    let yPosition = 65;
+    reporteSimplificado.forEach((cliente, index) => {
+        const montoTotal = formatoMoneda(cliente.montoTotal);
+
+        // Título por cliente
+        doc.setFontSize(12);
+        doc.setFont("helvetica", "bold");
+        doc.text(`Cliente: ${cliente.clienteNombre}`, 14, yPosition);
+
+        // Tabla para los productos solicitados
+        const productosSolicitados = cliente.productosSolicitados.map((producto) => [
+            producto.descripcion,
+            producto.cantidad,
+            producto.precio,
+        ]);
+
+        doc.autoTable({
+            startY: yPosition + 7,
+            head: [["Producto", "Cantidad", "Precio"]],
+            body: productosSolicitados,
+        });
+
+        // Monto total solicitado
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "normal");
+        doc.text(
+            `Monto Total: ${montoTotal}`,
+            14,
+            doc.lastAutoTable.finalY + 10
+        );
+
+        // Actualizar la posición Y para el siguiente cliente
+        yPosition = doc.lastAutoTable.finalY + 20;
+    });
+
+    // Calcular el total de todos los montos solicitados
+    let totalMontoSolicitado = 0;
+    reporteSimplificado.forEach(cliente => {
+        totalMontoSolicitado += parseFloat(cliente.montoTotal);
+    });
+
+    // Formatear el monto total como dinero
+    const totalMontoFormateado = new Intl.NumberFormat('es-MX', {
+        style: 'currency',
+        currency: 'MXN',
+    }).format(totalMontoSolicitado);
+
+    // Mostrar el total de los montos solicitados en formato de dinero
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "bold");
+    doc.text(`Total de Monto Solicitado: ${totalMontoFormateado}`, 10, doc.internal.pageSize.height - 30);
+
+    // Agregar el número de página al final de la página
+    const totalPages = doc.internal.pages.length;
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10);
+    doc.text(
+        `Página ${doc.internal.getCurrentPageInfo().pageNumber} de ${totalPages}`,
+        pageWidth - 30,
+        doc.internal.pageSize.height - 10
+    );
+
+    // Descargar el PDF
+    doc.save("reporte_productos_autorizados.pdf");
+  };
+  
+  console.log(cantidadPorCliente)
   return (
     <>
       <div className="dashboard">
@@ -299,21 +798,52 @@ function InformesPage(props) {
             <section className="mb-8">
               <h2 className="text-2xl font-semibold mb-10">Reportes y Estadísticas</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div className="bg-white p-4 rounded-lg shadow-md">
-                  <Bar data={barChartData} options={barChartOptions} />
-                </div>
-                <div className="bg-white p-4 rounded-lg shadow-md">
-                  <Pie data={pieChartData} options={pieChartOptions} />
-                </div>
                 <div className="bg-white p-4 rounded-lg shadow-md flex flex-col justify-center items-center">
-                  <h3 className="text-lg font-semibold mb-4">Productos Autorizados</h3>
+                  <div>
+                    <h3 className="text-lg font-semibold mb-4">Productos Solicitados</h3>
+                    <button
+                      className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                      onClick={generarReporteSolicitadosPDF}
+                    >
+                      Descargar PDF
+                    </button>
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold mb-4">Productos Autorizados</h3>
+                    <button
+                      className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+                      onClick={generarReporteAutorizadosPDF}
+                    >
+                      Descargar PDF
+                    </button>
+                  </div>
+                  <div>
+                  <h3 className="text-lg font-semibold mb-4">Productos Denegados</h3>
                   <button
-                    className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-                    onClick={generarReporteSolicitadosPDF}
+                    className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+                    onClick={generarReporteDenegadosPDF}
                   >
                     Descargar PDF
                   </button>
+                  </div>
                 </div>
+                <div className="bg-white p-4 rounded-lg shadow-md flex flex-col justify-center items-center">
+                  <h3 className="text-lg font-semibold mb-4">Gráfica de Montos</h3>
+                  <canvas ref={chartRef} />
+                </div>
+                <div className="bg-white p-4 rounded-lg shadow-md flex flex-col justify-center items-center">
+                  <h3 className="text-lg font-semibold mb-4">Gráfica de Cantidades</h3>
+                  <canvas ref={quantityChartRef} />
+                </div>
+                <div className="bg-white p-4 rounded-lg shadow-md flex flex-col justify-center items-center">
+                  <h3 className="text-lg font-semibold mb-4">Cantidad de Productos por Familia</h3>
+                  <canvas ref={familyChartRef} />
+                </div>
+                <div className="bg-white p-4 rounded-lg shadow-md flex flex-col justify-center items-center">
+                  <h3 className="text-lg font-semibold mb-4">Cantidad de Productos por Cliente</h3>
+                  <canvas ref={clientChartRef} />
+                </div>
+                {renderProductTable()}
               </div>
             </section>
           </div>
