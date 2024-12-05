@@ -122,13 +122,16 @@ function OrderPopupCreate(props) {
         }
         
     }
-    function handleSearchProducts(e) {
-        if(e.target.value == "") {
-            setSearchedProducts([])
-            setInputSearchProduct("")
-        }else{
+    function handleChangeSearchProducts(e) {
+        if(e.target.id == "inputSearchProduct"){
             setInputSearchProduct(e.target.value)
-            fetch(`${api.addressEndpoints}/products/search/all?value=${e.target.value}&limit=4`, {
+        }
+    }
+    function handleSearchProducts() {
+        if(inputSearchProduct == "") {
+            setSearchedProducts([])
+        }else{
+            fetch(`${api.addressEndpoints}/products/busqueda?search=${inputSearchProduct}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -153,20 +156,29 @@ function OrderPopupCreate(props) {
                             } 
                             });
                     }else {
-                        setSearchedProducts(data.products)
+                        if(data.error) {
+                            alert(data.err)
+                        }else {
+                            setSearchedProducts(data.productos)
+                        }
                     }
                 })
                 .catch((err) => console.log(err));
         }
     }
 
-    function handleSearchClients(e) {
-        if(e.target.value == "") {
-            setSearchedClients([])
-            setInputSearchClient("")
-        }else{
+    function handleChangeSearchClients(e) {
+        if(e.target.id == "inputSearchClient") {
             setInputSearchClient(e.target.value)
-            fetch(`${api.addressEndpoints}/clients/search/all?value=${e.target.value}&limit=4`, {
+        }
+        console.log(inputSearchClient)
+
+    }
+    function handleSearchClients() {
+        if(inputSearchClient == "") {
+            setSearchedClients([])
+        }else{
+            fetch(`${api.addressEndpoints}/clients/busqueda?search=${inputSearchClient}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -191,12 +203,13 @@ function OrderPopupCreate(props) {
                             } 
                             });
                     }else {
-                        setSearchedClients(data.clients)
+                        setSearchedClients(data.clientes)
                     }
                 })
                 .catch((err) => console.log(err));
         }
     }
+
 
     function handleResetSearchProduct() {
         setInputSearchProduct("")
@@ -342,16 +355,16 @@ function OrderPopupCreate(props) {
                                                 className="dashboardTable__input"
                                                 placeholder="Busqueda General..."
                                                 id="inputSearchClient"
-                                                onChange={handleSearchClients}
+                                                onChange={handleChangeSearchClients}
                                                 value={inputSearchClient}
                                                 />
                                                 <button
                                                 className="dashboardTable__button--stats"
                                                 type="button"
-                                                onClick={handleResetSearchClient}
+                                                onClick={handleSearchClients}
                                                 >
-                                                    <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.651 7.65a7.131 7.131 0 0 0-12.68 3.15M18.001 4v4h-4m-7.652 8.35a7.13 7.13 0 0 0 12.68-3.15M6 20v-4h4"/>
+                                                    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                                    <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"/>
                                                     </svg>
                                                 </button>
                                             </div>
@@ -359,6 +372,15 @@ function OrderPopupCreate(props) {
                                     </div>
                                 </div>
                             </div>
+                            <button
+                                    className=""
+                                    type="button"
+                                    onClick={handleResetSearchClient}
+                                    >
+                                        <svg className="w-5 h-5 text-gray-700 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.651 7.65a7.131 7.131 0 0 0-12.68 3.15M18.001 4v4h-4m-7.652 8.35a7.13 7.13 0 0 0 12.68-3.15M6 20v-4h4"/>
+                                        </svg>
+                                </button>
                             <div>
                                 <h1>Cliente Seleccionado: <span className="font-semibold">{clienteSeleccionado}</span></h1>
                             </div>
@@ -403,17 +425,18 @@ function OrderPopupCreate(props) {
                                     <div class="">
                                         {searchedClients.reverse().map(cliente => {     
                                                 function handleSelectSearchClient() {
-                                                    setClienteSeleccionado(cliente.nombre)
-                                                    setNombreCliente(cliente.nombre)
-                                                    setTelefonoCliente(cliente.telefono)
-                                                    setEmailCliente(cliente.email)
-                                                    setUbicacionCliente(cliente.direccion)
+                                                    setClienteSeleccionado(cliente.NOMBRE)
+                                                    setNombreCliente(cliente.NOMBRE)
+                                                    setTelefonoCliente(cliente.TELEFONO)
+                                                    setEmailCliente(cliente.E_MAIL)
+                                                    setUbicacionCliente(cliente.DIRECCION)
                                                     handleResetSearchClient()
                                                     setNewClientForm(false)
                                                 }
                                                 return(
                                                     <>
-                                                    <p className="p-2 hover:bg-gray-100 hover:cursor-pointer" onClick={handleSelectSearchClient}>{cliente.nombre}</p>
+                                                    <p className="p-2 hover:bg-gray-100 hover:cursor-pointer" onClick={handleSelectSearchClient}>{cliente.NOMBRE}</p>
+                                                    
                                                     </>
                                                 )
                                         })}
@@ -558,7 +581,7 @@ function OrderPopupCreate(props) {
                                     <h1 className="text-lg">Buscar Productos</h1>
                                     <p className="text-xs font-semibold">*Seleccione el prodcuto con doble click</p>
                                 </div>
-                                <div className="popup-create__form--add ">
+                                <div className="popup-create__form--add flex justify-start">
                                     <div className="w-80">
                                         <div className="w-full">
                                             <div className=" w-6/6">
@@ -567,22 +590,31 @@ function OrderPopupCreate(props) {
                                                     className="dashboardTable__input"
                                                     placeholder="Busqueda General..."
                                                     id="inputSearchProduct"
-                                                    onChange={handleSearchProducts}
+                                                    onChange={handleChangeSearchProducts}
                                                     value={inputSearchProduct}
                                                     />
                                                     <button
                                                     className="dashboardTable__button--stats"
                                                     type="button"
-                                                    onClick={handleResetSearchProduct}
+                                                    onClick={handleSearchProducts}
                                                     >
-                                                        <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.651 7.65a7.131 7.131 0 0 0-12.68 3.15M18.001 4v4h-4m-7.652 8.35a7.13 7.13 0 0 0 12.68-3.15M6 20v-4h4"/>
+                                                        <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                                        <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"/>
                                                         </svg>
                                                     </button>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+                                    <button
+                                        className=""
+                                        type="button"
+                                        onClick={handleResetSearchProduct}
+                                        >
+                                            <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.651 7.65a7.131 7.131 0 0 0-12.68 3.15M18.001 4v4h-4m-7.652 8.35a7.13 7.13 0 0 0 12.68-3.15M6 20v-4h4"/>
+                                            </svg>
+                                        </button>
                                 </div>
                                     <div>
                                         <table className="product-list__table">
@@ -603,6 +635,7 @@ function OrderPopupCreate(props) {
                                                 }
                                                 {searchedProducts.reverse().map(producto => {     
                                                     function handleSelectSearchProduct(){
+                                                        console.log(productosPedido)
                                                         if(productosPedido.length == 0 ) {
                                                             producto.cantidad = 1
                                                             setSelectedSearchedProducts([producto])
@@ -619,9 +652,9 @@ function OrderPopupCreate(props) {
                                                             <tr className=" hover:cursor-pointer hover:bg-gray-100"
                                                                 onClick={handleSelectSearchProduct}
                                                             >
-                                                                <td className="p-2">{producto.codigo_interno}</td>
-                                                                <td className="p-2">{producto.descripcion}</td>
-                                                                <td className="text-center p-2">${producto.precio}</td>
+                                                                <td className="p-2">{producto.CODIGO_BARRAS}</td>
+                                                                <td className="p-2">{producto.DESCRIPCION}</td>
+                                                                <td className="text-center p-2">${producto.PRECIO_VENTA}</td>
                                                             </tr>
                                                         </>
                                                     )
