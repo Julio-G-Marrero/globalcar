@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import TemplateProductTable from "./TemplateProductTable";
 import CurrencyInput from 'react-currency-input-field';
 import closeIcon from '../images/Close_Icon.png';
@@ -9,19 +9,11 @@ import withReactContent from 'sweetalert2-react-content'
 
 function OrderPopupCreate(props) {
     const MySwal = withReactContent(Swal)
-
-    const history = useHistory()
-    const [nombreCliente, setNombreCliente] = React.useState("")
-    const [telefonoCliente, setTelefonoCliente] = React.useState("")
-    const [emailCliente, setEmailCliente] = React.useState("")
-    const [ubicacionCliente, setUbicacionCliente] = React.useState("")
-    const [fechaPromesa, setFechaPromesa] = React.useState()
-    const [comentarios, setComentarios] = React.useState()
-
+    const history = useHistory();
+    
+    const [inputSearchProduct,setInputSearchProduct] = React.useState("")
     const [newProductForm,setNewProductForm] = React.useState(false)
-    const [newClientForm,setNewClientForm] = React.useState(false)
     const [searchedProducts,setSearchedProducts] = React.useState([])
-    const [searchedClients,setSearchedClients] = React.useState([])
     const [selectedSearchedProducts,setSelectedSearchedProducts] = React.useState([])
     const [productosPedido, setProductosPedidos] = React.useState([])
     const [nombreProducto, setNombreProducto] = React.useState("")
@@ -29,11 +21,17 @@ function OrderPopupCreate(props) {
     const [precioProducto, setPrecioProducto] = React.useState(0)
     const [cantidadProducto, setCantidadProducto] = React.useState(1)
     const [totalMonto, setTotalMonto] = React.useState(0)
-
-    const [inputSearchProduct,setInputSearchProduct] = React.useState("")
-    const [inputSearchClient,setInputSearchClient] = React.useState("")
-
-    const [clienteSeleccionado,setClienteSeleccionado] = React.useState("")
+    const [nombreCliente, setNombreCliente] = useState("");
+    const [telefonoCliente, setTelefonoCliente] = useState("");
+    const [emailCliente, setEmailCliente] = useState("");
+    const [ubicacionCliente, setUbicacionCliente] = useState("");
+    const [fechaPromesa, setFechaPromesa] = useState();
+    const [comentarios, setComentarios] = useState();
+    const [newClientForm, setNewClientForm] = useState(false);
+    const [searchedClients, setSearchedClients] = useState([]);
+    const [inputSearchClient, setInputSearchClient] = useState("");
+    const [clienteSeleccionado, setClienteSeleccionado] = useState("");
+    const [highlightedIndex, setHighlightedIndex] = useState(-1);
 
     const Toast = MySwal.mixin({
         toast: true,
@@ -45,7 +43,7 @@ function OrderPopupCreate(props) {
           toast.onmouseenter = MySwal.stopTimer;
           toast.onmouseleave = MySwal.resumeTimer;
         }
-      });
+    });
 
     const prefix = "$ ";
     const handleOnBlur = () => setPrecioProducto(Number(precioProducto).toFixed(2));
@@ -60,6 +58,7 @@ function OrderPopupCreate(props) {
     }else {
         actual_date = String(year +'-'+month+'-'+day);
     }
+
     function handleAddProduct(e) {
         e.preventDefault()
         if(nombreProducto !== "" && precioProducto !== 0 && cantidadProducto !== 0) {
@@ -87,15 +86,21 @@ function OrderPopupCreate(props) {
             alert('Hace falta un campo')
         }
     }
-    function handleDeleteProducto(productElement){
+
+    function handleDeleteProducto(productElement) {
         const idProducto = productElement._id;
-        const cleanProducts = productosPedido.filter(item => item._id !== idProducto);
-        setProductosPedidos(cleanProducts)
-        setSelectedSearchedProducts([])
-        setTimeout(function(){
-            sumaDeMonto()
+        const cleanProducts = productosPedido.filter(
+            (item) => item._id !== idProducto
+        );
+        setProductosPedidos(cleanProducts); // Actualiza el array de productos
+        console.log(idProducto)
+        setSelectedSearchedProducts([]); // Limpia la búsqueda, si es necesario
+        setTimeout(() => {
+          sumaDeMonto(); // Recalcula el monto total
         }, 100);
-    }
+      }
+      
+
     function handleOnChange(e) {
         if(e.target.id === "nombreProducto"){
             setNombreProducto(e.target.value)
@@ -122,16 +127,19 @@ function OrderPopupCreate(props) {
         }
         
     }
+    
     function handleChangeSearchProducts(e) {
         if(e.target.id == "inputSearchProduct"){
             setInputSearchProduct(e.target.value)
         }
     }
-    function handleSearchProducts() {
+
+    function handleSearchProducts(e) {
+        handleChangeSearchProducts(e)
         if(inputSearchProduct == "") {
             setSearchedProducts([])
         }else{
-            fetch(`${api.addressEndpoints}/products/busqueda?search=${inputSearchProduct}`, {
+            fetch(`${api.addressEndpoints}/products/search/all?value=${inputSearchProduct}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -159,13 +167,14 @@ function OrderPopupCreate(props) {
                         if(data.error) {
                             alert(data.err)
                         }else {
-                            setSearchedProducts(data.productos)
+                            setSearchedProducts(data.products)
                         }
                     }
                 })
                 .catch((err) => console.log(err));
         }
     }
+
 
     function handleChangeSearchClients(e) {
         if(e.target.id == "inputSearchClient") {
@@ -174,11 +183,12 @@ function OrderPopupCreate(props) {
         console.log(inputSearchClient)
 
     }
-    function handleSearchClients() {
+    function handleSearchClients(e) {
+        handleChangeSearchClients(e)
         if(inputSearchClient == "") {
             setSearchedClients([])
         }else{
-            fetch(`${api.addressEndpoints}/clients/busqueda?search=${inputSearchClient}`, {
+            fetch(`${api.addressEndpoints}/clients/search/all?value=${inputSearchClient}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -203,13 +213,12 @@ function OrderPopupCreate(props) {
                             } 
                             });
                     }else {
-                        setSearchedClients(data.clientes)
+                        setSearchedClients(data.clients)
                     }
                 })
                 .catch((err) => console.log(err));
         }
     }
-
 
     function handleResetSearchProduct() {
         setInputSearchProduct("")
@@ -225,7 +234,6 @@ function OrderPopupCreate(props) {
         setNewProductForm(!newProductForm)
     }
     
- 
     function handleCleanForm(){
         setClienteSeleccionado("")
         setNombreCliente("")
@@ -251,7 +259,8 @@ function OrderPopupCreate(props) {
         )
         return totalProductos
     }
-  
+
+
     function sumaDeMonto() {
         let suma = 0
         let cantidadesPrecios = document.querySelectorAll('.precioTotalCantidad')
@@ -262,10 +271,6 @@ function OrderPopupCreate(props) {
         }
         );
         setTotalMonto(suma)
-    }
-
-    function handleCreateClient() {
-        setNewClientForm(!newClientForm)
     }
 
     function handleOrderCreate(e){
@@ -334,59 +339,151 @@ function OrderPopupCreate(props) {
            
         }
     }
-    return(
+
+    function handleCreateClient() {
+        setNewClientForm(!newClientForm)
+    }
+
+    function handleSelectSearchProduct(producto) {
+        setProductosPedidos((prevProductos) => {
+          const existe = prevProductos.some(item => item._id === producto._id);
+          
+          if (!existe) {
+            producto.cantidad = 1;
+            return [...prevProductos, producto];
+          } else {
+            return prevProductos;
+          }
+        });
+      
+        setSelectedSearchedProducts((prevSelected) => {
+          const existe = prevSelected.some(item => item._id === producto._id);
+          if (!existe) {
+            return [...prevSelected, producto];
+          }
+          return prevSelected;
+        });
+      }
+
+    function handleChangeSearchClients(e) {
+        setInputSearchClient(e.target.value);
+        if (e.target.value === "") {
+            setSearchedClients([]);
+        } else {
+            fetch(`${api.addressEndpoints}/clients/search/all?value=${e.target.value}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${props.jwt}`,
+                }
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.clients) {
+                    setSearchedClients(data.clients);
+                } else {
+                    setSearchedClients([]);
+                }
+            })
+            .catch((err) => console.log(err));
+        }
+    }
+
+    function handleKeyDown(e) {
+        if (searchedClients.length === 0) return;
+
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            setHighlightedIndex((prevIndex) =>
+                prevIndex === searchedClients.length - 1 ? 0 : prevIndex + 1
+            );
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            setHighlightedIndex((prevIndex) =>
+                prevIndex <= 0 ? searchedClients.length - 1 : prevIndex - 1
+            );
+        } else if (e.key === 'Enter' && highlightedIndex !== -1) {
+            e.preventDefault();
+            handleSelectSearchClient(searchedClients[highlightedIndex]);
+        }
+    }
+
+    function handleSelectSearchClient(cliente) {
+        setClienteSeleccionado(cliente.nombre);
+        setNombreCliente(cliente.nombre);
+        setTelefonoCliente(cliente.telefono);
+        setEmailCliente(cliente.email);
+        setUbicacionCliente(cliente.direccion);
+        setSearchedClients([]);
+        setHighlightedIndex(-1);
+        setNewClientForm(false);
+    }
+
+    function handleResetSearchClient() {
+        setInputSearchClient("");
+        setSearchedClients([]);
+        setHighlightedIndex(-1);
+    }
+
+    return (
         <>
-            <div className={props.popupCreateOrder ?"popup-create" : "popup-create hidden"}>
+            <div className={props.popupCreateOrder ? "popup-create" : "popup-create hidden"}>
                 <div className="popup-create__container">
-                <h1 className="items-center text-2xl font-semibold text-gray-500 mt-1 mb-2">Crear Orden</h1>
-                {/* Formulario para buscar cliente */}
-                <div className="text-left mb-16">
-                    <div className="relative top-10">
-                        <div className="mb-2">
-                            <h1 className="text-lg">Seleccionar Cliente</h1>
-                        </div>
-                        <div className="flex gap-4 items-center">
-                            <div className="popup-create__form--add ">
-                                <div className="w-80">
-                                    <div className="w-full">
-                                        <div className=" w-6/6">
-                                            <div className="relative">
-                                                <input
-                                                className="dashboardTable__input"
-                                                placeholder="Busqueda General..."
-                                                id="inputSearchClient"
-                                                onChange={handleChangeSearchClients}
-                                                value={inputSearchClient}
-                                                />
-                                                <button
-                                                className="dashboardTable__button--stats"
-                                                type="button"
-                                                onClick={handleSearchClients}
-                                                >
-                                                    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                                    <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"/>
-                                                    </svg>
-                                                </button>
+                    <h1 className="items-center text-2xl font-semibold text-gray-500 mt-1 mb-2">Crear Orden</h1>
+                    <div className="text-left mb-16">
+                        <div className="relative top-10">
+                            <div className="mb-2">
+                                <h1 className="text-lg">Seleccionar Cliente</h1>
+                            </div>
+                            <div className="flex gap-4 items-center">
+                                <div className="popup-create__form--add ">
+                                    <div className="w-80">
+                                        <div className="w-full">
+                                            <div className=" w-6/6">
+                                                <div className="relative">
+                                                    <input
+                                                        className="dashboardTable__input"
+                                                        placeholder="Busqueda General..."
+                                                        id="inputSearchClient"
+                                                        onChange={handleChangeSearchClients}
+                                                        onKeyDown={handleKeyDown}
+                                                        value={inputSearchClient}
+                                                    />
+                                                    <button
+                                                        className="dashboardTable__button--stats"
+                                                        type="button"
+                                                        onClick={handleResetSearchClient}
+                                                    >
+                                                        <svg className="w-5 h-5 text-gray-700 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.651 7.65a7.131 7.131 0 0 0-12.68 3.15M18.001 4v4h-4m-7.652 8.35a7.13 7.13 0 0 0 12.68-3.15M6 20v-4h4"/>
+                                                        </svg>
+                                                    </button>
+                                                    {searchedClients.length > 0 && (
+                                                        <div className="absolute left-0 right-0 mt-2 w-full border border-gray-300 bg-white shadow-lg rounded-md z-50" role="menu">
+                                                            {searchedClients.map((cliente, index) => (
+                                                                <div
+                                                                    key={cliente._id}
+                                                                    className={`p-2 hover:bg-gray-100 cursor-pointer ${
+                                                                        index === highlightedIndex ? 'bg-gray-200' : ''
+                                                                    }`}
+                                                                    onClick={() => handleSelectSearchClient(cliente)}
+                                                                    onMouseEnter={() => setHighlightedIndex(index)}
+                                                                >
+                                                                    {cliente.nombre}
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    )}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                                <div>
+                                    <h1>Cliente Seleccionado: <span className="font-semibold">{clienteSeleccionado}</span></h1>
+                                </div>
                             </div>
-                            <button
-                                    className=""
-                                    type="button"
-                                    onClick={handleResetSearchClient}
-                                    >
-                                        <svg className="w-5 h-5 text-gray-700 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.651 7.65a7.131 7.131 0 0 0-12.68 3.15M18.001 4v4h-4m-7.652 8.35a7.13 7.13 0 0 0 12.68-3.15M6 20v-4h4"/>
-                                        </svg>
-                                </button>
-                            <div>
-                                <h1>Cliente Seleccionado: <span className="font-semibold">{clienteSeleccionado}</span></h1>
-                            </div>
-                        </div>
-                     
-                        {clienteSeleccionado == "" 
+                            {clienteSeleccionado == "" 
                         ?
                             <div className="flex items-center hover:cursor-pointer"
                                 onClick={handleCreateClient}
@@ -415,43 +512,9 @@ function OrderPopupCreate(props) {
                         :
                             ""
                         }
-                        {/* cliente */}
-                        {searchedClients.length > 0 ?
-                            <div class="relative">
-                                <div
-                                    class="absolute end-0 z-10 mt-2 left-0 w-80 rounded-md border border-gray-100 bg-white shadow-lg"
-                                    role="menu"
-                                >
-                                    <div class="">
-                                        {searchedClients.reverse().map(cliente => {     
-                                                function handleSelectSearchClient() {
-                                                    setClienteSeleccionado(cliente.NOMBRE)
-                                                    setNombreCliente(cliente.NOMBRE)
-                                                    setTelefonoCliente(cliente.TELEFONO)
-                                                    setEmailCliente(cliente.E_MAIL)
-                                                    setUbicacionCliente(cliente.DIRECCION)
-                                                    handleResetSearchClient()
-                                                    setNewClientForm(false)
-                                                }
-                                                return(
-                                                    <>
-                                                    <p className="p-2 hover:bg-gray-100 hover:cursor-pointer" onClick={handleSelectSearchClient}>{cliente.NOMBRE}</p>
-                                                    
-                                                    </>
-                                                )
-                                        })}
-                                    </div>
-                                </div>
-                            </div>
-                            :
-                            ""
-                        }
-                        <div>
                         </div>
                     </div>
-                </div>
-                
-                <form className="text-left">
+                    <form className="text-left">
                     <div className={newClientForm ? "text-left" : "hidden"}>
                         <div className="popup-create__margin">
                             <label for="nombre-cliente" className="popup-create__input-name">Nombre Cliente</label>
@@ -576,10 +639,13 @@ function OrderPopupCreate(props) {
                                     }
                             </div>
                             {/* Formulario Buscar Producto */}
-                            <div className="relative top-10">
+                            <div className="">
+                                <label for="comentarios" className="popup-create__input-name">Comentarios</label>
+                                <textarea type="text" value={comentarios} onChange={handleOnChange} id="comentarios" name="comentarios" className="popup-create__input h-10" />
+                            </div> 
+                            <div className="relative">
                                 <div className="mb-2">
                                     <h1 className="text-lg">Buscar Productos</h1>
-                                    <p className="text-xs font-semibold">*Seleccione el prodcuto con doble click</p>
                                 </div>
                                 <div className="popup-create__form--add flex justify-start">
                                     <div className="w-80">
@@ -590,31 +656,23 @@ function OrderPopupCreate(props) {
                                                     className="dashboardTable__input"
                                                     placeholder="Busqueda General..."
                                                     id="inputSearchProduct"
-                                                    onChange={handleChangeSearchProducts}
+                                                    onChange={handleSearchProducts}
                                                     value={inputSearchProduct}
                                                     />
                                                     <button
                                                     className="dashboardTable__button--stats"
                                                     type="button"
-                                                    onClick={handleSearchProducts}
+                                                    onClick={handleResetSearchProduct}
                                                     >
-                                                        <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                                        <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"/>
+                                                        <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.651 7.65a7.131 7.131 0 0 0-12.68 3.15M18.001 4v4h-4m-7.652 8.35a7.13 7.13 0 0 0 12.68-3.15M6 20v-4h4"/>
                                                         </svg>
                                                     </button>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <button
-                                        className=""
-                                        type="button"
-                                        onClick={handleResetSearchProduct}
-                                        >
-                                            <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.651 7.65a7.131 7.131 0 0 0-12.68 3.15M18.001 4v4h-4m-7.652 8.35a7.13 7.13 0 0 0 12.68-3.15M6 20v-4h4"/>
-                                            </svg>
-                                        </button>
+                             
                                 </div>
                                     <div>
                                         <table className="product-list__table">
@@ -633,49 +691,31 @@ function OrderPopupCreate(props) {
                                                         <p className="p-2 text-gray-400">No hay productos</p>
                                                     </>
                                                 }
-                                                {searchedProducts.reverse().map(producto => {     
-                                                    function handleSelectSearchProduct(){
-                                                        console.log(productosPedido)
-                                                        if(productosPedido.length == 0 ) {
-                                                            producto.cantidad = 1
-                                                            setSelectedSearchedProducts([producto])
-                                                            setProductosPedidos(selectedSearchedProducts)
-                                                        }else {
-                                                            producto.cantidad = 1
-                                                            const filtrados = productosPedido.filter(item => item._id !== producto._id)
-                                                            setSelectedSearchedProducts([...filtrados,producto])
-                                                            setProductosPedidos([...filtrados,producto])
-                                                        }
-                                                    }
-                                                    return(
-                                                        <>
-                                                            <tr className=" hover:cursor-pointer hover:bg-gray-100"
-                                                                onClick={handleSelectSearchProduct}
-                                                            >
-                                                                <td className="p-2">{producto.CODIGO_BARRAS}</td>
-                                                                <td className="p-2">{producto.DESCRIPCION}</td>
-                                                                <td className="text-center p-2">${producto.PRECIO_VENTA}</td>
-                                                            </tr>
-                                                        </>
-                                                    )
-                                                })}
+                                                {searchedProducts.reverse().map(producto => (
+                                                    <tr 
+                                                        key={producto._id} 
+                                                        className="hover:cursor-pointer hover:bg-gray-100"
+                                                        onClick={() => handleSelectSearchProduct(producto)}
+                                                    >
+                                                        <td className="p-2">{producto.codigo_barras}</td>
+                                                        <td className="p-2">{producto.descripcion}</td>
+                                                        <td className="text-center p-2">{producto.precio}</td>
+                                                    </tr>
+                                                    ))}
                                             </tbody>
                                         </table>
 
                                     </div>
                             </div>
                         </div>
-                    {/* <div className="popup-create__margin">
-                        <label for="comentarios" className="popup-create__input-name">Comentarios</label>
-                        <textarea type="text" value={comentarios} onChange={handleOnChange} id="comentarios" name="comentarios" className="popup-create__input h-10" />
-                    </div> */}
+
                     <button type="submit" className=" mt-16 popup-create__buttonCreate bg-globalcar"
                     onClick={handleOrderCreate}
                     >Crear</button>
                 </form>
                 </div>
                 <img
-                    className="modal__close "
+                    className="modal__close"
                     src={closeIcon}
                     onClick={props.closeAllPopups}
                     alt="close icon"
@@ -685,4 +725,4 @@ function OrderPopupCreate(props) {
     )
 }
 
-export default OrderPopupCreate
+export default OrderPopupCreate;

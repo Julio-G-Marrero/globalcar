@@ -1,261 +1,221 @@
-import React from "react";
-import CurrencyInput from 'react-currency-input-field';
-import Swal from 'sweetalert2'
-import withReactContent from 'sweetalert2-react-content'
+import React, { useState, useEffect } from "react";
+import { format } from "date-fns";
 
-function TemplateProductTable(props){
-    const MySwal = withReactContent(Swal)
-    const [isCheked, setIsCheked] = React.useState(false)
-    const [isEditOn, setIsEditOn] = React.useState(false)
-    const [isEditOnActive, setIsEditOnActive] = React.useState(false)
-    const [nuevoPrecioProducto, setNuevoPrecioProducto] = React.useState(props.producto.precio)
-    const [nuevaCantidadProducto, setNuevaCantidadProducto] = React.useState(props.producto.cantidad)
-    const [nuevoMontoTotal, setNuevoMontoTotal] = React.useState(parseInt(props.producto.precio) * parseInt(nuevaCantidadProducto))
-    const [provedoresProducto, setProvedoresProducto] = React.useState(props.producto.provedor)
-    const [editQty, setEditQty] = React.useState(props.isCreatePopup || props.rol == 1)
-    const [isEditPopup, setIsEditPopup] = React.useState(props.isEditPopup && props.rol == 1)
-    React.useEffect(() => {
-        setProvedoresProducto(props.producto.provedor)
-    },[])
-    React.useEffect(() => {
-        calcularMonto()
-    },[nuevaCantidadProducto])
-    React.useEffect(() => {
-        if(props.isCreatePopup == true) {
-            props.sumaDeMonto()
-        }
-    },[nuevoMontoTotal])
-    React.useEffect(() => {
-        setIsEditOn(false)
-        setIsEditOnActive(false)
-        setNuevoPrecioProducto(props.producto.precio)
-        setNuevaCantidadProducto(props.producto.cantidad)
-        setProvedoresProducto(props.producto.provedor)
-    },[props.orderSelected])
+function TemplateProductTable(props) {
+  const [isChecked, setIsChecked] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [quantity, setQuantity] = useState(props.producto.cantidad);
+  const [price, setPrice] = useState(props.producto.precio);
+  const [provider, setProvider] = useState(props.producto.provedor || "");
+  const [deliveryDate, setDeliveryDate] = useState("");
+  const [totalAmount, setTotalAmount] = useState(
+    props.producto.precio * props.producto.cantidad
+  );
+  const today = new Date().toISOString().split("T")[0];
 
-    function handleChange(e) {
-        if(e.target.id == "nuevoPrecioProducto") {
-            const { value = "" } = e.target;
-            const parsedValue = value.replace(/[^\d.]/gi, "");
-            let newValue = parseInt(parsedValue)
-            setNuevoPrecioProducto(newValue)
-        }else if(e.target.id == "nuevaCantidadProducto") {
-            const value = e.target.value
-            let newValue = parseInt(value)
-            setNuevaCantidadProducto(newValue)
-            props.producto.cantidad = nuevaCantidadProducto
-        }else if(e.target.id == "provedoresProducto") {
-            const value = e.target.value
-            setProvedoresProducto(value)
-        }else if(e.target.id == "nuevaCantidadProductoResta") {
-            if(nuevaCantidadProducto > 1) {
-                setNuevaCantidadProducto(nuevaCantidadProducto - 1)
-                props.producto.cantidad = nuevaCantidadProducto
-            }
-        }else if(e.target.id == "nuevaCantidadProductoSuma") {
-            const cantidadCambio = (parseInt(nuevaCantidadProducto) + 1)
-            setNuevaCantidadProducto(cantidadCambio)
-            props.producto.cantidad = nuevaCantidadProducto
-        }
+  // Update total amount when price or quantity changes
+  useEffect(() => {
+    setTotalAmount(price * quantity);
+  }, [price, quantity]);
+
+  useEffect(() => {
+    // Sincroniza el estado con las props si el valor cambia
+    setProvider(props.producto.provedor || "");
+  }, [props.producto.provedor]);
+  useEffect(() => {
+    // Sincroniza el estado con las props si el valor cambia
+    setQuantity(props.producto.cantidad || 1);
+}, [props.producto.cantidad]);
+
+  // Handle changes in quantity, price, or provider
+  const handleChange = (e) => {
+    const { id, value } = e.target;
+    if (id === "quantity") {
+      setQuantity(parseInt(value) || 0);
+    } else if (id === "price") {
+      setPrice(parseInt(value) || 0);
+    } else if (id === "provider") {
+      setProvider(value);
     }
-     
-    function calcularMonto() {
-        let montoCalculado = parseInt(props.producto.precio) * parseInt(nuevaCantidadProducto)
-        setNuevoMontoTotal(montoCalculado)
+  };
+
+  console.log()
+
+  // Handle delivery date changes with validation
+  const handleDateChange = (e) => {
+    const rawDate = e.target.value;
+
+    if (!rawDate) {
+      console.error("Fecha inválida: ", rawDate);
+      return;
     }
 
-    function handleDeleteButton(e){
-        e.preventDefault()
-        props.handleDeleteProducto(props.producto)
+    const parsedDate = new Date(rawDate);
+
+    if (isNaN(parsedDate.getTime())) {
+      console.error("Fecha inválida después del parseo: ", rawDate);
+      return;
     }
 
-    function handleCheckProduct(e) {
-        setIsCheked(true)
-        if(Object.keys(props.productosAutorizados).length === 0 ) {
-            props.setProductosAutorizados([{
-                'idProducto':props.producto._id,
-                "codigo_interno": props.producto.codigo_interno,
-                "descripcion": props.producto.descripcion,
-                "precio": props.producto.precio,
-                "cantidad": parseInt(nuevaCantidadProducto),
-                "provedor" : provedoresProducto
-            }]
-            )
-        } else {
-            console.log('segundo')
-            console.log(props.producto._id)
-            props.setProductosAutorizados([...props.productosAutorizados, {
-                'idProducto':props.producto._id,
-                "codigo_interno": props.producto.codigo_interno,
-                "descripcion": props.producto.descripcion,
-                "precio": props.producto.precio,
-                "cantidad": parseInt(nuevaCantidadProducto),
-                "provedor" : provedoresProducto
-            }, ]);
-        }
+    const formattedDate = format(parsedDate, "dd/MM/yyyy");
+    setDeliveryDate(formattedDate);
+    props.producto.fecha_promesa_entrega = formattedDate;
+  };
 
-    }
-
-    function handleEditProductInfo(e) {
-        e.preventDefault()
-        setIsEditOn(true)
-        setIsEditOnActive(!isEditOnActive)
-    }
-    function handleSaveProductInfo(e) {
-        const idProducto = e.target.id;
-        const cleanProducts = props.productosAutorizados.filter(product => product.idProducto != idProducto);
-        props.setProductosAutorizados([...cleanProducts,{
-            'idProducto':props.producto._id,
-            "codigo_interno": props.producto.codigo_interno,
-            "descripcion": props.producto.descripcion,
-            "precio": nuevoPrecioProducto,
-            "cantidad": parseInt(nuevaCantidadProducto),
-            "provedor" : provedoresProducto
-
-        }])
-        calcularMonto()
-        setIsEditOnActive(!isEditOnActive)
-
-    }
-    function handleDeleteProductList(e){
-        setNuevoPrecioProducto(props.producto.precio)
-        setNuevaCantidadProducto(nuevaCantidadProducto)
-        setNuevoMontoTotal(nuevoMontoTotal)
-        setIsCheked(false)
-        const idProducto = e.target.id;
-        const cleanProducts = props.productosAutorizados.filter(product => product.idProducto != idProducto);
-        props.setProductosAutorizados(cleanProducts)
-    }
-    if(props.producto.descripcion == undefined){
-        return("")
+  // Handle checkbox toggle
+  const handleCheckboxToggle = () => {
+    setIsChecked(!isChecked);
+    if (!isChecked) {
+      props.setProductosAutorizados((prev) => [
+        ...(Array.isArray(prev) ? prev : []), // Ensure prev is an array
+        {
+          idProducto: props.producto._id,
+          codigo_interno: props.producto.codigo_interno,
+          descripcion: props.producto.descripcion,
+          precio: price,
+          cantidad: quantity,
+          provedor: provider,
+          fecha_promesa_entrega: deliveryDate,
+        },
+      ]);
     } else {
-        return(
-            <>
-            <tr class="border-b border-blue-gray-200">
-                <td class="productoTable__space">{props.producto.codigo_interno}</td>
-                <td class="productoTable__space">{props.producto.descripcion}</td>
-                <td class="productoTable__value">{props.producto.precio}</td>
-
-                {
-                    editQty && isEditOnActive || props.isCreatePopup
-                        ?
-                        <div class="py-2 px-2 bg-white rounded-l">
-                            <div class="w-full flex justify-between items-center">
-                                <div class="flex items-center">
-                                    <button type="button" class="size-6 inline-flex justify-center items-center text-sm font-medium rounded-md border bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-non dark:text-white dark:hover:bg-neutral-800 dark:focus:bg-neutral-800" tabindex="-1" aria-label="Decrease" data-hs-input-number-decrement=""
-                                    id="nuevaCantidadProductoResta"
-                                    onClick={handleChange}>
-                                        <svg 
-                                        id="nuevaCantidadProductoResta"
-                                        onClick={handleChange}
-                                        class="shrink-0 size-3.5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M5 12h14"></path>
-                                        </svg>
-                                    </button>
-                                    <input class="p-0 w-6 bg-transparent border-0 text-gray-800 text-center focus:ring-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none dark:text-white"  type="number" aria-roledescription="Number field" 
-                                    value={nuevaCantidadProducto}
-                                    id="nuevaCantidadProducto"
-                                    onChange={handleChange}
-                                        />
-                                    <button type="button" class="size-6 inline-flex justify-center items-center text-sm font-medium rounded-md border bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-non dark:text-white dark:hover:bg-neutral-800 dark:focus:bg-neutral-800" tabindex="-1" aria-label="Increase" data-hs-input-number-increment=""
-                                        id="nuevaCantidadProductoSuma"
-                                        onClick={handleChange}>
-                                        <svg
-                                        id="nuevaCantidadProductoSuma"
-                                        onClick={handleChange}
-                                        class="shrink-0 size-3.5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M5 12h14"></path>
-                                        <path d="M12 5v14"></path>
-                                        </svg>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    :
-                    <p className="text-center">{props.producto.cantidad}</p>
-                }
-                {isEditOn ?
-                    <td class="productoTable__space precioTotalCantidad">${Math.round(nuevoMontoTotal)}</td>
-                :
-                    <td class="productoTable__space precioTotalCantidad">${Math.round(nuevoMontoTotal)}</td>
-                }
-                <td className={props.isCreatePopup ? 'productoTable__delete' : 'hidden'}>
-                    <button
-                    onClick={ props.isCreatePopup ? handleDeleteButton : ""}
-                    >
-                        <svg class="productoTable__deleteBtn w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"
-                        />
-                        </svg>
-                    </button>
-                </td>
-                    {isEditPopup 
-                    ? 
-                        <td className="text-center">
-                        {isEditOn ?
-                            <td>
-                                <div className="flex justify-center">
-                                    {isEditOnActive ?
-                                        <input type="text" value={provedoresProducto} 
-                                        onChange={handleChange} id="provedoresProducto" name="provedoresProducto" className="w-24 m-auto text-center px-2 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 "/>
-                                    :
-                                    <td class="productoTable__value">{provedoresProducto}</td>
-                                    }
-                        
-                                </div>
-                            </td>
-                            
-                        :
-                            <td class="productoTable__value">{provedoresProducto}</td>
-                        }
-                        </td>
-                    
-                    :
-                        ""
-                    }
-                <td className={isEditPopup ? 'productoTable__delete' : 'hidden'}>
-                    <div className="hover:cursor-pointer"
-                        >
-                            {isCheked 
-                            ?
-                                <div >
-                                    {isEditOnActive ?
-                                        <svg 
-                                        onClick={handleSaveProductInfo} 
-                                        id={props.producto._id}
-                                        class="w-5 h-5 mr-2 text-green-700 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 11.917 9.724 16.5 19 7.5"/>
-                                        </svg>
-                                    :
-                                        <svg
-                                        onClick={handleEditProductInfo} 
-                                        id={props.producto._id}
-                                        class="w-4 h-4 mr-2 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.779 17.779 4.36 19.918 6.5 13.5m4.279 4.279 8.364-8.643a3.027 3.027 0 0 0-2.14-5.165 3.03 3.03 0 0 0-2.14.886L6.5 13.5m4.279 4.279L6.499 13.5m2.14 2.14 6.213-6.504M12.75 7.04 17 11.28"/>
-                                        </svg>
-                                    }
-                                </div>
-                            :
-                                <svg
-                                disabled={props.autorizarHabilitado}
-                                class="w-4 h-4 mr-2 hover:cursor-auto text-gray-500 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                </svg>
-                            }
-           
-                    </div>
-
-
-                    <input
-                    type="checkbox"
-                    disabled={props.autorizarHabilitado}
-                    onClick={isCheked ? handleDeleteProductList : handleCheckProduct }
-                    className='h-5 w-5 ss'
-                    id={props.producto._id}
-                    />
-                </td>
-            </tr>
-            </>
+      props.setProductosAutorizados((prev) =>
+        (Array.isArray(prev) ? prev : []).filter(
+          (product) => product.idProducto !== props.producto._id
         )
+      );
     }
+  };
+
+  // Save edited product info
+  const handleSave = () => {
+    props.setProductosAutorizados((prev) =>
+      (Array.isArray(prev) ? prev : []).map((product) =>
+        product.idProducto === props.producto._id
+          ? {
+              ...product,
+              precio: price,
+              cantidad: quantity,
+              provedor: provider,
+              fecha_promesa_entrega: deliveryDate,
+            }
+          : product
+      )
+    );
+    setIsEditing(false);
+  };
+
+  // Handle edit action
+  const handleEdit = () => {
+    setIsEditing(true);
+    if (!isChecked) {
+      setIsChecked(true); // Activa el checkbox automáticamente al editar
+    }
+  };
+
+  return (
+    <tr className="border-b border-blue-gray-200 hover:bg-gray-100 h-9">
+      <td className="p-2">{props.producto.codigo_interno}</td>
+      <td class="whitespace-normal overflow-hidden text-ellipsis line-clamp-2">{props.producto.descripcion}</td>
+      <td>
+        {isEditing ? (
+          <input
+            type="number"
+            id="price"
+            value={price}
+            onChange={handleChange}
+            className="p-2 border rounded-md w-20"
+          />
+        ) : (
+          `$${price}`
+        )}
+      </td>
+      <td className="text-center">
+        {isEditing ? (
+          <div className="flex items-center">
+            <button
+              onClick={() => setQuantity(Math.max(1, quantity - 1))}
+              className="p-2 border rounded-md"
+            >
+              -
+            </button>
+            <input
+              type="number"
+              id="quantity"
+              value={quantity}
+              onChange={handleChange}
+              className="p-2 border rounded-md w-12 text-center mx-1"
+            />
+            <button
+              onClick={() => setQuantity(quantity + 1)}
+              className="p-2 border rounded-md"
+            >
+              +
+            </button>
+          </div>
+        ) : (
+          quantity
+        )}
+      </td>
+      <td>${totalAmount.toFixed(2)}</td>
+        {props.statusId == undefined
+        ? 
+        <>
+            <button className="mt-2" onClick={() => props.handleDeleteProducto(props.producto)}>
+                <svg class="w-4 h-4 text-red-800  dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
+                </svg>
+            </button>
+        </>
+        :
+        <>
+        <td className="text-center">
+            {isEditing ? (
+            <input
+                type="text"
+                id="provider"
+                value={provider}
+                onChange={handleChange}
+                className="p-2 border rounded-md w-32 text-center"
+            />
+            ) : (
+            provider
+            )}
+        </td>
+        <td className="text-center">
+            {!isChecked ? (
+            <p>{props.statusId == 1 ? "Sin fecha" : props.producto.fecha_promesa_entrega}</p>
+            ) : isEditing || !deliveryDate ? (
+            <input
+                type="date"
+                value={deliveryDate || today}
+                onChange={handleDateChange}
+                className="p-2 border rounded-md"
+                min={today}
+            />
+            ) : (
+            <p>{deliveryDate}</p>
+            )}
+        </td>
+        <td className={props.statusId == 1 ? "flex items-center h-16" : "hidden"}>
+            <input
+                type="checkbox"
+                className="w-4 h-4"
+                checked={isChecked}
+                onChange={handleCheckboxToggle}
+            />
+            <button className="flex w-24 items-center" onClick={isEditing ? handleSave : handleEdit}>
+                <svg
+                class="w-4 h-4 ml-2 mr-1 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.779 17.779 4.36 19.918 6.5 13.5m4.279 4.279 8.364-8.643a3.027 3.027 0 0 0-2.14-5.165 3.03 3.03 0 0 0-2.14.886L6.5 13.5m4.279 4.279L6.499 13.5m2.14 2.14 6.213-6.504M12.75 7.04 17 11.28"/>
+                </svg>
+            {isEditing ? "Guardar" : "Editar"}
+            </button>
+        </td>
+        </>
+        }
+    </tr>
+  );
 }
+
 export default TemplateProductTable;

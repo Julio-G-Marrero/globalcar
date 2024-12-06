@@ -37,7 +37,7 @@
 .productoTable__delete {
     display: flex; 
     align-items: center; 
-    height: 2.5rem; 
+    height: 4rem; 
 }
 .productoTable__deleteBtn {
     width: 0.75rem; 

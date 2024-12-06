@@ -25,6 +25,12 @@ function InformesPage(props) {
   const [productosAllCantidad, setProductosAllCantidad] = React.useState();
   const [cantidadPorFamilia, setCantidadPorFamilia] = React.useState({});
   const [cantidadPorCliente, setCantidadPorCliente] = React.useState({});
+  const [selectedCliente, setSelectedCliente] = React.useState("Todos");
+  const [selectedFamilia, setSelectedFamilia] = React.useState("Todos");
+  const [filteredMontos, setFilteredMontos] = React.useState([]);
+  const [filteredCantidades, setFilteredCantidades] = React.useState([]);
+
+
   const history = useHistory();
   const chartRef = useRef(null);
   const quantityChartRef = useRef(null);
@@ -40,6 +46,149 @@ function InformesPage(props) {
     fetchProductosDenegados();
     fetchAllProductos();
   }, []);
+
+
+  useEffect(() => {
+    const productosFiltrados = filtrarProductos();
+    actualizarDatosFiltrados(productosFiltrados);
+  }, [selectedCliente, selectedFamilia, allProducts]);
+  
+  React.useEffect(() => {
+    if (filteredMontos.length > 0 && filteredCantidades.length > 0) {
+      generateChart();
+      generateQuantityChart();
+    }
+  }, [filteredMontos, filteredCantidades]);
+
+  useEffect(() => {
+    const productosFiltrados = filtrarProductos();
+    actualizarDatosFiltrados(productosFiltrados);
+  }, [selectedCliente, selectedFamilia, allProducts]);
+  
+
+  const filtrarProductos = () => {
+    let productosFiltrados = allProducts;
+  
+    // Filtrar por cliente
+    if (selectedCliente !== "Todos") {
+      productosFiltrados = productosFiltrados.filter(
+        (pedido) => pedido.cliente_nombre === selectedCliente
+      );
+    }
+  
+    // Filtrar por familia
+    if (selectedFamilia !== "Todos") {
+      productosFiltrados = productosFiltrados.map((pedido) => ({
+        ...pedido,
+        productos: pedido.productos.filter(
+          (producto) => producto.familia === selectedFamilia
+        ),
+        productos_denegados: pedido.productos_denegados
+          ? pedido.productos_denegados.filter(
+              (producto) => producto.familia === selectedFamilia
+            )
+          : [],
+        productos_autorizados: pedido.productos_autorizados
+          ? pedido.productos_autorizados.filter(
+              (producto) => producto.familia === selectedFamilia
+            )
+          : [],
+      }));
+    }
+  
+    // Filtrar pedidos que contengan datos relevantes
+    return productosFiltrados.filter(
+      (pedido) =>
+        pedido.productos.length > 0 ||
+        pedido.productos_denegados.length > 0 ||
+        pedido.productos_autorizados.length > 0
+    );
+  };
+  
+  const actualizarDatosFiltrados = (productosFiltrados) => {
+    const montos = [0, 0, 0]; // [Denegados, Autorizados, Solicitados]
+    const cantidades = [0, 0, 0];
+  
+    productosFiltrados.forEach((pedido) => {
+      // Sumar montos y cantidades de productos solicitados
+      pedido.productos.forEach((producto) => {
+        montos[2] += producto.cantidad * parseFloat(producto.precio || 0);
+        cantidades[2] += producto.cantidad;
+      });
+  
+      // Sumar montos y cantidades de productos denegados
+      pedido.productos_denegados.forEach((producto) => {
+        montos[0] += producto.cantidad * parseFloat(producto.precio || 0);
+        cantidades[0] += producto.cantidad;
+      });
+  
+      // Sumar montos y cantidades de productos autorizados
+      pedido.productos_autorizados.forEach((producto) => {
+        montos[1] += producto.cantidad * parseFloat(producto.precio || 0);
+        cantidades[1] += producto.cantidad;
+      });
+    });
+  
+    setFilteredMontos(montos);
+    setFilteredCantidades(cantidades);
+  };
+  
+  React.useEffect(() => {
+    const productosFiltrados = filtrarProductos();
+    actualizarDatosFiltrados(productosFiltrados);
+  
+    // Actualizar datos para las gráficas de familia y cliente
+    setCantidadPorFamilia(calcularCantidadPorFamilia(productosFiltrados));
+    setCantidadPorCliente(calcularCantidadPorCliente(productosFiltrados));
+  }, [selectedCliente, selectedFamilia, allProducts]);
+  
+  const calcularCantidadPorFamilia = (data) => {
+    const cantidadPorFamilia = {};
+    data.forEach((pedido) => {
+      pedido.productos.forEach((producto) => {
+        if (producto.familia in cantidadPorFamilia) {
+          cantidadPorFamilia[producto.familia] += producto.cantidad;
+        } else {
+          cantidadPorFamilia[producto.familia] = producto.cantidad;
+        }
+      });
+    });
+    return cantidadPorFamilia;
+  };
+  
+  const calcularCantidadPorCliente = (data) => {
+    const cantidadPorCliente = {};
+    data.forEach((pedido) => {
+      let totalCantidad = 0;
+      pedido.productos.forEach((producto) => {
+        totalCantidad += producto.cantidad;
+      });
+      if (cantidadPorCliente[pedido.cliente_nombre]) {
+        cantidadPorCliente[pedido.cliente_nombre] += totalCantidad;
+      } else {
+        cantidadPorCliente[pedido.cliente_nombre] = totalCantidad;
+      }
+    });
+    return cantidadPorCliente;
+  };
+  
+  React.useEffect(() => {
+    const productosFiltrados = filtrarProductos();
+    setCantidadPorFamilia(calcularCantidadPorFamilia(productosFiltrados));
+    setCantidadPorCliente(calcularCantidadPorCliente(productosFiltrados));
+  }, [selectedCliente, selectedFamilia, allProducts]);
+  
+  useEffect(() => {
+    const { totalMontos, totalCantidades } = filtrarDatosPorClienteYFamilia(
+      selectedCliente,
+      selectedFamilia,
+      allProducts
+    );
+  
+    setFilteredMontos(totalMontos);
+    setFilteredCantidades(totalCantidades);
+  }, [selectedCliente, selectedFamilia, allProducts]);
+  
 
   React.useEffect(() => {
     if (productosDenegadosMonto && productosAutorizadosMonto && productosAllMonto) {
@@ -75,6 +224,60 @@ function InformesPage(props) {
       .catch((err) => console.log(err));
   };
 
+  const calcularMontos = (data) => {
+    let totalDenegado = 0;
+    let totalAutorizado = 0;
+    let totalSolicitado = 0;
+  
+    data.forEach((pedido) => {
+      pedido.productos.forEach((producto) => {
+        totalSolicitado += producto.cantidad * producto.precio;
+      });
+  
+      if (pedido.denegados) {
+        pedido.denegados.forEach((producto) => {
+          totalDenegado += producto.cantidad * producto.precio;
+        });
+      }
+  
+      if (pedido.autorizados) {
+        pedido.autorizados.forEach((producto) => {
+          totalAutorizado += producto.cantidad * producto.precio;
+        });
+      }
+    });
+  
+    return [totalDenegado, totalAutorizado, totalSolicitado];
+  };
+  
+  const calcularCantidades = (data) => {
+    let cantidadDenegado = 0;
+    let cantidadAutorizado = 0;
+    let cantidadSolicitado = 0;
+  
+    data.forEach((pedido) => {
+      pedido.productos.forEach((producto) => {
+        cantidadSolicitado += producto.cantidad;
+      });
+  
+      if (pedido.denegados) {
+        pedido.denegados.forEach((producto) => {
+          cantidadDenegado += producto.cantidad;
+        });
+      }
+  
+      if (pedido.autorizados) {
+        pedido.autorizados.forEach((producto) => {
+          cantidadAutorizado += producto.cantidad;
+        });
+      }
+    });
+  
+    return [cantidadDenegado, cantidadAutorizado, cantidadSolicitado];
+  };
+  
+  
+
   const fetchProductosDenegados = () => {
     fetch(`${api.addressEndpoints}/orders/informes-denegados`, {
       method: "GET",
@@ -93,7 +296,7 @@ function InformesPage(props) {
   };
 
   const fetchAllProductos = () => {
-    fetch(`${api.addressEndpoints}/orders/informes-todos`, {
+    fetch(`${api.addressEndpoints}/orders/todas`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -102,15 +305,15 @@ function InformesPage(props) {
     })
       .then((response) => response.json())
       .then((data) => {
-        setAllProducts(data);
+        setAllProducts(data.data);
         setProductosAllMonto(calcularMontoTotalSolicitado(data));
         setProductosAllCantidad(calcularCantidadTotalSolicitado(data));
         setCantidadPorFamilia(calcularCantidadPorFamilia(data));
-        console.log(data)
         setCantidadPorCliente(calcularCantidadPorCliente(data));
       })
       .catch((err) => console.log(err));
   };
+
 
   const calcularMontoTotalDenegado = (data) => {
     let totalMontoDenegado = 0;
@@ -176,35 +379,9 @@ function InformesPage(props) {
     return totalCantidadSolicitado;
   };
 
-  const calcularCantidadPorFamilia = (data) => {
-    const cantidadPorFamilia = {};
-    data.forEach((pedido) => {
-      pedido.productos.forEach((producto) => {
-        if (producto.familia in cantidadPorFamilia) {
-          cantidadPorFamilia[producto.familia] += producto.cantidad;
-        } else {
-          cantidadPorFamilia[producto.familia] = producto.cantidad;
-        }
-      });
-    });
-    return cantidadPorFamilia;
-  };
 
-  const calcularCantidadPorCliente = (data) => {
-    const cantidadPorCliente = {};
-    data.forEach((pedido) => {
-      let totalCantidad = 0;
-      pedido.productos.forEach((producto) => {
-        totalCantidad += producto.cantidad;
-      });
-      if (cantidadPorCliente[pedido.cliente_nombre]) {
-        cantidadPorCliente[pedido.cliente_nombre] += totalCantidad;
-      } else {
-        cantidadPorCliente[pedido.cliente_nombre] = totalCantidad;
-      }
-    });
-    return cantidadPorCliente;
-  };
+  console.log('filteredMontos')
+  console.log(filteredMontos)
   const generateChart = () => {
     if (chartInstance.current) {
       chartInstance.current.destroy();
@@ -217,7 +394,7 @@ function InformesPage(props) {
         datasets: [
           {
             label: "Montos Comparativos",
-            data: [productosDenegadosMonto, productosAutorizadosMonto, productosAllMonto],
+            data: filteredMontos, // Datos filtrados
             backgroundColor: [
               "rgba(255, 99, 132, 0.6)",
               "rgba(54, 162, 235, 0.6)",
@@ -235,9 +412,7 @@ function InformesPage(props) {
       options: {
         responsive: true,
         plugins: {
-          legend: {
-            position: "top",
-          },
+          legend: { position: "top" },
           title: {
             display: true,
             text: "Comparación de Montos Denegados, Autorizados y Solicitados",
@@ -259,7 +434,7 @@ function InformesPage(props) {
         datasets: [
           {
             label: "Cantidades Comparativas",
-            data: [productosDenegadosCantidad, productosAutorizadosCantidad, productosAllCantidad],
+            data: filteredCantidades, // Datos filtrados
             backgroundColor: [
               "rgba(255, 159, 64, 0.6)",
               "rgba(75, 192, 192, 0.6)",
@@ -277,9 +452,7 @@ function InformesPage(props) {
       options: {
         responsive: true,
         plugins: {
-          legend: {
-            position: "top",
-          },
+          legend: { position: "top" },
           title: {
             display: true,
             text: "Comparación de Cantidades Denegadas, Autorizadas y Solicitadas",
@@ -288,6 +461,7 @@ function InformesPage(props) {
       },
     });
   };
+  
 
   const generateFamilyChart = () => {
     if (familyChartInstance.current) {
@@ -360,8 +534,7 @@ function InformesPage(props) {
 
   const renderProductTable = () => {
     return (
-      <div className="bg-white p-4 rounded-lg shadow-md w-full">
-        <h3 className="text-lg font-semibold mb-4">Detalle de Productos Solicitados</h3>
+      <div className="bg-white p-4 rounded-lg shadow-md w-full text-sm">
         <table className="min-w-full table-auto">
           <thead>
             <tr>
@@ -385,6 +558,57 @@ function InformesPage(props) {
       </div>
     );
   };
+
+
+  const filtrarDatosPorClienteYFamilia = (cliente, familia, allProducts) => {
+    let totalMontos = [0, 0, 0]; // [Denegados, Autorizados, Solicitados]
+    let totalCantidades = [0, 0, 0]; // [Denegados, Autorizados, Solicitados]
+  
+    allProducts.forEach((pedido) => {
+      // Filtrar por cliente si es necesario
+      if (cliente !== "Todos" && pedido.cliente_nombre !== cliente) {
+        return;
+      }
+  
+      // Iterar sobre productos solicitados
+      pedido.productos.forEach((producto) => {
+        if (familia !== "Todos" && producto.familia !== familia) {
+          return;
+        }
+        // Sumar a "Solicitados"
+        totalMontos[2] += parseFloat(producto.precio) * producto.cantidad;
+        totalCantidades[2] += producto.cantidad;
+      });
+  
+      // Iterar sobre productos denegados (aplanando el array)
+      if (pedido.productos_denegados) {
+        pedido.productos_denegados.flat().forEach((producto) => {
+          if (familia !== "Todos" && producto.familia !== familia) {
+            return;
+          }
+          // Sumar a "Denegados"
+          totalMontos[0] += parseFloat(producto.precio) * producto.cantidad;
+          totalCantidades[0] += producto.cantidad;
+        });
+      }
+  
+      // Iterar sobre productos autorizados (aplanando el array)
+      if (pedido.productos_autorizados) {
+        pedido.productos_autorizados.flat().forEach((producto) => {
+          if (familia !== "Todos" && producto.familia !== familia) {
+            return;
+          }
+          // Sumar a "Autorizados"
+          totalMontos[1] += parseFloat(producto.precio) * producto.cantidad;
+          totalCantidades[1] += producto.cantidad;
+        });
+      }
+    });
+  
+    return { totalMontos, totalCantidades };
+  };
+  
+  
 
   const generarReporteDenegadosPDF = async () => {
     const doc = new jsPDF();
@@ -785,7 +1009,6 @@ function InformesPage(props) {
     doc.save("reporte_productos_autorizados.pdf");
   };
   
-  console.log(cantidadPorCliente)
   return (
     <>
       <div className="dashboard">
@@ -796,8 +1019,42 @@ function InformesPage(props) {
           <HeaderApp page="Informes" />
           <div className="dashboard__table mt-10">
             <section className="mb-8">
-              <h2 className="text-2xl font-semibold mb-10">Reportes y Estadísticas</h2>
+              <h2 className="text-2xl font-semibold mb-2">Reportes y Estadísticas</h2>
+              <div className="flex justify-between items-center w-96">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Filtrar por Cliente:</label>
+                  <select
+                    value={selectedCliente}
+                    onChange={(e) => setSelectedCliente(e.target.value)}
+                    className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  >
+                    <option value="Todos">Todos</option>
+                    {Object.keys(cantidadPorCliente).map((cliente) => (
+                      <option key={cliente} value={cliente}>
+                        {cliente}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Filtrar por Familia:</label>
+                  <select
+                    value={selectedFamilia}
+                    onChange={(e) => setSelectedFamilia(e.target.value)}
+                    className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  >
+                    <option value="Todos">Todos</option>
+                    {Object.keys(cantidadPorFamilia).map((familia) => (
+                      <option key={familia} value={familia}>
+                        {familia}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                
                 <div className="bg-white p-4 rounded-lg shadow-md flex flex-col justify-center items-center">
                   <div>
                     <h3 className="text-lg font-semibold mb-4">Productos Solicitados</h3>

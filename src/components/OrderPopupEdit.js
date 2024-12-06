@@ -26,15 +26,13 @@ function OrderPopupEdit(props){
     const [cantidadProducto, setCantidadProducto] = React.useState(1)
     const [totalMonto, setTotalMonto] = React.useState(props.orderSelected.precio_pactado)
 
+    console.log(props.orderSelected)
+
     const [productosAutorizados, setProductosAutorizados] = React.useState({})
     function handleAutorizarOrden(){
-        if(Object.keys(productosAutorizados).length === 0 || fechaPromesa == undefined) {
+        if(Object.keys(productosAutorizados).length === 0 ) {
             props.setSuccessMessage(false)
-            if(fechaPromesa == undefined) {
-                props.setConentMessage("No hay fecha promesa cargada.")
-            }else {
-                props.setConentMessage("No hay productos seleccionados para autorizar.")
-            }
+            props.setConentMessage("No hay productos seleccionados para autorizar.")
             props.setIsOpenToolTip(true)
             props.setSuccessMessage(false)
             props.setOverlayToolTip(true)
@@ -254,33 +252,29 @@ function OrderPopupEdit(props){
                         order={props.orderSelected} statusId={statusOrder} renderStatusOrder={renderStatusOrder}/>
                     </div>
                 <form className="popupEdit__form">
-                    <div className="popupEdit__margin">
-                        <label for="nombre-cliente" className="popupEdit__label--nombre">Nombre Cliente</label>
-                        <input type="text" id="nombre-cliente" value={nombreCliente} name="nombre-cliente" className="popupEdit__input" disabled={true}/>
-                    </div>
-                    <div className="clienteInfo popupEdit__elemntForm">
+                    <div className="fechas popupEdit__elemntForm">
+                        <div className="popupEdit__margin">
+                            <label for="nombre-cliente" className="popupEdit__label--nombre">Nombre Cliente</label>
+                            <input type="text" id="nombre-cliente" value={nombreCliente} name="nombre-cliente" className="popupEdit__input" disabled={true}/>
+                        </div>
                         <div className="popupEdit__margin">
                             <label for="numeroTel" className="popupEdit__label">Tel Cliente</label>
                             <input type="text" value={telefonoCliente} id="numeroTel" name="numeroTel" className="popupEdit__input" disabled={true}/>
                         </div>
-                        <div className="popupEdit__margin">
-                            <label for="emialCliente" className="popupEdit__label">Email Cliente</label>
-                            <input type="text" value={emailCliente} id="emialCliente" name="emialCliente" className="popupEdit__input" disabled={true}/>
-                        </div>
                     </div>
                     <div className="fechas popupEdit__elemntForm">
                         <div className="popupEdit__margin">
-                            <label for="fechaPromesa" className="popupEdit__label">Fecha Promesa</label>
-                            <input type="date" value={fechaPromesa} disabled={fechaPromesaSwitch} onChange={handleOnChange} id="fechaPromesa" name="fechaPromesa" className="popupEdit__input"/>
+                            <label for="nombre-cliente" className="popupEdit__label--nombre">Nombre Vendedor</label>
+                            <input type="text" id="nombre-cliente" value={props.orderSelected.nombre_vendedor} name="nombre-cliente" className="popupEdit__input" disabled={true}/>
                         </div>
                         <div className="popupEdit__margin">
-                            <label for="date" className="popupEdit__label">Ubicacion Cliente</label>
-                            <input type="text" value={ubicacionCliente} id="ubicacion-cliente" name="ubicacion-cliente" className="popupEdit__input" disabled={true}/>
+                            <label for="numeroTel" className="popupEdit__label">Email Vendedor</label>
+                            <input type="text" value={props.orderSelected.email_vendedor} id="numeroTel" name="numeroTel" className="popupEdit__input" disabled={true}/>
                         </div>
                     </div>
                     <div className="product-list">
+                        <h2 className="popupEdit__titile text-base ">Productos Solicitados</h2>
                         <div className="product-list__container">
-          
                             <table className="product-list__table">
                             <thead>
                                 <tr className="product-list__tr">
@@ -289,7 +283,8 @@ function OrderPopupEdit(props){
                                 <th className="product-list__th">Precio</th>
                                 <th className="product-list__th">Cantidad</th>
                                 <th className="product-list__th">Total</th>
-                                <th className="product-list__th">Provedor</th>
+                                <th className="product-list__th text-center">Provedor</th>
+                                <th className="product-list__th w-40 text-center">Fecha Promesa</th>
                                 </tr>
                             </thead>
                             <tbody className="text-blue-gray-900">
