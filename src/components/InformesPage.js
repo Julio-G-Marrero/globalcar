@@ -10,6 +10,7 @@ import "jspdf-autotable";
 import logo from "../images/logo.png";
 import { Chart, BarController, BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend } from "chart.js";
 import { useEffect, useRef } from "react";
+import Papa from "papaparse";
 
 Chart.register(BarController, BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend);
 
@@ -29,7 +30,6 @@ function InformesPage(props) {
   const [selectedFamilia, setSelectedFamilia] = React.useState("Todos");
   const [filteredMontos, setFilteredMontos] = React.useState([]);
   const [filteredCantidades, setFilteredCantidades] = React.useState([]);
-
 
   const history = useHistory();
   const chartRef = useRef(null);
@@ -224,60 +224,6 @@ function InformesPage(props) {
       .catch((err) => console.log(err));
   };
 
-  const calcularMontos = (data) => {
-    let totalDenegado = 0;
-    let totalAutorizado = 0;
-    let totalSolicitado = 0;
-  
-    data.forEach((pedido) => {
-      pedido.productos.forEach((producto) => {
-        totalSolicitado += producto.cantidad * producto.precio;
-      });
-  
-      if (pedido.denegados) {
-        pedido.denegados.forEach((producto) => {
-          totalDenegado += producto.cantidad * producto.precio;
-        });
-      }
-  
-      if (pedido.autorizados) {
-        pedido.autorizados.forEach((producto) => {
-          totalAutorizado += producto.cantidad * producto.precio;
-        });
-      }
-    });
-  
-    return [totalDenegado, totalAutorizado, totalSolicitado];
-  };
-  
-  const calcularCantidades = (data) => {
-    let cantidadDenegado = 0;
-    let cantidadAutorizado = 0;
-    let cantidadSolicitado = 0;
-  
-    data.forEach((pedido) => {
-      pedido.productos.forEach((producto) => {
-        cantidadSolicitado += producto.cantidad;
-      });
-  
-      if (pedido.denegados) {
-        pedido.denegados.forEach((producto) => {
-          cantidadDenegado += producto.cantidad;
-        });
-      }
-  
-      if (pedido.autorizados) {
-        pedido.autorizados.forEach((producto) => {
-          cantidadAutorizado += producto.cantidad;
-        });
-      }
-    });
-  
-    return [cantidadDenegado, cantidadAutorizado, cantidadSolicitado];
-  };
-  
-  
-
   const fetchProductosDenegados = () => {
     fetch(`${api.addressEndpoints}/orders/informes-denegados`, {
       method: "GET",
@@ -379,9 +325,6 @@ function InformesPage(props) {
     return totalCantidadSolicitado;
   };
 
-
-  console.log('filteredMontos')
-  console.log(filteredMontos)
   const generateChart = () => {
     if (chartInstance.current) {
       chartInstance.current.destroy();
@@ -565,7 +508,7 @@ function InformesPage(props) {
     let totalCantidades = [0, 0, 0]; // [Denegados, Autorizados, Solicitados]
   
     allProducts.forEach((pedido) => {
-      // Filtrar por cliente si es necesario
+      // Filtrar por cliente
       if (cliente !== "Todos" && pedido.cliente_nombre !== cliente) {
         return;
       }
@@ -580,7 +523,7 @@ function InformesPage(props) {
         totalCantidades[2] += producto.cantidad;
       });
   
-      // Iterar sobre productos denegados (aplanando el array)
+      // Iterar sobre productos denegados (aplanar si es necesario)
       if (pedido.productos_denegados) {
         pedido.productos_denegados.flat().forEach((producto) => {
           if (familia !== "Todos" && producto.familia !== familia) {
@@ -592,7 +535,7 @@ function InformesPage(props) {
         });
       }
   
-      // Iterar sobre productos autorizados (aplanando el array)
+      // Iterar sobre productos autorizados (aplanar si es necesario)
       if (pedido.productos_autorizados) {
         pedido.productos_autorizados.flat().forEach((producto) => {
           if (familia !== "Todos" && producto.familia !== familia) {
@@ -607,6 +550,7 @@ function InformesPage(props) {
   
     return { totalMontos, totalCantidades };
   };
+  
   
   
 
@@ -1009,6 +953,86 @@ function InformesPage(props) {
     doc.save("reporte_productos_autorizados.pdf");
   };
   
+  const exportToCSV = (e) => {
+    let csvData = []
+    let nombreArchivo = "productos_solicitados_por_cliente"
+    if(e.target.id == "csv-solicitados") {
+      csvData = allProducts.flatMap((cliente) => {
+        return cliente.productos.map((producto, index) => ({
+          "Cliente Nombre": cliente.cliente_nombre,
+          "Cliente Email": cliente.cliente_email,
+          "Cliente Teléfono": cliente.cliente_tel,
+          "Cliente Ubicación": cliente.cliente_ubicacion,
+          "Fecha Apertura": cliente.fecha_apertura,
+          "Nombre Vendedor": cliente.nombre_vendedor,
+          "ID Cliente": cliente.user_id,
+          "Codigo de Barras": producto.codigo_barras || "Sin Codigo",
+          "Codigo Interno": producto.codigo_interno || "Sin Codigo",
+          "Producto": producto.descripcion || "Sin nombre",
+          "Precio": producto.precio || "Sin precio",
+          "Cantidad": producto.cantidad || "Sin cantidad",
+          "Fecha Promesa": producto.fecha_promesa_entrega,
+        }));
+      });
+    }else if (e.target.id === "csv-autorizados") {
+      nombreArchivo= "productos_autorizados_por_cliente"
+      csvData = allProducts.flatMap((cliente) => {
+        return cliente.productos_autorizados.flatMap((arrayDeProductos) =>
+          arrayDeProductos.map((producto, index) => ({
+            "Cliente Nombre": cliente.cliente_nombre,
+            "Cliente Email": cliente.cliente_email,
+            "Cliente Teléfono": cliente.cliente_tel,
+            "Cliente Ubicación": cliente.cliente_ubicacion,
+            "Fecha Apertura": cliente.fecha_apertura,
+            "Nombre Vendedor": cliente.nombre_vendedor,
+            "ID Cliente": cliente.user_id,
+            "Codigo de Barras": producto.codigo_barras || "Sin Codigo",
+            "Codigo Interno": producto.codigo_interno || "Sin Codigo",
+            "Producto": producto.descripcion || "Sin nombre",
+            "Precio": producto.precio || "Sin precio",
+            "Cantidad": producto.cantidad || "Sin cantidad",
+            "Fecha Promesa": producto.fecha_promesa_entrega || "No definida",
+          }))
+        );
+      });
+    }else if(e.target.id == "csv-denegados") {
+      nombreArchivo= "productos_denegados_por_cliente"
+      csvData = allProducts.flatMap((cliente) => {
+        return cliente.productos_denegados.flatMap((arrayDeProductos) =>
+          arrayDeProductos.map((producto, index) => ({
+            "Cliente Nombre": cliente.cliente_nombre,
+            "Cliente Email": cliente.cliente_email,
+            "Cliente Teléfono": cliente.cliente_tel,
+            "Cliente Ubicación": cliente.cliente_ubicacion,
+            "Fecha Apertura": cliente.fecha_apertura,
+            "Nombre Vendedor": cliente.nombre_vendedor,
+            "ID Cliente": cliente.user_id,
+            "Codigo de Barras": producto.codigo_barras || "Sin Codigo",
+            "Codigo Interno": producto.codigo_interno || "Sin Codigo",
+            "Producto": producto.descripcion || "Sin nombre",
+            "Precio": producto.precio || "Sin precio",
+            "Cantidad": producto.cantidad || "Sin cantidad",
+            "Fecha Promesa": producto.fecha_promesa_entrega || "No definida",
+          }))
+        );
+      });
+    }
+    // Convertir a formato CSV
+    const csv = Papa.unparse(csvData);
+
+    // Crear un archivo Blob y descargarlo
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+
+    // Crear un enlace para la descarga
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", `${nombreArchivo}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <>
       <div className="dashboard">
@@ -1054,34 +1078,126 @@ function InformesPage(props) {
                 </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                
                 <div className="bg-white p-4 rounded-lg shadow-md flex flex-col justify-center items-center">
+                  <h2 className="text-2xl font-semibold">Exportar Información</h2>
                   <div>
-                    <h3 className="text-lg font-semibold mb-4">Productos Solicitados</h3>
-                    <button
-                      className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-                      onClick={generarReporteSolicitadosPDF}
-                    >
-                      Descargar PDF
-                    </button>
+                    <h3 className="text-md font-semibold mb-2">Productos Solicitados</h3>
+                    <div className="flex space-x-4">
+                      <button
+                        className="flex items-center px-4 py-2 text-white bg-red-600 rounded-md shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                        type="button"
+                        onClick={generarReporteSolicitadosPDF}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="w-5 h-5 mr-2"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                          <polyline points="14 2 14 8 20 8"></polyline>
+                          <line x1="16" y1="13" x2="8" y2="13"></line>
+                          <line x1="16" y1="17" x2="8" y2="17"></line>
+                          <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                        Descargar PDF
+                      </button>
+
+                      <button
+                        className="flex items-center px-4 py-2 text-white bg-green-600 rounded-md shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                        type="button"
+                        onClick={exportToCSV}
+                        id="csv-solicitados"
+                      >
+                        <svg class="w-6 h-6 text-white mr-2 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                        <path fill-rule="evenodd" d="M9 2.221V7H4.221a2 2 0 0 1 .365-.5L8.5 2.586A2 2 0 0 1 9 2.22ZM11 2v5a2 2 0 0 1-2 2H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2 2 2 0 0 0 2 2h12a2 2 0 0 0 2-2 2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2V4a2 2 0 0 0-2-2h-7Zm1.018 8.828a2.34 2.34 0 0 0-2.373 2.13v.008a2.32 2.32 0 0 0 2.06 2.497l.535.059a.993.993 0 0 0 .136.006.272.272 0 0 1 .263.367l-.008.02a.377.377 0 0 1-.018.044.49.49 0 0 1-.078.02 1.689 1.689 0 0 1-.297.021h-1.13a1 1 0 1 0 0 2h1.13c.417 0 .892-.05 1.324-.279.47-.248.78-.648.953-1.134a2.272 2.272 0 0 0-2.115-3.06l-.478-.052a.32.32 0 0 1-.285-.341.34.34 0 0 1 .344-.306l.94.02a1 1 0 1 0 .043-2l-.943-.02h-.003Zm7.933 1.482a1 1 0 1 0-1.902-.62l-.57 1.747-.522-1.726a1 1 0 0 0-1.914.578l1.443 4.773a1 1 0 0 0 1.908.021l1.557-4.773Zm-13.762.88a.647.647 0 0 1 .458-.19h1.018a1 1 0 1 0 0-2H6.647A2.647 2.647 0 0 0 4 13.647v1.706A2.647 2.647 0 0 0 6.647 18h1.018a1 1 0 1 0 0-2H6.647A.647.647 0 0 1 6 15.353v-1.706c0-.172.068-.336.19-.457Z" clip-rule="evenodd"/>
+                        </svg>
+                        Descargar CSV
+                      </button>
+                    </div>
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold mb-4">Productos Autorizados</h3>
-                    <button
-                      className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-                      onClick={generarReporteAutorizadosPDF}
-                    >
-                      Descargar PDF
-                    </button>
+                    <h3 className="text-md font-semibold mb-2">Productos Autorizados</h3>
+                    <div className="flex space-x-4">
+                      <button
+                        className="flex items-center px-4 py-2 text-white bg-red-600 rounded-md shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                        type="button"
+                        onClick={generarReporteAutorizadosPDF}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="w-5 h-5 mr-2"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                          <polyline points="14 2 14 8 20 8"></polyline>
+                          <line x1="16" y1="13" x2="8" y2="13"></line>
+                          <line x1="16" y1="17" x2="8" y2="17"></line>
+                          <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                        Descargar PDF
+                      </button>
+
+                      <button
+                        className="flex items-center px-4 py-2 text-white bg-green-600 rounded-md shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                        type="button"
+                        onClick={exportToCSV}
+                        id="csv-autorizados"
+                      >
+                        <svg class="w-6 h-6 text-white mr-2 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                        <path fill-rule="evenodd" d="M9 2.221V7H4.221a2 2 0 0 1 .365-.5L8.5 2.586A2 2 0 0 1 9 2.22ZM11 2v5a2 2 0 0 1-2 2H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2 2 2 0 0 0 2 2h12a2 2 0 0 0 2-2 2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2V4a2 2 0 0 0-2-2h-7Zm1.018 8.828a2.34 2.34 0 0 0-2.373 2.13v.008a2.32 2.32 0 0 0 2.06 2.497l.535.059a.993.993 0 0 0 .136.006.272.272 0 0 1 .263.367l-.008.02a.377.377 0 0 1-.018.044.49.49 0 0 1-.078.02 1.689 1.689 0 0 1-.297.021h-1.13a1 1 0 1 0 0 2h1.13c.417 0 .892-.05 1.324-.279.47-.248.78-.648.953-1.134a2.272 2.272 0 0 0-2.115-3.06l-.478-.052a.32.32 0 0 1-.285-.341.34.34 0 0 1 .344-.306l.94.02a1 1 0 1 0 .043-2l-.943-.02h-.003Zm7.933 1.482a1 1 0 1 0-1.902-.62l-.57 1.747-.522-1.726a1 1 0 0 0-1.914.578l1.443 4.773a1 1 0 0 0 1.908.021l1.557-4.773Zm-13.762.88a.647.647 0 0 1 .458-.19h1.018a1 1 0 1 0 0-2H6.647A2.647 2.647 0 0 0 4 13.647v1.706A2.647 2.647 0 0 0 6.647 18h1.018a1 1 0 1 0 0-2H6.647A.647.647 0 0 1 6 15.353v-1.706c0-.172.068-.336.19-.457Z" clip-rule="evenodd"/>
+                        </svg>
+                        Descargar CSV
+                      </button>
+                    </div>
                   </div>
                   <div>
-                  <h3 className="text-lg font-semibold mb-4">Productos Denegados</h3>
-                  <button
-                    className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
-                    onClick={generarReporteDenegadosPDF}
-                  >
-                    Descargar PDF
-                  </button>
+                  <h3 className="text-md font-semibold mb-2">Productos Denegados</h3>
+                  <div className="flex space-x-4">
+                      <button
+                        className="flex items-center px-4 py-2 text-white bg-red-600 rounded-md shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                        type="button"
+                        onClick={generarReporteDenegadosPDF}
+                        >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="w-5 h-5 mr-2"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                          <polyline points="14 2 14 8 20 8"></polyline>
+                          <line x1="16" y1="13" x2="8" y2="13"></line>
+                          <line x1="16" y1="17" x2="8" y2="17"></line>
+                          <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                        Descargar PDF
+                      </button>
+                      <button
+                        className="flex items-center px-4 py-2 text-white bg-green-600 rounded-md shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                        type="button"
+                      onClick={exportToCSV}
+                      id="csv-denegados"
+                      >
+                        <svg class="w-6 h-6 text-white mr-2 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                        <path fill-rule="evenodd" d="M9 2.221V7H4.221a2 2 0 0 1 .365-.5L8.5 2.586A2 2 0 0 1 9 2.22ZM11 2v5a2 2 0 0 1-2 2H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2 2 2 0 0 0 2 2h12a2 2 0 0 0 2-2 2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2V4a2 2 0 0 0-2-2h-7Zm1.018 8.828a2.34 2.34 0 0 0-2.373 2.13v.008a2.32 2.32 0 0 0 2.06 2.497l.535.059a.993.993 0 0 0 .136.006.272.272 0 0 1 .263.367l-.008.02a.377.377 0 0 1-.018.044.49.49 0 0 1-.078.02 1.689 1.689 0 0 1-.297.021h-1.13a1 1 0 1 0 0 2h1.13c.417 0 .892-.05 1.324-.279.47-.248.78-.648.953-1.134a2.272 2.272 0 0 0-2.115-3.06l-.478-.052a.32.32 0 0 1-.285-.341.34.34 0 0 1 .344-.306l.94.02a1 1 0 1 0 .043-2l-.943-.02h-.003Zm7.933 1.482a1 1 0 1 0-1.902-.62l-.57 1.747-.522-1.726a1 1 0 0 0-1.914.578l1.443 4.773a1 1 0 0 0 1.908.021l1.557-4.773Zm-13.762.88a.647.647 0 0 1 .458-.19h1.018a1 1 0 1 0 0-2H6.647A2.647 2.647 0 0 0 4 13.647v1.706A2.647 2.647 0 0 0 6.647 18h1.018a1 1 0 1 0 0-2H6.647A.647.647 0 0 1 6 15.353v-1.706c0-.172.068-.336.19-.457Z" clip-rule="evenodd"/>
+                        </svg>
+                        Descargar CSV
+                      </button>
+                    </div>
                   </div>
                 </div>
                 <div className="bg-white p-4 rounded-lg shadow-md flex flex-col justify-center items-center">

@@ -28,7 +28,7 @@ function DashboardStats(props) {
             <HeaderApp
             page="home"/>
             <div className="stats__grid">
-                <div className="stats__element  ">
+                <div className="stats__element h-24">
                     <div className="stats__element--flex "
                     >
                         <div className="stats__logo stats__logo--pink">
@@ -39,11 +39,6 @@ function DashboardStats(props) {
                         <div className="stats__textrigt ">
                             <p className="stats__label">Peticiones Totales</p>
                             <h4 className="stats__value">{props.stats.peticionesTotales}</h4>
-                        </div>
-                        <div className="stats__subinfo">
-                            <h4 className="text-rigth">Peticiones Ptes:</h4>
-                            <h4 className="text-rigth">{solicitudesNegadas}
-                            </h4>
                         </div>
                     </div>
                 </div>
@@ -58,11 +53,6 @@ function DashboardStats(props) {
                             <p className="stats__label">Peticiones Autorizadas</p>
                             <h4 className="stats__value">{props.stats.peticionesAutorizadas}</h4>
                         </div>
-                        <div className="stats__subinfo">
-                            <h4 className="text-rigth">Más Concurrente:</h4>
-                            <h4 className="text-rigth">{props.stats.clienteMasConcurrente}
-                            </h4>
-                        </div>
                     </div>
                 </div>
                 <div className="stats__element ">
@@ -75,11 +65,6 @@ function DashboardStats(props) {
                         <div className="stats__textrigt">
                             <p className="stats__label">Productos Autorizados</p>
                             <h4 className="stats__value">{props.stats.productosTotalesAutorizados}</h4>
-                        </div>
-                        <div className="stats__subinfo">
-                            <h4 className="text-rigth">Productos Solicitados:</h4>
-                            <h4 className="text-rigth">{props.stats.productosTotalesSolicitados}
-                            </h4>
                         </div>
                     </div>
                 </div>
@@ -96,11 +81,6 @@ function DashboardStats(props) {
                             <p className="stats__label">Monto Total Autorizado</p>
                             <h4 className="stats__value">
                                 {currencyFormat(props.stats.montoTotalAutorizado)}
-                            </h4>
-                        </div>
-                        <div className="stats__subinfo">
-                            <h4 className="text-rigth">Monto Total Solicitudes:</h4>
-                            <h4 className="text-rigth">{currencyFormat(props.stats.montoTotalSolicitudes)}
                             </h4>
                         </div>
                     </div>

@@ -4,7 +4,7 @@ function LoadingPageStats() {
     return (
         <>
         <div className="stats__grid">
-            <div class="animate-pulse flex space-x-4 h-48">
+            <div class="animate-pulse max-md:block max-md:mt-20 flex space-x-4 h-48">
                 <div className="stats__element--flex">
                     <div className="stats__logo bg-gray-50">
                         <div class="rounded-full bg-slate-200 h-10 w-10"></div>
@@ -30,7 +30,7 @@ function LoadingPageStats() {
                     </div>
                 </div>
             </div>
-            <div class="animate-pulse flex space-x-4 h-48">
+            <div class="animate-pulse max-md:block flex space-x-4 h-48">
                 <div className="stats__element--flex">
                     <div className="stats__logo bg-gray-50">
                         <div class="rounded-full bg-slate-200 h-10 w-10"></div>
@@ -56,7 +56,7 @@ function LoadingPageStats() {
                     </div>
                 </div>
             </div>
-            <div class="animate-pulse flex space-x-4 h-48">
+            <div class="animate-pulse max-md:block flex space-x-4 h-48">
                 <div className="stats__element--flex">
                     <div className="stats__logo bg-gray-50">
                         <div class="rounded-full bg-slate-200 h-10 w-10"></div>
@@ -82,7 +82,7 @@ function LoadingPageStats() {
                     </div>
                 </div>
             </div>
-            <div class="animate-pulse flex space-x-4 h-48">
+            <div class="animate-pulse max-md:block flex space-x-4 h-48">
                 <div className="stats__element--flex">
                     <div className="stats__logo bg-gray-50">
                         <div class="rounded-full bg-slate-200 h-10 w-10"></div>

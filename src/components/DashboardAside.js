@@ -1,89 +1,370 @@
-import React from "react";
-import logo from '../images/logo.png';
-import { NavLink, useHistory } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { NavLink, useHistory, useLocation } from "react-router-dom";
+import logo from "../images/logo.png";
 
 function DashboardAside(props) {
     const history = useHistory();
+    const location = useLocation();
+    const [infoOpen, setInfoOpen] = useState(false);
+    const [menuMobil, setMenuMobil] = useState(false);
+
     function signOut() {
-        localStorage.removeItem('jwt');
-        localStorage.removeItem('user-id');
-        localStorage.removeItem('user-email');
-        localStorage.removeItem('user-nombre');
-        localStorage.removeItem('user-departament');
-        props.setIsLoggedIn(false)
-        history.push('/');
+        localStorage.removeItem("jwt");
+        localStorage.removeItem("user-id");
+        localStorage.removeItem("user-email");
+        localStorage.removeItem("user-nombre");
+        localStorage.removeItem("user-departament");
+        props.setIsLoggedIn(false);
+        history.push("/");
         history.go(0);
     }
-    console.log()
-    return(
-    <>
-    <aside className="aside">
-        <div className="aside__header">
-            <div className="aside__top" >
-                <div className="aside__info">
-                    <img className="aside__logo" src={logo}/>
-                    <h1 className="aside__title">BackOrders App</h1>
+
+    function handleOpenMenuBar() {
+        setMenuMobil(!menuMobil)
+    }
+
+    useEffect(() => {
+        if (location.pathname.startsWith("/products") || location.pathname.startsWith("/clients")) {
+            setInfoOpen(true);
+        }
+    }, [location.pathname]);
+    return (
+        <>
+            <div className="absolute left-2 lg:hidden">
+                
+                <button onClick={handleOpenMenuBar}>
+                    {menuMobil 
+                    ? 
+                    <svg class="w-16 h-16 text-gray-600 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/>
+                    </svg>
+                    :
+                    <svg class="w-16 h-16 text-gray-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M5 7h14M5 12h14M5 17h14"/>
+                    </svg>
+                    }
+                </button>
+            </div>
+            <div>
+                <div
+                    className={`absolute top-10 left-0 text-white font-semibold shadow-lg rounded-md  transition-all duration-300 transform mt-8 globalcar-bg-aside w-11/12 h-full flex flex-col justify-between ${
+                        menuMobil ? 'translate-x-0 opacity-100 z-50' : '-translate-x-full opacity-0 z-50'
+                    }`}
+                >
+                    <div>
+                        <div className="aside__header">
+                            <div className="aside__top">
+                                <div className="aside__info flex flex-row ">
+                                    <img className="aside__logo w-28 mr-6 h-28" src={logo} alt="Logo" />
+                                    <h1 className="aside__title text-2xl">BackOrders App</h1>
+                                </div>
+                            </div>
+                        </div>
+                        <ul className="py-2">
+                            <NavLink activeClassName="globalcar-bg-button" to="/dashboard">
+                                <button className="aside__button--nav" type="button">
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 24 24"
+                                        fill="currentColor"
+                                        aria-hidden="true"
+                                        className="aside__icon"
+                                    >
+                                        <path d="M11.47 3.84a.75.75 0 011.06 0l8.69 8.69a.75.75 0 101.06-1.06l-8.689-8.69a2.25 2.25 0 00-3.182 0l-8.69 8.69a.75.75 0 001.061 1.06l8.69-8.69z"></path>
+                                        <path d="M12 5.432l8.159 8.159c.03.03.06.058.091.086v6.198c0 1.035-.84 1.875-1.875 1.875H15a.75.75 0 01-.75-.75v-4.5a.75.75 0 00-.75-.75h-3a.75.75 0 00-.75.75V21a.75.75 0 01-.75.75H5.625a1.875 1.875 0 01-1.875-1.875v-6.198a2.29 2.29 0 00.091-.086L12 5.43z"></path>
+                                    </svg>
+                                    <p className="aisde__title--button text-xl">Dashboard</p>
+                                </button>
+                            </NavLink>                    
+                        
+                            <NavLink activeClassName="globalcar-bg-button" to="/informes">
+                                <button className="aside__button--nav" type="button">
+                                    <svg
+                                        className="aside__icon"
+                                        aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="24"
+                                        height="24"
+                                        fill="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            fillRule="evenodd"
+                                            d="M9 7V2.221a2 2 0 0 0-.5.365L4.586 6.5a2 2 0 0 0-.365.5H9Zm2 0V2h7a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9h5a2 2 0 0 0 2-2Zm-1 9a1 1 0 1 0-2 0v2a1 1 0 1 0 2 0v-2Zm2-5a1 1 0 0 1 1 1v6a1 1 0 1 1-2 0v-6a1 1 0 0 1 1-1Zm4 4a1 1 0 1 0-2 0v3a1 1 0 1 0 2 0v-3Z"
+                                            clipRule="evenodd"
+                                        />
+                                    </svg>
+                                    <p className="aisde__title--button text-xl">Informes</p>
+                                </button>
+                            </NavLink>
+                            <div>
+                                <button
+                                    className="aside__button--nav flex justify-between items-center"
+                                    type="button"
+                                    onClick={() => setInfoOpen(!infoOpen)}
+                                >
+                                    <div className="flex items-center">
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            className="aside__icon"
+                                            viewBox="0 0 24 24"
+                                            fill="currentColor"
+                                            aria-hidden="true"
+                                        >
+                                            <path d="M12 4a2 2 0 012 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2h8zm6 0a2 2 0 012 2v12a2 2 0 01-2 2h-2V4h2z"></path>
+                                        </svg>
+                                        <p className="aisde__title--button ml-4 text-xl">Información</p>
+                                    </div>
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className={`transition-transform transform ${infoOpen ? "rotate-180" : ""} w-5 h-5`}
+                                        fill="currentColor"
+                                        viewBox="0 0 20 20"
+                                    >
+                                        <path
+                                            fillRule="evenodd"
+                                            d="M5.293 9.293a1 1 0 011.414 0L10 12.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                            clipRule="evenodd"
+                                        />
+                                    </svg>
+                                </button>
+                                {infoOpen && (
+                                    <div className="ml-4">
+                                        <NavLink activeClassName="globalcar-bg-button" to="/products">
+                                            <button className="aside__button--nav" type="button">
+                                                <svg
+                                                    className="aside__icon"
+                                                    aria-hidden="true"
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    width="24"
+                                                    height="24"
+                                                    fill="currentColor"
+                                                    viewBox="0 0 24 24"
+                                                >
+                                                    <path
+                                                        fillRule="evenodd"
+                                                        d="M8 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1h2a2 2 0 0 1 2 2v15a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h2Zm6 1h-4v2H9a1 1 0 0 0 0 2h6a1 1 0 1 0 0-2h-1V4Zm-3 8a1 1 0 0 1 1-1h3a1 1 0 1 1 0 2h-3a1 1 0 1-1Zm-2-1a1 1 0 1 0 0 2h.01a1 1 0 1 0 0-2H9Zm2 5a1 1 0 0 1 1-1h3a1 1 0 1 1 0 2h-3a1 1 0 0 1-1-1Zm-2-1a1 1 0 1 0 0 2h.01a1 1 0 1 0 0-2H9Z"
+                                                        clipRule="evenodd"
+                                                    />
+                                                </svg>
+                                                <p className="aisde__title--button text-xl">Productos</p>
+                                            </button>
+                                        </NavLink>
+                                        <NavLink activeClassName="globalcar-bg-button mt-2" to="/clients">
+                                            <button className="aside__button--nav" type="button">
+                                                <svg
+                                                    className="aside__icon"
+                                                    aria-hidden="true"
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    width="24"
+                                                    height="24"
+                                                    fill="currentColor"
+                                                    viewBox="0 0 24 24"
+                                                >
+                                                    <path
+                                                        fillRule="evenodd"
+                                                        d="M12 6a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Zm-1.5 8a4 4 0 0 0-4 4 2 2 0 0 0 2 2h7a2 2 0 0 0 2-2 4 4 0 0 0-4-4h-3Z"
+                                                        clipRule="evenodd"
+                                                    />
+                                                </svg>
+                                                <p className="aisde__title--button text-xl">Clientes</p>
+                                            </button>
+                                        </NavLink>
+                                    </div>
+                                )}
+                            </div>
+                        </ul>
+
+                    </div>
+                    <ul className="aside__list">
+                        <li>
+                            <a className="">
+                                <button
+                                    className="aside__button--nav"
+                                    type="button"
+                                    onClick={signOut}
+                                >
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 24 24"
+                                        fill="currentColor"
+                                        aria-hidden="true"
+                                        className="aside__icon"
+                                    >
+                                        <path
+                                            fillRule="evenodd"
+                                            d="M7.5 3.75A1.5 1.5 0 006 5.25v13.5a1.5 1.5 0 001.5 1.5h6a1.5 1.5 0 001.5-1.5V15a.75.75 0 011.5 0v3.75a3 3 0 01-3 3h-6a3 3 0 01-3-3V5.25a3 3 0 013-3h6a3 3 0 013 3V9A.75.75 0 0115 9V5.25a1.5 1.5 0 00-1.5-1.5h-6zm10.72 4.72a.75.75 0 011.06 0l3 3a.75.75 0 010 1.06l-3 3a.75.75 0 11-1.06-1.06l1.72-1.72H9a.75.75 0 010-1.5h10.94l-1.72-1.72a.75.75 0 010-1.06z"
+                                            clipRule="evenodd"
+                                        />
+                                    </svg>
+                                    <p className="aisde__title--button">Cerrar Sesión</p>
+                                </button>
+                            </a>
+                        </li>
+                    </ul>
                 </div>
             </div>
-        </div>
-        <div className="aside__container">
-            <nav className="aside__nav">
-                <NavLink activeClassName="globalcar-bg-button " to="/dashboard">
-                    <button id="dashboard"  className="aside__button--nav" type="button">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className="aside__icon">
-                        <path d="M11.47 3.84a.75.75 0 011.06 0l8.69 8.69a.75.75 0 101.06-1.06l-8.689-8.69a2.25 2.25 0 00-3.182 0l-8.69 8.69a.75.75 0 001.061 1.06l8.69-8.69z"></path>
-                        <path d="M12 5.432l8.159 8.159c.03.03.06.058.091.086v6.198c0 1.035-.84 1.875-1.875 1.875H15a.75.75 0 01-.75-.75v-4.5a.75.75 0 00-.75-.75h-3a.75.75 0 00-.75.75V21a.75.75 0 01-.75.75H5.625a1.875 1.875 0 01-1.875-1.875v-6.198a2.29 2.29 0 00.091-.086L12 5.43z"></path>
-                    </svg>
-                        <p className="aisde__title--button">dashboard</p>
-                    </button>
-                </NavLink>
-                <NavLink activeClassName="globalcar-bg-button " to="/products">
-                    <button id="dashboard"  className="aside__button--nav" type="button">
-                        <svg class="aside__icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                        <path fill-rule="evenodd" d="M8 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1h2a2 2 0 0 1 2 2v15a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h2Zm6 1h-4v2H9a1 1 0 0 0 0 2h6a1 1 0 1 0 0-2h-1V4Zm-3 8a1 1 0 0 1 1-1h3a1 1 0 1 1 0 2h-3a1 1 0 0 1-1-1Zm-2-1a1 1 0 1 0 0 2h.01a1 1 0 1 0 0-2H9Zm2 5a1 1 0 0 1 1-1h3a1 1 0 1 1 0 2h-3a1 1 0 0 1-1-1Zm-2-1a1 1 0 1 0 0 2h.01a1 1 0 1 0 0-2H9Z" clip-rule="evenodd"/>
-                        </svg>
+            <aside className="aside max-lg:hidden ">
+                <div className="aside__header">
+                    <div className="aside__top">
+                        <div className="aside__info">
+                            <img className="aside__logo" src={logo} alt="Logo" />
+                            <h1 className="aside__title">BackOrders App</h1>
+                        </div>
+                    </div>
+                </div>
+                <div className="aside__container">
+                    <nav className="aside__nav">
+                        {/* Dashboard */}
+                        <NavLink activeClassName="globalcar-bg-button" to="/dashboard">
+                            <button className="aside__button--nav" type="button">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    fill="currentColor"
+                                    aria-hidden="true"
+                                    className="aside__icon"
+                                >
+                                    <path d="M11.47 3.84a.75.75 0 011.06 0l8.69 8.69a.75.75 0 101.06-1.06l-8.689-8.69a2.25 2.25 0 00-3.182 0l-8.69 8.69a.75.75 0 001.061 1.06l8.69-8.69z"></path>
+                                    <path d="M12 5.432l8.159 8.159c.03.03.06.058.091.086v6.198c0 1.035-.84 1.875-1.875 1.875H15a.75.75 0 01-.75-.75v-4.5a.75.75 0 00-.75-.75h-3a.75.75 0 00-.75.75V21a.75.75 0 01-.75.75H5.625a1.875 1.875 0 01-1.875-1.875v-6.198a2.29 2.29 0 00.091-.086L12 5.43z"></path>
+                                </svg>
+                                <p className="aisde__title--button">Dashboard</p>
+                            </button>
+                        </NavLink>
 
-                        <p className="aisde__title--button">productos</p>
-                    </button>
-                </NavLink>
-                <NavLink activeClassName="globalcar-bg-button mt-2" to="/clients">
-                    <button id="dashboard"  className="aside__button--nav" type="button">
-                        <svg className="aside__icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                        <path fill-rule="evenodd" d="M12 6a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Zm-1.5 8a4 4 0 0 0-4 4 2 2 0 0 0 2 2h7a2 2 0 0 0 2-2 4 4 0 0 0-4-4h-3Zm6.82-3.096a5.51 5.51 0 0 0-2.797-6.293 3.5 3.5 0 1 1 2.796 6.292ZM19.5 18h.5a2 2 0 0 0 2-2 4 4 0 0 0-4-4h-1.1a5.503 5.503 0 0 1-.471.762A5.998 5.998 0 0 1 19.5 18ZM4 7.5a3.5 3.5 0 0 1 5.477-2.889 5.5 5.5 0 0 0-2.796 6.293A3.501 3.501 0 0 1 4 7.5ZM7.1 12H6a4 4 0 0 0-4 4 2 2 0 0 0 2 2h.5a5.998 5.998 0 0 1 3.071-5.238A5.505 5.505 0 0 1 7.1 12Z" clip-rule="evenodd"/>
-                        </svg>
+                        
+                        {/* Informes */}
+                        <NavLink activeClassName="globalcar-bg-button" to="/informes">
+                            <button className="aside__button--nav" type="button">
+                                <svg
+                                    className="aside__icon"
+                                    aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="24"
+                                    height="24"
+                                    fill="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        fillRule="evenodd"
+                                        d="M9 7V2.221a2 2 0 0 0-.5.365L4.586 6.5a2 2 0 0 0-.365.5H9Zm2 0V2h7a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9h5a2 2 0 0 0 2-2Zm-1 9a1 1 0 1 0-2 0v2a1 1 0 1 0 2 0v-2Zm2-5a1 1 0 0 1 1 1v6a1 1 0 1 1-2 0v-6a1 1 0 0 1 1-1Zm4 4a1 1 0 1 0-2 0v3a1 1 0 1 0 2 0v-3Z"
+                                        clipRule="evenodd"
+                                    />
+                                </svg>
+                                <p className="aisde__title--button">Informes</p>
+                            </button>
+                        </NavLink>
 
-                        <p className="aisde__title--button">Clientes</p>
-                    </button>
-                </NavLink>
-                <NavLink activeClassName="globalcar-bg-button mt-2" to="/informes">
-                    <button id="dashboard"  className="aside__button--nav" type="button">
-                        <svg class="aside__icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                        <path fill-rule="evenodd" d="M9 7V2.221a2 2 0 0 0-.5.365L4.586 6.5a2 2 0 0 0-.365.5H9Zm2 0V2h7a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9h5a2 2 0 0 0 2-2Zm-1 9a1 1 0 1 0-2 0v2a1 1 0 1 0 2 0v-2Zm2-5a1 1 0 0 1 1 1v6a1 1 0 1 1-2 0v-6a1 1 0 0 1 1-1Zm4 4a1 1 0 1 0-2 0v3a1 1 0 1 0 2 0v-3Z" clip-rule="evenodd"/>
-                        </svg>
+                        {/* Información */}
+                        <div>
+                            <button
+                                className="aside__button--nav flex justify-between items-center"
+                                type="button"
+                                onClick={() => setInfoOpen(!infoOpen)}
+                            >
+                                <div className="flex items-center">
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className="aside__icon"
+                                        viewBox="0 0 24 24"
+                                        fill="currentColor"
+                                        aria-hidden="true"
+                                    >
+                                        <path d="M12 4a2 2 0 012 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2h8zm6 0a2 2 0 012 2v12a2 2 0 01-2 2h-2V4h2z"></path>
+                                    </svg>
+                                    <p className="aisde__title--button">Información</p>
+                                </div>
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className={`transition-transform transform ${infoOpen ? "rotate-180" : ""} w-5 h-5`}
+                                    fill="currentColor"
+                                    viewBox="0 0 20 20"
+                                >
+                                    <path
+                                        fillRule="evenodd"
+                                        d="M5.293 9.293a1 1 0 011.414 0L10 12.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                        clipRule="evenodd"
+                                    />
+                                </svg>
+                            </button>
+                            {infoOpen && (
+                                <div className="ml-4">
+                                    <NavLink activeClassName="globalcar-bg-button" to="/products">
+                                        <button className="aside__button--nav" type="button">
+                                            <svg
+                                                className="aside__icon"
+                                                aria-hidden="true"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                width="24"
+                                                height="24"
+                                                fill="currentColor"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <path
+                                                    fillRule="evenodd"
+                                                    d="M8 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1h2a2 2 0 0 1 2 2v15a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h2Zm6 1h-4v2H9a1 1 0 0 0 0 2h6a1 1 0 1 0 0-2h-1V4Zm-3 8a1 1 0 0 1 1-1h3a1 1 0 1 1 0 2h-3a1 1 0 1-1Zm-2-1a1 1 0 1 0 0 2h.01a1 1 0 1 0 0-2H9Zm2 5a1 1 0 0 1 1-1h3a1 1 0 1 1 0 2h-3a1 1 0 0 1-1-1Zm-2-1a1 1 0 1 0 0 2h.01a1 1 0 1 0 0-2H9Z"
+                                                    clipRule="evenodd"
+                                                />
+                                            </svg>
+                                            <p className="aisde__title--button">Productos</p>
+                                        </button>
+                                    </NavLink>
+                                    <NavLink activeClassName="globalcar-bg-button mt-2" to="/clients">
+                                        <button className="aside__button--nav" type="button">
+                                            <svg
+                                                className="aside__icon"
+                                                aria-hidden="true"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                width="24"
+                                                height="24"
+                                                fill="currentColor"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <path
+                                                    fillRule="evenodd"
+                                                    d="M12 6a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Zm-1.5 8a4 4 0 0 0-4 4 2 2 0 0 0 2 2h7a2 2 0 0 0 2-2 4 4 0 0 0-4-4h-3Z"
+                                                    clipRule="evenodd"
+                                                />
+                                            </svg>
+                                            <p className="aisde__title--button">Clientes</p>
+                                        </button>
+                                    </NavLink>
+                                </div>
+                            )}
+                        </div>
 
-                        <p className="aisde__title--button">Informes</p>
-                    </button>
-                </NavLink>
-            </nav>
+                    </nav>
 
-            <ul className="aside__list">
-                <li>
-                    <a className="">
-                        <button className="aside__button--nav " type="button"
-                        onClick={signOut}
-                        >
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className="aside__icon">
-                            <path fill-rule="evenodd" d="M7.5 3.75A1.5 1.5 0 006 5.25v13.5a1.5 1.5 0 001.5 1.5h6a1.5 1.5 0 001.5-1.5V15a.75.75 0 011.5 0v3.75a3 3 0 01-3 3h-6a3 3 0 01-3-3V5.25a3 3 0 013-3h6a3 3 0 013 3V9A.75.75 0 0115 9V5.25a1.5 1.5 0 00-1.5-1.5h-6zm10.72 4.72a.75.75 0 011.06 0l3 3a.75.75 0 010 1.06l-3 3a.75.75 0 11-1.06-1.06l1.72-1.72H9a.75.75 0 010-1.5h10.94l-1.72-1.72a.75.75 0 010-1.06z" clip-rule="evenodd"></path>
-                        </svg>
-                        <p className="aisde__title--button">Cerrar Sesión</p>
-                        </button>
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </aside>
-    </>
-    )
+                    <ul className="aside__list">
+                        <li>
+                            <a className="">
+                                <button
+                                    className="aside__button--nav"
+                                    type="button"
+                                    onClick={signOut}
+                                >
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 24 24"
+                                        fill="currentColor"
+                                        aria-hidden="true"
+                                        className="aside__icon"
+                                    >
+                                        <path
+                                            fillRule="evenodd"
+                                            d="M7.5 3.75A1.5 1.5 0 006 5.25v13.5a1.5 1.5 0 001.5 1.5h6a1.5 1.5 0 001.5-1.5V15a.75.75 0 011.5 0v3.75a3 3 0 01-3 3h-6a3 3 0 01-3-3V5.25a3 3 0 013-3h6a3 3 0 013 3V9A.75.75 0 0115 9V5.25a1.5 1.5 0 00-1.5-1.5h-6zm10.72 4.72a.75.75 0 011.06 0l3 3a.75.75 0 010 1.06l-3 3a.75.75 0 11-1.06-1.06l1.72-1.72H9a.75.75 0 010-1.5h10.94l-1.72-1.72a.75.75 0 010-1.06z"
+                                            clipRule="evenodd"
+                                        />
+                                    </svg>
+                                    <p className="aisde__title--button">Cerrar Sesión</p>
+                                </button>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </aside>
+        </>
+    );
 }
 
 export default DashboardAside;

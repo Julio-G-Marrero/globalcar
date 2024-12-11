@@ -1,11 +1,16 @@
 .dashboard {
-    display: flex; 
-    flex-direction: row; 
+    display: block; 
 }
 
 @media (min-width: 1280px) { 
     .dashboard__aside {
         flex-basis: 16.666667%; 
+    }
+}
+@media (min-width: 1024px) {
+    .dashboard {
+        display: flex; 
+        flex-direction: row; 
     }
 }
 .dashboard__component {

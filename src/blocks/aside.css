@@ -10,7 +10,6 @@
     margin-left: 1rem; 
     border-radius: 0.75rem; 
     width: 18rem; 
-    background-color: #1F2937; 
     background-color: #111827; 
     transition-property: transform;
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
@@ -20,6 +19,9 @@
 }
 .aside__header {
     position: relative; 
+}
+.globalcar-bg-aside {
+    background-color: #111827; 
 }
 .aside__top {
     display: flex; 

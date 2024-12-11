@@ -493,32 +493,32 @@ function DashboardTable(props) {
                 <table class="dashboardTable__table">
                     <thead>
                     <tr>
-                        <th class="dashboardTable__tr">
+                        <th class="dashboardTable__tr max-md:p-2">
                             <p class="dashboardTable__text">
                                 Nombre Cliente
                             </p>
                         </th>
-                        <th class="dashboardTable__tr">
+                        <th class="dashboardTable__tr max-md:p-2 max-md:hidden">
                             <p class="dashboardTable__text">
-                                Correo Cliente
+                                Email
                             </p>
                         </th>
-                        <th class="dashboardTable__tr">
+                        <th class="dashboardTable__tr max-md:p-2">
                             <p class="dashboardTable__text">
-                                Fecha Apertura
+                                Apertura
                             </p>
                         </th>
-                        <th class="dashboardTable__tr">
+                        <th class="dashboardTable__tr max-md:p-2">
                             <p class="dashboardTable__text-qty">
-                                Qty Productos
+                                Cantidad
                             </p>
                         </th>
-                        <th class="dashboardTable__tr">
+                        <th class="dashboardTable__tr max-md:p-2">
                             <p class="dashboardTable__text">
-                                Monto Total
+                                Total
                             </p>
                         </th>
-                        <th class="dashboardTable__tr">
+                        <th class="dashboardTable__tr max-md:p-2">
                             <p class="dashboardTable__text">
                                 Status
                             </p>

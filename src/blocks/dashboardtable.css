@@ -129,6 +129,7 @@
     color: #374151; 
     background-clip: border-box; 
     background-color: #ffffff; 
+    overflow-y: scroll;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); 
 }
 .dashboardTable__table {
@@ -136,6 +137,7 @@
     min-width: max-content; 
     text-align: left; 
     table-layout: auto; 
+
 }
 .dashboardTable__tr {
     padding: 1rem; 

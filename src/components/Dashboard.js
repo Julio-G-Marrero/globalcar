@@ -139,7 +139,7 @@ function Dashboard(props) {
                     <DashboardStats
                         stats={stats}
                     />
-                    <div className="dashboard__table">
+                    <div>
                         <DashboardTable
                         setIsLoggedIn={props.setIsLoggedIn}
                          isLoggedIn={props.isLoggedIn}

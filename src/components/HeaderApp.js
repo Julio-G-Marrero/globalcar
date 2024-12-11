@@ -3,7 +3,7 @@ import React from "react";
 function HeaderApp(props) {
     return( 
         <>
-        <nav className="stats__header">
+        <nav className="stats__header max-md:ml-20 max-md:mt-3 max-md:mb-16 w-20">
             <div className="stats__header--container">
                 <div className="capitalize">
                     <nav aria-label="breadcrumb" className="w-max">
