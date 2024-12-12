@@ -29,9 +29,6 @@ function IngcoAdminPage(props) {
                 MySwal.fire('Sincronizacion Exitosa', `Productos Sincronizados: ${data.total_products_processed}`, 'success');
              }else {
                 MySwal.fire("Error", "El archivo excede el tamaño máximo permitido de 5 MB.", "error");
-                setTimeout(() => {
-                    window.location.reload();
-                }, 5000);
              }
              setIsLoading(false)
           })
