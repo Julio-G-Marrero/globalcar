@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/globalcar/static/css/main.eaa8b997.css",
-    "main.js": "/globalcar/static/js/main.e6721e2d.js",
+    "main.js": "/globalcar/static/js/main.ef369244.js",
     "static/js/239.89b12351.chunk.js": "/globalcar/static/js/239.89b12351.chunk.js",
     "static/js/213.e1f64aca.chunk.js": "/globalcar/static/js/213.e1f64aca.chunk.js",
     "static/js/732.725f7697.chunk.js": "/globalcar/static/js/732.725f7697.chunk.js",
@@ -9,10 +9,11 @@
     "static/media/bgBodega.jpg": "/globalcar/static/media/bgBodega.7fba3d1f2b86b403a5ca.jpg",
     "static/media/pinza.png": "/globalcar/static/media/pinza.3a72d7af6e43b3f120cd.png",
     "static/media/logo.png": "/globalcar/static/media/logo.db486b8f34db0a499f4e.png",
+    "static/media/globalcarlogo.png": "/globalcar/static/media/globalcarlogo.1480cb01c0f57ee56e96.png",
     "static/media/ingco-logo.png": "/globalcar/static/media/ingco-logo.a70cd47f1f0526e598d1.png",
     "index.html": "/globalcar/index.html",
     "main.eaa8b997.css.map": "/globalcar/static/css/main.eaa8b997.css.map",
-    "main.e6721e2d.js.map": "/globalcar/static/js/main.e6721e2d.js.map",
+    "main.ef369244.js.map": "/globalcar/static/js/main.ef369244.js.map",
     "239.89b12351.chunk.js.map": "/globalcar/static/js/239.89b12351.chunk.js.map",
     "213.e1f64aca.chunk.js.map": "/globalcar/static/js/213.e1f64aca.chunk.js.map",
     "732.725f7697.chunk.js.map": "/globalcar/static/js/732.725f7697.chunk.js.map",
@@ -20,6 +21,6 @@
   },
   "entrypoints": [
     "static/css/main.eaa8b997.css",
-    "static/js/main.e6721e2d.js"
+    "static/js/main.ef369244.js"
   ]
 }
