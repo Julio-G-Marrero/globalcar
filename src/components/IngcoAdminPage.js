@@ -56,11 +56,11 @@ function IngcoAdminPage(props) {
                         Gestión de inventario
                     </h1>
                     <img src={logoIngco} className="w-24 mx-auto"/>
-                    <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center justify-between mb-4 max-lg:mt-6">
                         <div class="flex items-center">
-                            <img alt="Placeholder image of a warehouse icon" class="w-20 h-auto mr-4" height="50" src={pinza} width="50"/>
+                            <img alt="Placeholder image of a warehouse icon" class="w-20 h-auto mr-4 max-lg:hidden " height="50" src={pinza} width="50"/>
                             <div>
-                                <h2 class="text-xl font-semibold">
+                                <h2 class="text-xl font-semibold max-lg:text-md max-lg:text-left ">
                                     Sincronizar Inventario Niux
                                 </h2>
                                 <p class="text-gray-600 text-left">
