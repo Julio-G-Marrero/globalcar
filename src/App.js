@@ -10,6 +10,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import ProductPage from './components/ProductsPage';
 import ClientPage from './components/ClientPage';
 import InformesPage from './components/InformesPage';
+import IngcoAdminPage from './components/IngcoAdminPage';
 function App() {
   const orderStatus = {
     "1" : "En Revisión",
@@ -107,7 +108,13 @@ function App() {
           <Route path="/informes">
             <InformesPage
                 jwt={jwt}
+                setIsLoggedIn={setIsLoggedIn}
               />
+          </Route>
+          <Route path="/tiendas/ingco">
+            <IngcoAdminPage
+                setIsLoggedIn={setIsLoggedIn}
+                />
           </Route>
           <Route path="/register">
             <Register/>
