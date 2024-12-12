@@ -11,6 +11,7 @@ import ProductPage from './components/ProductsPage';
 import ClientPage from './components/ClientPage';
 import InformesPage from './components/InformesPage';
 import IngcoAdminPage from './components/IngcoAdminPage';
+import AlmacenPage from './components/AlmacenPage';
 function App() {
   const orderStatus = {
     "1" : "En Revisión",
@@ -113,6 +114,11 @@ function App() {
           </Route>
           <Route path="/tiendas/ingco">
             <IngcoAdminPage
+                setIsLoggedIn={setIsLoggedIn}
+                />
+          </Route>
+          <Route path="/almacen/gestion-inventario">
+            <AlmacenPage
                 setIsLoggedIn={setIsLoggedIn}
                 />
           </Route>
