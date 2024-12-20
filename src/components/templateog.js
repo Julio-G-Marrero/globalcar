@@ -9,9 +9,9 @@ function TemplateProductTable(props){
     const [isCheked, setIsCheked] = React.useState(false)
     const [isEditOn, setIsEditOn] = React.useState(false)
     const [isEditOnActive, setIsEditOnActive] = React.useState(false)
-    const [nuevoPrecioProducto, setNuevoPrecioProducto] = React.useState(props.producto.precio)
+    const [nuevoPrecioProducto, setNuevoPrecioProducto] = React.useState(props.producto.PRECIO_VENTA)
     const [nuevaCantidadProducto, setNuevaCantidadProducto] = React.useState(props.producto.cantidad)
-    const [nuevoMontoTotal, setNuevoMontoTotal] = React.useState(parseInt(props.producto.precio) * parseInt(nuevaCantidadProducto))
+    const [nuevoMontoTotal, setNuevoMontoTotal] = React.useState(parseInt(props.producto.PRECIO_VENTA) * parseInt(nuevaCantidadProducto))
     const [provedoresProducto, setProvedoresProducto] = React.useState(props.producto.provedor)
     const [editQty, setEditQty] = React.useState(props.isCreatePopup || props.rol == 1)
     const [isEditPopup, setIsEditPopup] = React.useState(props.isEditPopup && props.rol == 1)
@@ -31,7 +31,7 @@ function TemplateProductTable(props){
     React.useEffect(() => {
         setIsEditOn(false)
         setIsEditOnActive(false)
-        setNuevoPrecioProducto(props.producto.precio)
+        setNuevoPrecioProducto(props.producto.PRECIO_VENTA)
         setNuevaCantidadProducto(props.producto.cantidad)
         setProvedoresProducto(props.producto.provedor)
     },[props.orderSelected])
@@ -70,7 +70,7 @@ function TemplateProductTable(props){
     };
 
     function calcularMonto() {
-        let montoCalculado = parseInt(props.producto.precio) * parseInt(nuevaCantidadProducto)
+        let montoCalculado = parseInt(props.producto.PRECIO_VENTA) * parseInt(nuevaCantidadProducto)
         setNuevoMontoTotal(montoCalculado)
     }
 
@@ -84,9 +84,9 @@ function TemplateProductTable(props){
         if(Object.keys(props.productosAutorizados).length === 0 ) {
             props.setProductosAutorizados([{
                 'idProducto':props.producto._id,
-                "codigo_interno": props.producto.codigo_interno,
-                "descripcion": props.producto.descripcion,
-                "precio": props.producto.precio,
+                "CODIGO_MAT": props.producto.CODIGO_MAT,
+                "DESCRIPCION": props.producto.DESCRIPCION,
+                "precio": props.producto.PRECIO_VENTA,
                 "cantidad": parseInt(nuevaCantidadProducto),
                 "provedor" : provedoresProducto
             }]
@@ -96,9 +96,9 @@ function TemplateProductTable(props){
             console.log(props.producto._id)
             props.setProductosAutorizados([...props.productosAutorizados, {
                 'idProducto':props.producto._id,
-                "codigo_interno": props.producto.codigo_interno,
-                "descripcion": props.producto.descripcion,
-                "precio": props.producto.precio,
+                "CODIGO_MAT": props.producto.CODIGO_MAT,
+                "DESCRIPCION": props.producto.DESCRIPCION,
+                "precio": props.producto.PRECIO_VENTA,
                 "cantidad": parseInt(nuevaCantidadProducto),
                 "provedor" : provedoresProducto
             }, ]);
@@ -116,8 +116,8 @@ function TemplateProductTable(props){
         const cleanProducts = props.productosAutorizados.filter(product => product.idProducto != idProducto);
         props.setProductosAutorizados([...cleanProducts,{
             'idProducto':props.producto._id,
-            "codigo_interno": props.producto.codigo_interno,
-            "descripcion": props.producto.descripcion,
+            "CODIGO_MAT": props.producto.CODIGO_MAT,
+            "DESCRIPCION": props.producto.DESCRIPCION,
             "precio": nuevoPrecioProducto,
             "cantidad": parseInt(nuevaCantidadProducto),
             "provedor" : provedoresProducto
@@ -128,7 +128,7 @@ function TemplateProductTable(props){
 
     }
     function handleDeleteProductList(e){
-        setNuevoPrecioProducto(props.producto.precio)
+        setNuevoPrecioProducto(props.producto.PRECIO_VENTA)
         setNuevaCantidadProducto(nuevaCantidadProducto)
         setNuevoMontoTotal(nuevoMontoTotal)
         setIsCheked(false)
@@ -136,15 +136,15 @@ function TemplateProductTable(props){
         const cleanProducts = props.productosAutorizados.filter(product => product.idProducto != idProducto);
         props.setProductosAutorizados(cleanProducts)
     }
-    if(props.producto.descripcion == undefined){
+    if(props.producto.DESCRIPCION == undefined){
         return("")
     } else {
         return(
             <>
             <tr class="border-b border-blue-gray-200 hover:bg-gray-100">
-                <td class="productoTable__space">{props.producto.codigo_interno}</td>
-                <td class="productoTable__space">{props.producto.descripcion}</td>
-                <td class="productoTable__value">{props.producto.precio}</td>
+                <td class="productoTable__space">{props.producto.CODIGO_MAT}</td>
+                <td class="productoTable__space">{props.producto.DESCRIPCION}</td>
+                <td class="productoTable__value">{props.producto.PRECIO_VENTA}</td>
 
                 {
                     editQty && isEditOnActive || props.isCreatePopup

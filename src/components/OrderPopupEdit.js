@@ -39,15 +39,21 @@ function OrderPopupEdit(props){
         } else{
             let monto_autorizado = 0;
             let cantidad_productos_autorizados = 0;
-            const productosDenegados = productosPedido.filter(productoPedido => 
-                !productosAutorizados.some(producto => producto.idProducto === productoPedido._id)
-            );
+            // Calcula el monto total autorizado y la cantidad de productos autorizados
             productosAutorizados.forEach((producto) => {
-                cantidad_productos_autorizados = cantidad_productos_autorizados + parseInt(producto.cantidad)
-                const montoProducto = parseInt(producto.cantidad) * parseInt(producto.precio)
-                monto_autorizado = monto_autorizado + parseInt(montoProducto)
-                setTotalMonto(monto_autorizado)
+                cantidad_productos_autorizados += parseInt(producto.cantidad, 10);
+                const montoProducto = parseInt(producto.cantidad, 10) * parseFloat(producto.PRECIO_VENTA);
+                monto_autorizado += montoProducto;
             });
+            // Actualiza el total del monto autorizado en el estado
+            setTotalMonto(monto_autorizado);
+            const productosDenegados = productosPedido.filter((productoPedido) => {
+                return !productosAutorizados.some(
+                  (productoAutorizado) =>
+                    productoAutorizado.CODIGO_MAT === productoPedido.CODIGO_MAT
+                );
+            });
+
             fetch(`${api.addressEndpoints}/orders/${props.orderSelected._id}/authorize`, {
                 method: "PATCH",
                 headers: {

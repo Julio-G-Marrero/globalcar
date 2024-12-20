@@ -184,7 +184,7 @@ function ProductPage(props) {
                     </thead>
                     <tbody>
                       {productos.reverse().map((producto) => (
-                        <ProductsTable key={producto.codigo_barras} producto={producto} />
+                        <ProductsTable key={producto.CODIGO_BARRAS} producto={producto} />
                       ))}
                     </tbody>
                   </table>

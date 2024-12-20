@@ -5,8 +5,10 @@ import closeIcon from '../images/Close_Icon.png';
 import api from "../utilis/api";
 import { useHistory } from 'react-router'
 import Swal from 'sweetalert2'
+import axios from "axios";
 import withReactContent from 'sweetalert2-react-content'
 
+import SearchProducts from "./SearchProducts";
 function OrderPopupCreate(props) {
     const MySwal = withReactContent(Swal)
     const history = useHistory();
@@ -59,16 +61,37 @@ function OrderPopupCreate(props) {
         actual_date = String(year +'-'+month+'-'+day);
     }
 
+
+    React.useEffect(() => {
+        const fetchProducts = async () => {
+        try {
+            if (inputSearchProduct) {
+            const response = await axios.get(`${api.addressEndpoints}/products/busqueda?search=${inputSearchProduct}`);
+            setSearchedProducts(response.data.productos || []);
+            }
+        } catch (error) {
+            console.error("Error fetching products:", error);
+            setSearchedProducts([]); // Vaciar productos en caso de error
+        }
+        };
+
+        fetchProducts();
+    }, [inputSearchProduct]);
+
+    function handleChangeInput(e) {
+        setInputSearchProduct(e.target.value)
+    }
+
     function handleAddProduct(e) {
         e.preventDefault()
         if(nombreProducto !== "" && precioProducto !== 0 && cantidadProducto !== 0) {
             setProductosPedidos([...productosPedido, {
                 '_id':Math.floor(Math.random() * 1000000),
-                "codigo_barras":skuProducto,
-                "codigo_interno":skuProducto,
-                "descripcion": nombreProducto,
+                "CODIGO_BARRAS":skuProducto,
+                "CODIGO_MAT":skuProducto,
+                "DESCRIPCION": nombreProducto,
                 "familia": "Diversa",
-                "precio": precioProducto,
+                "PRECIO_VENTA": precioProducto,
                 "sub_familia": "Diversa",
                 "cantidad":cantidadProducto,
                 "provedor": "Diverso"
@@ -87,19 +110,20 @@ function OrderPopupCreate(props) {
         }
     }
 
-    function handleDeleteProducto(productElement) {
-        const idProducto = productElement._id;
+    function handleDeleteProducto(productElement, event) {
+        if (event) {
+          event.preventDefault();
+        }
+        const idProducto = productElement.CODIGO_BARRAS;
         const cleanProducts = productosPedido.filter(
-            (item) => item._id !== idProducto
+          (item) => item.CODIGO_BARRAS !== idProducto
         );
         setProductosPedidos(cleanProducts); // Actualiza el array de productos
-        console.log(idProducto)
         setSelectedSearchedProducts([]); // Limpia la búsqueda, si es necesario
         setTimeout(() => {
           sumaDeMonto(); // Recalcula el monto total
         }, 100);
       }
-      
 
     function handleOnChange(e) {
         if(e.target.id === "nombreProducto"){
@@ -134,91 +158,46 @@ function OrderPopupCreate(props) {
         }
     }
 
-    function handleSearchProducts(e) {
-        handleChangeSearchProducts(e)
-        if(inputSearchProduct == "") {
-            setSearchedProducts([])
-        }else{
-            fetch(`${api.addressEndpoints}/products/search/all?value=${inputSearchProduct}`, {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    'Authorization': `Bearer ${props.jwt}`,
-                }
-                })
-                .then((response) => response.json())
-                .then((data) => {
-                    if(data.message) {
-                        MySwal.fire({
-                            title: `Ocurrio un error, contacte con soporte`,
-                            confirmButtonText: "Ok",
-                            }).then((result) => {
-                            if (result.isConfirmed) {
-                                localStorage.removeItem('jwt');
-                                localStorage.removeItem('user-id');
-                                localStorage.removeItem('user-email');
-                                localStorage.removeItem('user-nombre');
-                                localStorage.removeItem('user-departament');
-                                props.setIsLoggedIn(false)                
-                                history.push('globalcar/')
-                            } 
-                            });
-                    }else {
-                        if(data.error) {
-                            alert(data.err)
-                        }else {
-                            setSearchedProducts(data.products)
-                        }
-                    }
-                })
-                .catch((err) => console.log(err));
-        }
-    }
-
-
-    function handleChangeSearchClients(e) {
-        if(e.target.id == "inputSearchClient") {
-            setInputSearchClient(e.target.value)
-        }
-        console.log(inputSearchClient)
-
-    }
-    function handleSearchClients(e) {
-        handleChangeSearchClients(e)
-        if(inputSearchClient == "") {
-            setSearchedClients([])
-        }else{
-            fetch(`${api.addressEndpoints}/clients/search/all?value=${inputSearchClient}`, {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    'Authorization': `Bearer ${props.jwt}`,
-                }
-                })
-                .then((response) => response.json())
-                .then((data) => {
-                    if(data.message) {
-                        MySwal.fire({
-                            title: `Ocurrio un error, contacte con soporte`,
-                            confirmButtonText: "Ok",
-                            }).then((result) => {
-                            if (result.isConfirmed) {
-                                localStorage.removeItem('jwt');
-                                localStorage.removeItem('user-id');
-                                localStorage.removeItem('user-email');
-                                localStorage.removeItem('user-nombre');
-                                localStorage.removeItem('user-departament');
-                                props.setIsLoggedIn(false)                
-                                history.push('globalcar/')
-                            } 
-                            });
-                    }else {
-                        setSearchedClients(data.clients)
-                    }
-                })
-                .catch((err) => console.log(err));
-        }
-    }
+    // function handleSearchProducts(e) {
+    //     handleChangeSearchProducts(e)
+    //     if(inputSearchProduct == "") {
+    //         setSearchedProducts([])
+    //     }else{
+    //         fetch(`${api.addressEndpoints}/products/search/all?value=${inputSearchProduct}`, {
+    //             method: "GET",
+    //             headers: {
+    //                 "Content-Type": "application/json",
+    //                 'Authorization': `Bearer ${props.jwt}`,
+    //             }
+    //             })
+    //             .then((response) => response.json())
+    //             .then((data) => {
+    //                 if(data.message) {
+    //                     MySwal.fire({
+    //                         title: `Ocurrio un error, contacte con soporte`,
+    //                         confirmButtonText: "Ok",
+    //                         }).then((result) => {
+    //                         if (result.isConfirmed) {
+    //                             localStorage.removeItem('jwt');
+    //                             localStorage.removeItem('user-id');
+    //                             localStorage.removeItem('user-email');
+    //                             localStorage.removeItem('user-nombre');
+    //                             localStorage.removeItem('user-departament');
+    //                             props.setIsLoggedIn(false)                
+    //                             history.push('globalcar/')
+    //                         } 
+    //                         });
+    //                 }else {
+    //                     if(data.error) {
+    //                         alert(data.err)
+    //                     }else {
+    //                         setSearchedProducts(data.products)
+    //                     }
+    //                 }
+    //             })
+    //             .catch((err) => console.log(err));
+    //     }
+    // }
 
     function handleResetSearchProduct() {
         setInputSearchProduct("")
@@ -346,31 +325,35 @@ function OrderPopupCreate(props) {
 
     function handleSelectSearchProduct(producto) {
         setProductosPedidos((prevProductos) => {
-          const existe = prevProductos.some(item => item._id === producto._id);
-          
-          if (!existe) {
-            producto.cantidad = 1;
-            return [...prevProductos, producto];
-          } else {
-            return prevProductos;
+          // Verificar si el producto ya existe en el listado
+          const exists = prevProductos.some((item) => item.CODIGO_BARRAS === producto.CODIGO_BARRAS);
+      
+          if (!exists) {
+            // Agregar el producto nuevo con una cantidad inicial de 1
+            return [...prevProductos, { ...producto, cantidad: 1 }];
           }
+      
+          // Si el producto ya existe, actualizar su cantidad
+          return prevProductos.map((item) =>
+            item.CODIGO_BARRAS === producto.CODIGO_BARRAS
+              ? { ...item, cantidad: item.cantidad + 1 }
+              : item
+          );
         });
       
-        setSelectedSearchedProducts((prevSelected) => {
-          const existe = prevSelected.some(item => item._id === producto._id);
-          if (!existe) {
-            return [...prevSelected, producto];
-          }
-          return prevSelected;
+        Toast.fire({
+          icon: "success",
+          title: `Producto ${producto.DESCRIPCION} añadido al pedido`,
         });
-      }
+    }
+      
 
     function handleChangeSearchClients(e) {
         setInputSearchClient(e.target.value);
         if (e.target.value === "") {
             setSearchedClients([]);
         } else {
-            fetch(`${api.addressEndpoints}/clients/search/all?value=${e.target.value}`, {
+            fetch(`${api.addressEndpoints}/clients/busqueda?search=${e.target.value}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -379,8 +362,8 @@ function OrderPopupCreate(props) {
             })
             .then((response) => response.json())
             .then((data) => {
-                if (data.clients) {
-                    setSearchedClients(data.clients);
+                if (data.clientes) {
+                    setSearchedClients(data.clientes);
                 } else {
                     setSearchedClients([]);
                 }
@@ -409,14 +392,15 @@ function OrderPopupCreate(props) {
     }
 
     function handleSelectSearchClient(cliente) {
-        setClienteSeleccionado(cliente.nombre);
-        setNombreCliente(cliente.nombre);
-        setTelefonoCliente(cliente.telefono);
-        setEmailCliente(cliente.email);
-        setUbicacionCliente(cliente.direccion);
+        setClienteSeleccionado(cliente.NOMBRE);
+        setNombreCliente(cliente.NOMBRE);
+        setTelefonoCliente(cliente.TELEFONO);
+        setEmailCliente(cliente.E_MAIL);
+        setUbicacionCliente(cliente.DIRECCION);
         setSearchedClients([]);
         setHighlightedIndex(-1);
         setNewClientForm(false);
+        setInputSearchClient("")
     }
 
     function handleResetSearchClient() {
@@ -424,6 +408,7 @@ function OrderPopupCreate(props) {
         setSearchedClients([]);
         setHighlightedIndex(-1);
     }
+
 
     return (
         <>
@@ -469,7 +454,7 @@ function OrderPopupCreate(props) {
                                                                     onClick={() => handleSelectSearchClient(cliente)}
                                                                     onMouseEnter={() => setHighlightedIndex(index)}
                                                                 >
-                                                                    {cliente.nombre}
+                                                                    {cliente.NOMBRE}
                                                                 </div>
                                                             ))}
                                                         </div>
@@ -649,66 +634,76 @@ function OrderPopupCreate(props) {
                                 </div>
                                 <div className="popup-create__form--add flex justify-start">
                                     <div className="w-80">
-                                        <div className="w-full">
-                                            <div className=" w-6/6">
-                                                <div className="relative">
-                                                    <input
-                                                    className="dashboardTable__input"
-                                                    placeholder="Busqueda General..."
-                                                    id="inputSearchProduct"
-                                                    onChange={handleSearchProducts}
-                                                    value={inputSearchProduct}
-                                                    />
-                                                    <button
-                                                    className="dashboardTable__button--stats"
-                                                    type="button"
-                                                    onClick={handleResetSearchProduct}
-                                                    >
-                                                        <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.651 7.65a7.131 7.131 0 0 0-12.68 3.15M18.001 4v4h-4m-7.652 8.35a7.13 7.13 0 0 0 12.68-3.15M6 20v-4h4"/>
-                                                        </svg>
-                                                    </button>
-                                                </div>
-                                            </div>
+                                        <div className="relative">
+                                            <input
+                                            className="dashboardTable__input"
+                                            placeholder="Busqueda General..."
+                                            id="inputSearchProduct"
+                                            onChange={(e) => setInputSearchProduct(e.target.value)}
+                                            value={inputSearchProduct}
+                                            />
+                                            <button
+                                            className="dashboardTable__button--stats"
+                                            type="button"
+                                            onClick={handleResetSearchProduct}
+                                            >
+                                            <svg
+                                                className="w-6 h-6 text-gray-800 dark:text-white"
+                                                aria-hidden="true"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                width="24"
+                                                height="24"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <path
+                                                stroke="currentColor"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth="2"
+                                                d="M17.651 7.65a7.131 7.131 0 0 0-12.68 3.15M18.001 4v4h-4m-7.652 8.35a7.13 7.13 0 0 0 12.68-3.15M6 20v-4h4"
+                                                />
+                                            </svg>
+                                            </button>
                                         </div>
                                     </div>
-                             
                                 </div>
-                                    <div>
-                                        <table className="product-list__table">
-                                            <thead>
-                                                <tr className="product-list__tr">
-                                                    <th className="product-list__th">SKU</th>
-                                                    <th className="product-list__th">Producto</th>
-                                                    <th className="product-list__th">Precio</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {searchedProducts.length > 0 ?
-                                                    ""
-                                                    :
-                                                    <>
-                                                        <p className="p-2 text-gray-400">No hay productos</p>
-                                                    </>
-                                                }
-                                                {searchedProducts.reverse().map(producto => (
-                                                    <tr 
-                                                        key={producto._id} 
-                                                        className="hover:cursor-pointer hover:bg-gray-100"
-                                                        onClick={() => handleSelectSearchProduct(producto)}
-                                                    >
-                                                        <td className="p-2">{producto.codigo_barras}</td>
-                                                        <td className="p-2">{producto.descripcion}</td>
-                                                        <td className="text-center p-2">{producto.precio}</td>
-                                                    </tr>
-                                                    ))}
-                                            </tbody>
-                                        </table>
 
-                                    </div>
+                                <div>
+                                    <table className="product-list__table">
+                                    <thead>
+                                        <tr className="product-list__tr">
+                                        <th className="product-list__th">SKU</th>
+                                        <th className="product-list__th">Producto</th>
+                                        <th className="product-list__th">Precio</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {searchedProducts.length === 0 ? (
+                                        <tr>
+                                            <td colSpan="3" className="text-center p-2 text-gray-400">
+                                            No hay productos
+                                            </td>
+                                        </tr>
+                                        ) : (
+                                            searchedProducts.map((producto) => (
+                                              <tr
+                                                key={producto._id}
+                                                className="hover:cursor-pointer hover:bg-gray-100"
+                                                onClick={() => handleSelectSearchProduct(producto)}
+                                              >
+                                                <td className="p-2">{producto.CODIGO_BARRAS}</td>
+                                                <td className="p-2">{producto.DESCRIPCION}</td>
+                                                <td className="text-center p-2">${producto.PRECIO_VENTA}</td>
+                                              </tr>
+                                            ))
+                                          )}
+                                    </tbody>
+                                    </table>
+                                </div>
                             </div>
-                        </div>
 
+                            </div>
                     <button type="submit" className=" mt-16 popup-create__buttonCreate bg-globalcar"
                     onClick={handleOrderCreate}
                     >Crear</button>

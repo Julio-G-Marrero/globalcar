@@ -64,11 +64,11 @@ function OrderPopupCreate(props) {
         if(nombreProducto !== "" && precioProducto !== 0 && cantidadProducto !== 0) {
             setProductosPedidos([...productosPedido, {
                 '_id':Math.floor(Math.random() * 1000000),
-                "codigo_barras":skuProducto,
-                "codigo_interno":skuProducto,
-                "descripcion": nombreProducto,
+                "CODIGO_MAT":skuProducto,
+                "CODIGO_MAT":skuProducto,
+                "DESCRIPCION": nombreProducto,
                 "familia": "Diversa",
-                "precio": precioProducto,
+                "PRECIO_VENTA": precioProducto,
                 "sub_familia": "Diversa",
                 "cantidad":cantidadProducto,
                 "provedor": "Diverso"
@@ -720,9 +720,9 @@ function OrderPopupCreate(props) {
                                                         className="hover:cursor-pointer hover:bg-gray-100"
                                                         onClick={() => handleSelectSearchProduct(producto)}
                                                     >
-                                                        <td className="p-2">{producto.codigo_barras}</td>
-                                                        <td className="p-2">{producto.descripcion}</td>
-                                                        <td className="text-center p-2">{producto.precio}</td>
+                                                        <td className="p-2">{producto.CODIGO_MAT}</td>
+                                                        <td className="p-2">{producto.DESCRIPCION}</td>
+                                                        <td className="text-center p-2">{producto.PRECIO_VENTA_VENTA}</td>
                                                     </tr>
                                                     ))}
                                             </tbody>

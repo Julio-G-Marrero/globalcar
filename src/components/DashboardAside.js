@@ -99,7 +99,7 @@ function DashboardAside(props) {
                                     <p className="aisde__title--button text-xl">Informes</p>
                                 </button>
                             </NavLink>
-                            <div>
+                            {/* <div>
                                 <button
                                     className="aside__button--nav flex justify-between items-center"
                                     type="button"
@@ -174,7 +174,7 @@ function DashboardAside(props) {
                                         </NavLink>
                                     </div>
                                 )}
-                                <div>
+                                <div className="hidden">
                                     <button
                                         className="aside__button--nav flex justify-between items-center"
                                         type="button"
@@ -222,7 +222,7 @@ function DashboardAside(props) {
                                         </div>
                                     )}
                                 </div>
-                            </div>
+                            </div> */}
                         </ul>
                     </div>
                     <ul className="aside__list">
@@ -305,7 +305,7 @@ function DashboardAside(props) {
                         </NavLink>
 
                         {/* Información Desktop*/}
-                        <div>
+                        {/* <div>
                             <button
                                 className="aside__button--nav flex justify-between items-center"
                                 type="button"
@@ -380,9 +380,9 @@ function DashboardAside(props) {
                                     </NavLink>
                                 </div>
                             )}
-                        </div>
-                        <div>
-                            <button
+                        </div> */}
+                        <div className="hidden">
+                            < button
                                 className="aside__button--nav flex justify-between items-center"
                                 type="button"
                                 onClick={() => setInfoOpenTiendas(!infoOpenTiendas)}

@@ -1,5 +1,6 @@
 const api = ({
-    addressEndpoints: 'https://www.backorders.chickenkiller.com',
+    addressEndpoints: 'http://localhost:4000',
 });
 //https://www.backorders.chickenkiller.com
+//http://localhost:4000
 export default api;

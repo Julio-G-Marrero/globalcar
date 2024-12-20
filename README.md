@@ -1,5 +1,5 @@
 # Proyecto Back orders
-Descripcion del proyecto: proyecto orientado a dar seguimiento a los pedidos pendientes de surtir en una franquicia
+DESCRIPCION del proyecto: proyecto orientado a dar seguimiento a los pedidos pendientes de surtir en una franquicia
 Tecnologias: React, React Hooks, NPM
 Especificaciones:
 URL Deployment: https://julio-g-marrero.github.io/globalcar/

@@ -16,20 +16,20 @@ function PopupProductCreate(props) {
           toast.onmouseleave = MySwal.resumeTimer;
         }
     });
-    const [descripcion, setDescripcion] = React.useState("")
-    const [codigo_barras, setCodigo_barras] = React.useState("")
-    const [codigo_interno, setCodigo_interno] = React.useState("")
+    const [DESCRIPCION, setDESCRIPCION] = React.useState("")
+    const [CODIGO_BARRAS, setCODIGO_BARRAS] = React.useState("")
+    const [CODIGO_MAT, setCODIGO_MAT] = React.useState("")
     const [familia, setFamilia] = React.useState("")
     const [sub_familia, setSub_familia] = React.useState("")
     const [precio, setPrecio] = React.useState("")
 
     function handeOnChange(e) {
-        if(e.target.id == "descripcion") {
-            setDescripcion(e.target.value)
-        }else if(e.target.id == "codigo_barras") {
-            setCodigo_barras(e.target.value)
-        }else if(e.target.id == "codigo_interno") {
-            setCodigo_interno(e.target.value)
+        if(e.target.id == "DESCRIPCION") {
+            setDESCRIPCION(e.target.value)
+        }else if(e.target.id == "CODIGO_BARRAS") {
+            setCODIGO_BARRAS(e.target.value)
+        }else if(e.target.id == "CODIGO_MAT") {
+            setCODIGO_MAT(e.target.value)
         }else if(e.target.id == "familia") {
             setFamilia(e.target.value)
         }else if(e.target.id == "sub_familia") {
@@ -40,9 +40,9 @@ function PopupProductCreate(props) {
     }
 
     function handleCleanForm() {
-        setDescripcion("")
-        setCodigo_barras("")
-        setCodigo_interno("")
+        setDESCRIPCION("")
+        setCODIGO_BARRAS("")
+        setCODIGO_MAT("")
         setFamilia("")
         setSub_familia("")
         setPrecio("")
@@ -50,7 +50,7 @@ function PopupProductCreate(props) {
 
     function handleSubmit(e) {
         e.preventDefault()
-        if(descripcion !== "" && codigo_barras !== "" && codigo_interno !== "" && familia !== "" && sub_familia !== ""  && precio !== ""){
+        if(DESCRIPCION !== "" && CODIGO_BARRAS !== "" && CODIGO_MAT !== "" && familia !== "" && sub_familia !== ""  && precio !== ""){
             console.log('no eya vacio ')
             fetch(`${api.addressEndpoints}/products`, {
                 method: "POST",
@@ -60,9 +60,9 @@ function PopupProductCreate(props) {
                 },
                 body: JSON.stringify(
                     {
-                        codigo_barras: codigo_barras,
-                        codigo_interno: codigo_interno,
-                        descripcion: descripcion,
+                        CODIGO_BARRAS: CODIGO_BARRAS,
+                        CODIGO_MAT: CODIGO_MAT,
+                        DESCRIPCION: DESCRIPCION,
                         precio: precio,
                         familia: familia,
                         sub_familia: sub_familia,
@@ -71,16 +71,16 @@ function PopupProductCreate(props) {
             })
             .then((response) => response.json())
             .then((data) => {
-                if(data.codigo_barras) {
+                if(data.CODIGO_BARRAS) {
                     Toast.fire({
                         icon: "success",
                         title: "Producto Agregado Correctamente"
                       });
                       handleCleanForm()
                       let producto = {
-                        codigo_barras: codigo_barras,
-                        codigo_interno: codigo_interno,
-                        descripcion: descripcion,
+                        CODIGO_BARRAS: CODIGO_BARRAS,
+                        CODIGO_MAT: CODIGO_MAT,
+                        DESCRIPCION: DESCRIPCION,
                         precio: precio,
                         familia: familia,
                         sub_familia: sub_familia,
@@ -110,24 +110,24 @@ function PopupProductCreate(props) {
                 <h1 className="items-center text-2xl font-semibold text-gray-500 mt-1 mb-2">Agregar Producto</h1>
                 <form className="text-left">
                     <div className="popup-create__margin">
-                        <label for="descripcion" className="popup-create__input-name">Descripcion</label>
-                        <input type="text" id="descripcion" name="descripcion" className="popup-create__input"
-                        value={descripcion}
+                        <label for="DESCRIPCION" className="popup-create__input-name">DESCRIPCION</label>
+                        <input type="text" id="DESCRIPCION" name="DESCRIPCION" className="popup-create__input"
+                        value={DESCRIPCION}
                         onChange={handeOnChange}
                         />
                     </div>
                     <div className="clienteInfo popup-create__fieldset">
                         <div className="popup-create__margin">
-                            <label for="codigo_barras" className="popup-create__input--2">Codigo de barras</label>
-                            <input type="text"  id="codigo_barras" name="codigo_barras" className="popup-create__input"
-                            value={codigo_barras}
+                            <label for="CODIGO_BARRAS" className="popup-create__input--2">Codigo de barras</label>
+                            <input type="text"  id="CODIGO_BARRAS" name="CODIGO_BARRAS" className="popup-create__input"
+                            value={CODIGO_BARRAS}
                             onChange={handeOnChange}
                             />
                         </div>
                         <div className="popup-create__margin">
-                            <label for="codigo_interno" className="popup-create__input--2">Codigo Interno</label>
-                            <input type="text" id="codigo_interno" name="codigo_interno" className="popup-create__input "
-                            value={codigo_interno}
+                            <label for="CODIGO_MAT" className="popup-create__input--2">Codigo Interno</label>
+                            <input type="text" id="CODIGO_MAT" name="CODIGO_MAT" className="popup-create__input "
+                            value={CODIGO_MAT}
                             onChange={handeOnChange}
                             />
                         </div>

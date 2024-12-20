@@ -81,16 +81,16 @@ function InformesPage(props) {
       productosFiltrados = productosFiltrados.map((pedido) => ({
         ...pedido,
         productos: pedido.productos.filter(
-          (producto) => producto.familia === selectedFamilia
+          (producto) => producto.FAMILIA === selectedFamilia
         ),
         productos_denegados: pedido.productos_denegados
           ? pedido.productos_denegados.filter(
-              (producto) => producto.familia === selectedFamilia
+              (producto) => producto.FAMILIA === selectedFamilia
             )
           : [],
         productos_autorizados: pedido.productos_autorizados
           ? pedido.productos_autorizados.filter(
-              (producto) => producto.familia === selectedFamilia
+              (producto) => producto.FAMILIA === selectedFamilia
             )
           : [],
       }));
@@ -112,19 +112,19 @@ function InformesPage(props) {
     productosFiltrados.forEach((pedido) => {
       // Sumar montos y cantidades de productos solicitados
       pedido.productos.forEach((producto) => {
-        montos[2] += producto.cantidad * parseFloat(producto.precio || 0);
+        montos[2] += producto.cantidad * parseFloat(producto.PRECIO_VENTA || 0);
         cantidades[2] += producto.cantidad;
       });
   
       // Sumar montos y cantidades de productos denegados
       pedido.productos_denegados.forEach((producto) => {
-        montos[0] += producto.cantidad * parseFloat(producto.precio || 0);
+        montos[0] += producto.cantidad * parseFloat(producto.PRECIO_VENTA || 0);
         cantidades[0] += producto.cantidad;
       });
   
       // Sumar montos y cantidades de productos autorizados
       pedido.productos_autorizados.forEach((producto) => {
-        montos[1] += producto.cantidad * parseFloat(producto.precio || 0);
+        montos[1] += producto.cantidad * parseFloat(producto.PRECIO_VENTA || 0);
         cantidades[1] += producto.cantidad;
       });
     });
@@ -146,10 +146,10 @@ function InformesPage(props) {
     const cantidadPorFamilia = {};
     data.forEach((pedido) => {
       pedido.productos.forEach((producto) => {
-        if (producto.familia in cantidadPorFamilia) {
-          cantidadPorFamilia[producto.familia] += producto.cantidad;
+        if (producto.FAMILIA in cantidadPorFamilia) {
+          cantidadPorFamilia[producto.FAMILIA] += producto.cantidad;
         } else {
-          cantidadPorFamilia[producto.familia] = producto.cantidad;
+          cantidadPorFamilia[producto.FAMILIA] = producto.cantidad;
         }
       });
     });
@@ -266,7 +266,7 @@ function InformesPage(props) {
     data.forEach((pedido) => {
       pedido.productosDenegados.forEach((productosGrupo) => {
         productosGrupo.forEach((producto) => {
-          totalMontoDenegado += parseFloat(producto.precio) * producto.cantidad;
+          totalMontoDenegado += parseFloat(producto.PRECIO_VENTA) * producto.cantidad;
         });
       });
     });
@@ -277,7 +277,7 @@ function InformesPage(props) {
     let totalMontoSolicitado = 0;
     data.forEach((pedido) => {
       pedido.productos.forEach((producto) => {
-        totalMontoSolicitado += parseFloat(producto.precio) * producto.cantidad;
+        totalMontoSolicitado += parseFloat(producto.PRECIO_VENTA) * producto.cantidad;
       });
     });
     return totalMontoSolicitado;
@@ -490,9 +490,9 @@ function InformesPage(props) {
             {allProducts.map((pedido, index) => (
               pedido.productos.map((producto, productoIndex) => (
                 <tr key={`${index}-${productoIndex}`}>
-                  <td className="px-4 py-2 border">{producto.descripcion}</td>
+                  <td className="px-4 py-2 border">{producto.DESCRIPCION}</td>
                   <td className="px-4 py-2 border">{producto.cantidad}</td>
-                  <td className="px-4 py-2 border">{producto.precio}</td>
+                  <td className="px-4 py-2 border">{producto.PRECIO_VENTA}</td>
                 </tr>
               ))
             ))}
@@ -515,22 +515,22 @@ function InformesPage(props) {
   
       // Iterar sobre productos solicitados
       pedido.productos.forEach((producto) => {
-        if (familia !== "Todos" && producto.familia !== familia) {
+        if (familia !== "Todos" && producto.FAMILIA !== familia) {
           return;
         }
         // Sumar a "Solicitados"
-        totalMontos[2] += parseFloat(producto.precio) * producto.cantidad;
+        totalMontos[2] += parseFloat(producto.PRECIO_VENTA) * producto.cantidad;
         totalCantidades[2] += producto.cantidad;
       });
   
       // Iterar sobre productos denegados (aplanar si es necesario)
       if (pedido.productos_denegados) {
         pedido.productos_denegados.flat().forEach((producto) => {
-          if (familia !== "Todos" && producto.familia !== familia) {
+          if (familia !== "Todos" && producto.FAMILIA !== familia) {
             return;
           }
           // Sumar a "Denegados"
-          totalMontos[0] += parseFloat(producto.precio) * producto.cantidad;
+          totalMontos[0] += parseFloat(producto.PRECIO_VENTA) * producto.cantidad;
           totalCantidades[0] += producto.cantidad;
         });
       }
@@ -538,11 +538,11 @@ function InformesPage(props) {
       // Iterar sobre productos autorizados (aplanar si es necesario)
       if (pedido.productos_autorizados) {
         pedido.productos_autorizados.flat().forEach((producto) => {
-          if (familia !== "Todos" && producto.familia !== familia) {
+          if (familia !== "Todos" && producto.FAMILIA !== familia) {
             return;
           }
           // Sumar a "Autorizados"
-          totalMontos[1] += parseFloat(producto.precio) * producto.cantidad;
+          totalMontos[1] += parseFloat(producto.PRECIO_VENTA) * producto.cantidad;
           totalCantidades[1] += producto.cantidad;
         });
       }
@@ -584,15 +584,15 @@ function InformesPage(props) {
       .map((item) => {
         const productosDenegadosFlattened = item.productosDenegados.flat();
         const montoTotal = productosDenegadosFlattened.reduce((total, producto) => {
-          const precioNumerico = parseFloat(producto.precio.replace(",", "."));
+          const precioNumerico = parseFloat(producto.PRECIO_VENTA.replace(",", "."));
           return total + producto.cantidad * precioNumerico;
         }, 0);
         return {
           clienteNombre: item.clienteNombre,
           productosDenegados: productosDenegadosFlattened.map((producto) => ({
-            descripcion: producto.descripcion,
+            DESCRIPCION: producto.DESCRIPCION,
             cantidad: producto.cantidad,
-            precio: producto.precio,
+            precio: producto.PRECIO_VENTA,
           })),
           montoTotal,
         };
@@ -609,9 +609,9 @@ function InformesPage(props) {
       doc.setFont("helvetica", "bold");
       doc.text(`Cliente: ${cliente.clienteNombre}`, 14, yPosition);
       const productosDenegados = cliente.productosDenegados.map((producto) => [
-        producto.descripcion,
+        producto.DESCRIPCION,
         producto.cantidad,
-        producto.precio,
+        producto.PRECIO_VENTA,
       ]);
       doc.autoTable({
         startY: yPosition + 7,
@@ -724,16 +724,16 @@ function InformesPage(props) {
             // Calcular el monto total solicitado por cliente
             const montoTotal = productosSolicitadosFlattened.reduce((total, producto) => {
                 // Convertir precio a número
-                const precioNumerico = parseFloat(producto.precio.replace(',', '.'));
+                const precioNumerico = parseFloat(producto.PRECIO_VENTA.replace(',', '.'));
                 return total + (producto.cantidad * precioNumerico); // Sumar cantidad * precio de cada producto
             }, 0);
 
             return {
                 clienteNombre: item.cliente_nombre,
                 productosSolicitados: productosSolicitadosFlattened.map((producto) => ({
-                    descripcion: producto.descripcion,
+                    DESCRIPCION: producto.DESCRIPCION,
                     cantidad: producto.cantidad,
-                    precio: producto.precio,
+                    precio: producto.PRECIO_VENTA,
                 })),
                 montoTotal, // Agregar el monto total solicitado
             };
@@ -758,9 +758,9 @@ function InformesPage(props) {
 
         // Tabla para los productos solicitados
         const productosSolicitados = cliente.productosSolicitados.map((producto) => [
-            producto.descripcion,
+            producto.DESCRIPCION,
             producto.cantidad,
-            producto.precio,
+            producto.PRECIO_VENTA,
         ]);
 
         doc.autoTable({
@@ -864,16 +864,16 @@ function InformesPage(props) {
             // Calcular el monto total solicitado por cliente
             const montoTotal = productosSolicitadosFlattened.reduce((total, producto) => {
                 // Convertir precio a número
-                const precioNumerico = parseFloat(producto.precio.replace(',', '.'));
+                const precioNumerico = parseFloat(producto.PRECIO_VENTA.replace(',', '.'));
                 return total + (producto.cantidad * precioNumerico); // Sumar cantidad * precio de cada producto
             }, 0);
 
             return {
                 clienteNombre: item.clienteNombre,
                 productosSolicitados: productosSolicitadosFlattened.map((producto) => ({
-                    descripcion: producto.descripcion,
+                    DESCRIPCION: producto.DESCRIPCION,
                     cantidad: producto.cantidad,
-                    precio: producto.precio,
+                    precio: producto.PRECIO_VENTA,
                 })),
                 montoTotal, // Agregar el monto total solicitado
             };
@@ -898,9 +898,9 @@ function InformesPage(props) {
 
         // Tabla para los productos solicitados
         const productosSolicitados = cliente.productosSolicitados.map((producto) => [
-            producto.descripcion,
+            producto.DESCRIPCION,
             producto.cantidad,
-            producto.precio,
+            producto.PRECIO_VENTA,
         ]);
 
         doc.autoTable({
@@ -966,10 +966,10 @@ function InformesPage(props) {
           "Fecha Apertura": cliente.fecha_apertura,
           "Nombre Vendedor": cliente.nombre_vendedor,
           "ID Cliente": cliente.user_id,
-          "Codigo de Barras": producto.codigo_barras || "Sin Codigo",
-          "Codigo Interno": producto.codigo_interno || "Sin Codigo",
-          "Producto": producto.descripcion || "Sin nombre",
-          "Precio": producto.precio || "Sin precio",
+          "Codigo de Barras": producto.CODIGO_BARRAS || "Sin Codigo",
+          "Codigo Interno": producto.CODIGO_MAT || "Sin Codigo",
+          "Producto": producto.DESCRIPCION || "Sin nombre",
+          "PRECIO_VENTA": producto.PRECIO_VENTA || "Sin precio",
           "Cantidad": producto.cantidad || "Sin cantidad",
           "Fecha Promesa": producto.fecha_promesa_entrega,
         }));
@@ -986,10 +986,10 @@ function InformesPage(props) {
             "Fecha Apertura": cliente.fecha_apertura,
             "Nombre Vendedor": cliente.nombre_vendedor,
             "ID Cliente": cliente.user_id,
-            "Codigo de Barras": producto.codigo_barras || "Sin Codigo",
-            "Codigo Interno": producto.codigo_interno || "Sin Codigo",
-            "Producto": producto.descripcion || "Sin nombre",
-            "Precio": producto.precio || "Sin precio",
+            "Codigo de Barras": producto.CODIGO_BARRAS || "Sin Codigo",
+            "Codigo Interno": producto.CODIGO_MAT || "Sin Codigo",
+            "Producto": producto.DESCRIPCION || "Sin nombre",
+            "PRECIO_VENTA": producto.PRECIO_VENTA || "Sin precio",
             "Cantidad": producto.cantidad || "Sin cantidad",
             "Fecha Promesa": producto.fecha_promesa_entrega || "No definida",
           }))
@@ -1007,10 +1007,10 @@ function InformesPage(props) {
             "Fecha Apertura": cliente.fecha_apertura,
             "Nombre Vendedor": cliente.nombre_vendedor,
             "ID Cliente": cliente.user_id,
-            "Codigo de Barras": producto.codigo_barras || "Sin Codigo",
-            "Codigo Interno": producto.codigo_interno || "Sin Codigo",
-            "Producto": producto.descripcion || "Sin nombre",
-            "Precio": producto.precio || "Sin precio",
+            "Codigo de Barras": producto.CODIGO_BARRAS || "Sin Codigo",
+            "Codigo Interno": producto.CODIGO_MAT || "Sin Codigo",
+            "Producto": producto.DESCRIPCION || "Sin nombre",
+            "PRECIO_VENTA": producto.PRECIO_VENTA || "Sin precio",
             "Cantidad": producto.cantidad || "Sin cantidad",
             "Fecha Promesa": producto.fecha_promesa_entrega || "No definida",
           }))
@@ -1044,7 +1044,7 @@ function InformesPage(props) {
           <div className="dashboard__table mt-10">
             <section className="mb-8">
               <h2 className="text-2xl font-semibold mb-2">Reportes y Estadísticas</h2>
-              <div className="flex justify-between items-center w-96">
+              <div className="flex justify-between items-center w-96 ml-10 max-md:ml-3">
                 <div>
                   <label className="block text-sm font-medium text-gray-700">Filtrar por Cliente:</label>
                   <select
