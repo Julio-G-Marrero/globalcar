@@ -429,7 +429,7 @@ function OrderPopupCreate(props) {
                             <div className="mb-2">
                                 <h1 className="text-lg">Seleccionar Cliente</h1>
                             </div>
-                            <div className="flex gap-4 items-center">
+                            <div className="flex gap-4 items-center max-lg:flex-col max-lg:items-start">
                                 <div className="popup-create__form--add ">
                                     <div className="w-80">
                                         <div className="w-full">
@@ -473,7 +473,7 @@ function OrderPopupCreate(props) {
                                         </div>
                                     </div>
                                 </div>
-                                <div>
+                                <div className="max-lg:text-left max-lg:w-full">
                                     <h1>Cliente Seleccionado: <span className="font-semibold">{clienteSeleccionado}</span></h1>
                                 </div>
                             </div>
