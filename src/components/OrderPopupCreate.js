@@ -61,22 +61,31 @@ function OrderPopupCreate(props) {
         actual_date = String(year +'-'+month+'-'+day);
     }
 
-
     React.useEffect(() => {
         const fetchProducts = async () => {
-        try {
-            if (inputSearchProduct) {
-            const response = await axios.get(`${api.addressEndpoints}/products/busqueda?search=${inputSearchProduct}`);
-            setSearchedProducts(response.data.productos || []);
+            try {
+                if (inputSearchProduct) {
+                    const token = localStorage.getItem("jwt"); // Obtén el token del almacenamiento local o de donde lo guardes.
+                    const response = await axios.get(
+                        `${api.addressEndpoints}/products/busqueda?search=${inputSearchProduct}`,
+                        {
+                            headers: {
+                                "Content-Type": "application/json",
+                                'Authorization': `Bearer ${props.jwt}`,
+                            },
+                        }
+                    );
+                    setSearchedProducts(response.data.productos || []);
+                }
+            } catch (error) {
+                console.error("Error fetching products:", error);
+                setSearchedProducts([]); // Vaciar productos en caso de error
             }
-        } catch (error) {
-            console.error("Error fetching products:", error);
-            setSearchedProducts([]); // Vaciar productos en caso de error
-        }
         };
-
+    
         fetchProducts();
     }, [inputSearchProduct]);
+    
 
     function handleChangeInput(e) {
         setInputSearchProduct(e.target.value)
