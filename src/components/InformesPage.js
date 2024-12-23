@@ -584,7 +584,8 @@ function InformesPage(props) {
       .map((item) => {
         const productosDenegadosFlattened = item.productosDenegados.flat();
         const montoTotal = productosDenegadosFlattened.reduce((total, producto) => {
-          const precioNumerico = parseFloat(producto.PRECIO_VENTA.replace(",", "."));
+          const precioNumerico = producto.PRECIO_VENTA
+          // parseFloat(producto.PRECIO_VENTA.replace(",", "."));
           return total + producto.cantidad * precioNumerico;
         }, 0);
         return {
@@ -592,7 +593,7 @@ function InformesPage(props) {
           productosDenegados: productosDenegadosFlattened.map((producto) => ({
             DESCRIPCION: producto.DESCRIPCION,
             cantidad: producto.cantidad,
-            precio: producto.PRECIO_VENTA,
+            PRECIO_VENTA: producto.PRECIO_VENTA,
           })),
           montoTotal,
         };
@@ -720,11 +721,14 @@ function InformesPage(props) {
         .map((item) => {
             // Aplanar los productos solicitados
             const productosSolicitadosFlattened = item.productos.flat();
-
             // Calcular el monto total solicitado por cliente
             const montoTotal = productosSolicitadosFlattened.reduce((total, producto) => {
                 // Convertir precio a número
-                const precioNumerico = parseFloat(producto.PRECIO_VENTA.replace(',', '.'));
+            console.log(producto)
+
+                const precioNumerico = producto.PRECIO_VENTA
+                console.log(precioNumerico)
+                // parseFloat(producto.PRECIO_VENTA.replace(',', '.'));
                 return total + (producto.cantidad * precioNumerico); // Sumar cantidad * precio de cada producto
             }, 0);
 
@@ -733,7 +737,7 @@ function InformesPage(props) {
                 productosSolicitados: productosSolicitadosFlattened.map((producto) => ({
                     DESCRIPCION: producto.DESCRIPCION,
                     cantidad: producto.cantidad,
-                    precio: producto.PRECIO_VENTA,
+                    PRECIO_VENTA: producto.PRECIO_VENTA,
                 })),
                 montoTotal, // Agregar el monto total solicitado
             };
@@ -860,11 +864,11 @@ function InformesPage(props) {
         .map((item) => {
             // Aplanar los productos solicitados
             const productosSolicitadosFlattened = item.productos.flat();
-
             // Calcular el monto total solicitado por cliente
             const montoTotal = productosSolicitadosFlattened.reduce((total, producto) => {
                 // Convertir precio a número
-                const precioNumerico = parseFloat(producto.PRECIO_VENTA.replace(',', '.'));
+                const precioNumerico = producto.PRECIO_VENTA;
+                // parseFloat(producto.PRECIO_VENTA.replace(',', '.'));
                 return total + (producto.cantidad * precioNumerico); // Sumar cantidad * precio de cada producto
             }, 0);
 
@@ -873,7 +877,7 @@ function InformesPage(props) {
                 productosSolicitados: productosSolicitadosFlattened.map((producto) => ({
                     DESCRIPCION: producto.DESCRIPCION,
                     cantidad: producto.cantidad,
-                    precio: producto.PRECIO_VENTA,
+                    PRECIO_VENTA: producto.PRECIO_VENTA,
                 })),
                 montoTotal, // Agregar el monto total solicitado
             };
@@ -881,8 +885,8 @@ function InformesPage(props) {
 
     // Si no hay productos solicitados, salimos de la función sin generar el PDF
     if (reporteSimplificado.length === 0) {
-        doc.text("No hay productos solicitados para mostrar.", 10, 70);
-        doc.save("reporte_productos_solicitados.pdf");
+        doc.text("No hay productos Autorizados para mostrar.", 10, 70);
+        doc.save("reporte_productos_autorizados.pdf");
         return;
     }
 
