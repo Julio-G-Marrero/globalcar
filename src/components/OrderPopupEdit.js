@@ -26,8 +26,6 @@ function OrderPopupEdit(props){
     const [cantidadProducto, setCantidadProducto] = React.useState(1)
     const [totalMonto, setTotalMonto] = React.useState(props.orderSelected.precio_pactado)
 
-    console.log(props.orderSelected)
-
     const [productosAutorizados, setProductosAutorizados] = React.useState({})
     function handleAutorizarOrden(){
         if(Object.keys(productosAutorizados).length === 0 ) {

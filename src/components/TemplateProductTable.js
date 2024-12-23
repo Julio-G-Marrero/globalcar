@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { format } from "date-fns";
 
-function TemplateProductTable({ producto, setProductosAutorizados, handleDeleteProducto, statusId }) {
+function TemplateProductTable({ producto, setProductosAutorizados, handleDeleteProducto, statusId,handleUpdateProductQuantity }) {
   console.log(producto)
   const [isChecked, setIsChecked] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -131,10 +131,15 @@ function TemplateProductTable({ producto, setProductosAutorizados, handleDeleteP
         )}
       </td>
       <td className="text-center">
-        {isEditing ? (
+        {isEditing || statusId == 0? (
           <div className="flex items-center">
             <button
-              onClick={() => setQuantity(Math.max(1, quantity - 1))}
+              onClick={(e) => {
+                e.preventDefault();
+                const newQuantity = Math.max(1, quantity - 1);
+                setQuantity(newQuantity);
+                handleUpdateProductQuantity(producto.CODIGO_MAT, newQuantity);
+              }}
               className="p-2 border rounded-md"
             >
               -
@@ -147,7 +152,12 @@ function TemplateProductTable({ producto, setProductosAutorizados, handleDeleteP
               className="p-2 border rounded-md w-12 text-center mx-1"
             />
             <button
-              onClick={() => setQuantity(quantity + 1)}
+              onClick={(e) => {
+                e.preventDefault();
+                const newQuantity = quantity + 1;
+                setQuantity(newQuantity);
+                handleUpdateProductQuantity(producto.CODIGO_MAT, newQuantity);
+              }}
               className="p-2 border rounded-md"
             >
               +
@@ -158,7 +168,7 @@ function TemplateProductTable({ producto, setProductosAutorizados, handleDeleteP
         )}
       </td>
       <td>${totalAmount.toFixed(2)}</td>
-      {statusId === undefined ? (
+      {statusId == 0 ? (
         <td>
           <button onClick={() => handleDeleteProducto(producto)}>
             <svg class="w-4 h-4 text-red-800 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">

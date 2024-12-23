@@ -418,6 +418,13 @@ function OrderPopupCreate(props) {
         setHighlightedIndex(-1);
     }
 
+    const handleUpdateProductQuantity = (codigoMat, newQuantity) => {
+        setProductosPedidos((prevProductos) =>
+            prevProductos.map((producto) =>
+            producto.CODIGO_MAT === codigoMat ? { ...producto, cantidad: newQuantity } : producto
+            )
+        );
+    };
 
     return (
         <>
@@ -547,8 +554,13 @@ function OrderPopupCreate(props) {
                                 Object.values(productosPedido).map(producto =>  {
                                     return <TemplateProductTable
                                     rol={props.rol}
+                                    key={producto.CODIGO_MAT}
+                                    statusId="0"
                                     sumaDeMonto={sumaDeMonto}
-                                    producto={producto} handleDeleteProducto={handleDeleteProducto} isCreatePopup={true}/>
+                                    producto={producto} 
+                                    handleDeleteProducto={handleDeleteProducto} 
+                                    isCreatePopup={true}
+                                    handleUpdateProductQuantity={handleUpdateProductQuantity}/>
                                 })
                             }  
                             </tbody>
