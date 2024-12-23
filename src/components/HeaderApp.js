@@ -1,6 +1,7 @@
 import React from "react";
 
 function HeaderApp(props) {
+    console.log(localStorage['user-nombre'])
     return( 
         <>
         <nav className="stats__header max-md:ml-20 max-md:mt-3 max-md:mb-16 w-20">
@@ -19,6 +20,7 @@ function HeaderApp(props) {
                             </li>
                         </ol>
                     </nav>
+                    <p className="stats__router--element">{localStorage['user-nombre'] ?  localStorage['user-nombre'] : "Usuario"}</p>
                 </div>
             </div>
         </nav>

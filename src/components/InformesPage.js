@@ -339,14 +339,14 @@ function InformesPage(props) {
             label: "Montos Comparativos",
             data: filteredMontos, // Datos filtrados
             backgroundColor: [
-              "rgba(255, 99, 132, 0.6)",
-              "rgba(54, 162, 235, 0.6)",
-              "rgba(75, 192, 192, 0.6)",
+              "rgb(111 ,15 ,33)",
+              "rgb(15 ,111 ,51)",
+              "rgb(15 ,35 ,77)",
             ],
             borderColor: [
-              "rgba(255, 99, 132, 1)",
-              "rgba(54, 162, 235, 1)",
-              "rgba(75, 192, 192, 1)",
+              "rgb(111 ,15 ,33)",
+              "rgb(15 ,111 ,51)",
+              "rgb(15 ,35 ,77)",
             ],
             borderWidth: 1,
           },
@@ -379,14 +379,14 @@ function InformesPage(props) {
             label: "Cantidades Comparativas",
             data: filteredCantidades, // Datos filtrados
             backgroundColor: [
-              "rgba(255, 159, 64, 0.6)",
-              "rgba(75, 192, 192, 0.6)",
-              "rgba(153, 102, 255, 0.6)",
+              "rgb(111 ,15 ,33)",
+              "rgb(15 ,111 ,51)",
+              "rgb(15 ,35 ,77)",
             ],
             borderColor: [
-              "rgba(255, 159, 64, 1)",
-              "rgba(75, 192, 192, 1)",
-              "rgba(153, 102, 255, 1)",
+              "rgb(111 ,15 ,33)",
+              "rgb(15 ,111 ,51)",
+              "rgb(15 ,35 ,77)",
             ],
             borderWidth: 1,
           },
@@ -419,8 +419,8 @@ function InformesPage(props) {
           {
             label: "Cantidad de Productos por Familia",
             data: Object.values(cantidadPorFamilia),
-            backgroundColor: "rgba(54, 162, 235, 0.6)",
-            borderColor: "rgba(54, 162, 235, 1)",
+            backgroundColor: "rgb(15 ,35 ,77)",
+            borderColor: "rgb(15 ,35 ,77)",
             borderWidth: 1,
           },
         ],
@@ -454,8 +454,8 @@ function InformesPage(props) {
           {
             label: "Cantidad de Productos por Cliente",
             data: Object.values(cantidadPorCliente),
-            backgroundColor: "rgba(255, 206, 86, 0.6)",
-            borderColor: "rgba(255, 206, 86, 1)",
+            backgroundColor: "rgb(15 ,35 ,77)",
+            borderColor: "rgb(15 ,35 ,77)",
             borderWidth: 1,
           },
         ],
@@ -477,28 +477,28 @@ function InformesPage(props) {
 
   const renderProductTable = () => {
     return (
-      <div className="bg-white p-4 rounded-lg shadow-md w-full text-sm">
-        <table className="min-w-full table-auto">
-          <thead>
-            <tr>
-              <th className="px-4 py-2 border">Descripción</th>
-              <th className="px-4 py-2 border">Cantidad</th>
-              <th className="px-4 py-2 border">Precio</th>
-            </tr>
-          </thead>
-          <tbody>
-            {allProducts.map((pedido, index) => (
-              pedido.productos.map((producto, productoIndex) => (
-                <tr key={`${index}-${productoIndex}`}>
-                  <td className="px-4 py-2 border">{producto.DESCRIPCION}</td>
-                  <td className="px-4 py-2 border">{producto.cantidad}</td>
-                  <td className="px-4 py-2 border">{producto.PRECIO_VENTA}</td>
-                </tr>
-              ))
-            ))}
-          </tbody>
-        </table>
-      </div>
+    <div className="bg-white p-4 rounded-lg shadow-md w-full text-sm overflow-x-auto">
+      <table className="min-w-full table-auto">
+        <thead>
+          <tr>
+            <th className="px-4 py-2 border">Descripción</th>
+            <th className="px-4 py-2 border">Precio</th>
+          </tr>
+        </thead>
+        <tbody>
+          {allProducts.map((pedido, index) =>
+            pedido.productos.map((producto, productoIndex) => (
+              <tr key={`${index}-${productoIndex}`}>
+                <td className="px-4 py-2 border truncate max-w-[300px] whitespace-nowrap overflow-hidden text-ellipsis">
+                  {producto.DESCRIPCION}
+                </td>
+                <td className="px-4 py-2 border text-right">{producto.PRECIO_VENTA}</td>
+              </tr>
+            ))
+          )}
+        </tbody>
+      </table>
+    </div>
     );
   };
 
@@ -1045,7 +1045,7 @@ function InformesPage(props) {
         </div>
         <div className="dashboard__component">
           <HeaderApp page="Informes" />
-          <div className="dashboard__table mt-10">
+          <div className="dashboard__table">
             <section className="mb-8">
               <h2 className="text-2xl font-semibold mb-2">Reportes y Estadísticas</h2>
               <div className="flex justify-between items-center w-96 ml-10 max-md:ml-3">

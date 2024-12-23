@@ -318,6 +318,7 @@ function DashboardTable(props) {
                 ele[i].checked = false;
             }
     }
+    console.log(statusOrderFilter)
     function handleChangeSearchInput(e) {
         e.preventDefault()
         if(statusOrderFilter != 0) {
@@ -399,7 +400,7 @@ function DashboardTable(props) {
                 <div class="dashboardTable__header">
                     <div className="flex items-end gap-4">
                         <div class="dashboardTable__containerButton">
-                            <button class="dashboardTable__button"
+                            <button class="dashboardTable__button text-sm"
                             onClick={handleOrderPopup}>
                                 <span class="dashboardTable__titleButton">Crear</span>
                                 <svg class="dashboardTable__svg" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -425,7 +426,7 @@ function DashboardTable(props) {
                                 <nav class="-mb-px flex gap-6" aria-label="Tabs">
                                     <button
                                     href="#"
-                                    className={selectedTypeOrder == "pteRevison" ? "shrink-0 border-b-2 border-sky-500 pb-3 text-sm font-medium text-sky-600 " : "shrink-0  text-sm font-medium text-gray-700 pb-4"}                             
+                                    className={selectedTypeOrder == "pteRevison" ? "shrink-0 border-b-2 border-sky-500 pb-3 text-sm font-medium text-sky-600 " : "shrink-0  text-sm font-medium text-gray-700 hover:text-sky-600 hover:border-sky-500 pb-4"}                             
                                     id="pteRevison"
                                     onClick={hanldeFetchOrderByStatus}>
                                     Pendiente Revision
@@ -433,7 +434,7 @@ function DashboardTable(props) {
 
                                     <button
                                     href="#"
-                                    className={selectedTypeOrder == "pteSurtir" ? "shrink-0 border-b-2 border-sky-500 pb-3 text-sm font-medium text-sky-600" : "shrink-0  text-sm font-medium text-gray-700 pb-4"}                                    
+                                    className={selectedTypeOrder == "pteSurtir" ? "shrink-0 border-b-2 border-sky-500 pb-3 text-sm font-medium text-sky-600" : "shrink-0  text-sm font-medium text-gray-700 hover:text-sky-600 hover:border-sky-500 pb-4"}                                    
                                     id="pteSurtir"
                                     onClick={hanldeFetchOrderByStatus}>
                                     Pendiente Surtir
@@ -441,7 +442,7 @@ function DashboardTable(props) {
 
                                     <button
                                     href="#"
-                                    className={selectedTypeOrder == "surtida" ? "shrink-0 border-b-2 border-sky-500 pb-3 text-sm font-medium text-sky-600" : "shrink-0  text-sm font-medium text-gray-700 pb-4"}                                    
+                                    className={selectedTypeOrder == "surtida" ? "shrink-0 border-b-2 border-sky-500 pb-3 text-sm font-medium text-sky-600" : "shrink-0  text-sm font-medium text-gray-700 hover:text-sky-600 hover:border-sky-500 pb-4"}                                    
                                     id="surtida"
                                     onClick={hanldeFetchOrderByStatus}>
                                     Surtida
@@ -449,7 +450,7 @@ function DashboardTable(props) {
 
                                     <button
                                     href="#"
-                                    className={selectedTypeOrder == "denegada" ? "shrink-0 border-b-2 border-sky-500 pb-3 text-sm font-medium text-sky-600" : "shrink-0  text-sm font-medium text-gray-700 pb-4 "}
+                                    className={selectedTypeOrder == "denegada" ? "shrink-0 border-b-2 border-sky-500 pb-3 text-sm font-medium text-sky-600" : "shrink-0  text-sm font-medium text-gray-700 hover:text-sky-600 hover:border-sky-500 pb-4 "}
                                     aria-current="page"
                                     id="denegada"
                                     onClick={hanldeFetchOrderByStatus}>
@@ -469,14 +470,14 @@ function DashboardTable(props) {
                                 id="inputSearch"
                                 onChange={handleChangeSearchInput}
                                 />
-                                <button
+                                {/* <button
                                 class="dashboardTable__button--stats"
                                 type="button"
                                 >
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="dashboardTable__icon">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
                                 </svg>
-                                </button>
+                                </button> */}
                             </div>
                             <button
                                 class="dashboardTable__button--statsxl"
