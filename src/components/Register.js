@@ -62,7 +62,7 @@ function Register() {
                                         name="username"
                                         type="text"
                                         required
-                                        className="w-full text-gray-800 text-sm border-b border-gray-300 focus:border-blue-600 px-2 py-3 outline-none"
+                                        className="w-full text-gray-800 text-sm border-b border-gray-300 focus:border-blue-600 px-2 py-3 outline-none bg-color-app"
                                         placeholder="Ingresa tu Nombre"
                                         value={values.username}
                                         onChange={handleChange}
@@ -78,7 +78,7 @@ function Register() {
                                         onChange={handleChange}
                                         type="email"
                                         required
-                                        className="w-full text-gray-800 text-sm border-b border-gray-300 focus:border-blue-600 px-2 py-3 outline-none"
+                                        className="w-full text-gray-800 text-sm border-b border-gray-300 focus:border-blue-600 px-2 py-3 outline-none bg-color-app"
                                         placeholder="Ingresa tu Email"
                                     />
                                 </div>
@@ -89,7 +89,7 @@ function Register() {
                                     <input
                                         name="password"
                                         required
-                                        className="w-full text-gray-800 text-sm border-b border-gray-300 focus:border-blue-600 px-2 py-3 outline-none"
+                                        className="w-full text-gray-800 text-sm border-b border-gray-300 focus:border-blue-600 px-2 py-3 outline-none bg-color-app"
                                         placeholder="Enter password"
                                         value={values.password}
                                         type={showPassword ? 'text' : 'password'}
@@ -150,7 +150,7 @@ function Register() {
                                     <input
                                         name="confirmPassword"
                                         required
-                                        className="w-full text-gray-800 text-sm border-b border-gray-300 focus:border-blue-600 px-2 py-3 outline-none"
+                                        className="w-full text-gray-800 text-sm border-b border-gray-300 focus:border-blue-600 px-2 py-3 outline-none bg-color-app"
                                         placeholder="Confirm password"
                                         value={values.confirmPassword}
                                         type={showPassword ? 'text' : 'password'}

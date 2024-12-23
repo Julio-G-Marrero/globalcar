@@ -86,7 +86,7 @@ function Login(props) {
                     <div>
                         <label class="text-gray-800 text-xs block mb-2">Email</label>
                         <div class="relative flex items-center">
-                            <input name="email" type="text" required class="w-full text-gray-800 text-sm border-b border-gray-300 focus:border-blue-600 px-2 py-3 outline-none" placeholder="Enter email" 
+                            <input name="email" type="text" required class="w-full text-gray-800 text-sm border-b border-gray-300 focus:border-blue-600 px-2 py-3 outline-none bg-color-app" placeholder="Enter email" 
                             value={values.email}
                             onChange={handleChange}
                             />
@@ -107,7 +107,7 @@ function Login(props) {
                     <div class="mt-8">
                         <label class="text-gray-800 text-xs block mb-2">Password</label>
                         <div class="relative flex items-center">
-                        <input name="password" required class="w-full text-gray-800 text-sm border-b border-gray-300 focus:border-blue-600 px-2 py-3 outline-none" placeholder="Enter password" 
+                        <input name="password" required class="w-full text-gray-800 text-sm border-b border-gray-300 focus:border-blue-600 px-2 py-3 outline-none bg-color-app" placeholder="Enter password" 
                         value={values.password}
                         type={showPassword ? 'text' : 'password'}
                         onChange={handleChange}/>
