@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/globalcar/static/css/main.eb88139f.css",
-    "main.js": "/globalcar/static/js/main.631f8937.js",
+    "main.js": "/globalcar/static/js/main.ac666203.js",
     "static/js/239.89b12351.chunk.js": "/globalcar/static/js/239.89b12351.chunk.js",
     "static/js/213.e1f64aca.chunk.js": "/globalcar/static/js/213.e1f64aca.chunk.js",
     "static/js/732.725f7697.chunk.js": "/globalcar/static/js/732.725f7697.chunk.js",
@@ -13,7 +13,7 @@
     "static/media/ingco-logo.png": "/globalcar/static/media/ingco-logo.a70cd47f1f0526e598d1.png",
     "index.html": "/globalcar/index.html",
     "main.eb88139f.css.map": "/globalcar/static/css/main.eb88139f.css.map",
-    "main.631f8937.js.map": "/globalcar/static/js/main.631f8937.js.map",
+    "main.ac666203.js.map": "/globalcar/static/js/main.ac666203.js.map",
     "239.89b12351.chunk.js.map": "/globalcar/static/js/239.89b12351.chunk.js.map",
     "213.e1f64aca.chunk.js.map": "/globalcar/static/js/213.e1f64aca.chunk.js.map",
     "732.725f7697.chunk.js.map": "/globalcar/static/js/732.725f7697.chunk.js.map",
@@ -21,6 +21,6 @@
   },
   "entrypoints": [
     "static/css/main.eb88139f.css",
-    "static/js/main.631f8937.js"
+    "static/js/main.ac666203.js"
   ]
 }
