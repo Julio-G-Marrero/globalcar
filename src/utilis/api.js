@@ -1,5 +1,5 @@
 const api = ({
-    addressEndpoints: 'http://localhost:4000',
+    addressEndpoints: 'https://www.backorders.chickenkiller.com',
 });
 //https://www.backorders.chickenkiller.com
 //http://localhost:4000
