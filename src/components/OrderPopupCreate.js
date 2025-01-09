@@ -8,7 +8,6 @@ import Swal from 'sweetalert2'
 import axios from "axios";
 import withReactContent from 'sweetalert2-react-content'
 
-import SearchProducts from "./SearchProducts";
 function OrderPopupCreate(props) {
     const MySwal = withReactContent(Swal)
     const history = useHistory();
@@ -16,6 +15,7 @@ function OrderPopupCreate(props) {
     const [inputSearchProduct,setInputSearchProduct] = React.useState("")
     const [newProductForm,setNewProductForm] = React.useState(false)
     const [searchedProducts,setSearchedProducts] = React.useState([])
+    const [debouncedSearchClient, setDebouncedSearchClient] = useState("");
     const [selectedSearchedProducts,setSelectedSearchedProducts] = React.useState([])
     const [productosPedido, setProductosPedidos] = React.useState([])
     const [nombreProducto, setNombreProducto] = React.useState("")
@@ -60,6 +60,43 @@ function OrderPopupCreate(props) {
     }else {
         actual_date = String(year +'-'+month+'-'+day);
     }
+    // Configuración de debounce
+
+    React.useEffect(() => {
+        const handler = setTimeout(() => {
+            setDebouncedSearchClient(inputSearchClient);
+        }, 500); // Espera de 500ms
+
+        // Limpia el timeout si el usuario sigue escribiendo
+        return () => {
+            clearTimeout(handler);
+        };
+    }, [inputSearchClient]);
+
+    // Efecto para realizar la búsqueda cuando `debouncedSearchClient` cambia
+    React.useEffect(() => {
+        if (debouncedSearchClient === "") {
+            setSearchedClients([]);
+            return;
+        }
+
+        fetch(`${props.api.addressEndpoints}/clients/busqueda?search=${debouncedSearchClient}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${props.jwt}`,
+            },
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.clientes) {
+                    setSearchedClients(data.clientes);
+                } else {
+                    setSearchedClients([]);
+                }
+            })
+            .catch((err) => console.error("Error fetching clients:", err));
+    }, [debouncedSearchClient, props.api.addressEndpoints, props.jwt]);
 
     React.useEffect(() => {
         const fetchProducts = async () => {
