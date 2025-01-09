@@ -1,25 +1,45 @@
 import React, { useState, useEffect } from 'react';
 
 const Inventario = () => {
-    const [syncResults, setSyncResults] = useState({
-        totalProcessed: 0,
-        totalUpdated: 0,
-        notFound: [],
-        errors: [],
-        updated: [],
-    });
+    const [syncResults, setSyncResults] = useState(null); // Estado inicial null
+    const [loading, setLoading] = useState(true); // Estado de carga
 
-    // Simula la carga de datos desde el backend
-    useEffect(() => {
-        // Simulación de datos
-        const fetchData = async () => {
-            const response = await fetch('https://34.169.26.104/shopify/syncInventory'); // Reemplaza con tu endpoint
+    // Función para obtener los resultados desde el backend
+    const fetchResults = async () => {
+        setLoading(true);
+        try {
+            const response = await fetch('/shopify/lastSyncResults'); // Endpoint para últimos resultados
             const data = await response.json();
             setSyncResults(data);
-        };
+        } catch (error) {
+            console.error('Error al obtener los resultados:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-        fetchData();
+    useEffect(() => {
+        fetchResults(); // Llama la función al montar el componente
     }, []);
+
+    // Mostrar spinner si está cargando
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center h-screen">
+                <div className="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full text-blue-500"></div>
+                <p className="ml-4 text-gray-600">Cargando resultados de sincronización...</p>
+            </div>
+        );
+    }
+
+    // Si no hay resultados (por ejemplo, en la primera sincronización)
+    if (!syncResults) {
+        return (
+            <div className="flex items-center justify-center h-screen">
+                <p className="text-gray-600">No hay resultados disponibles en este momento.</p>
+            </div>
+        );
+    }
 
     return (
         <div className="max-w-4xl mx-auto mt-8 p-6 bg-white shadow-md rounded-md">
