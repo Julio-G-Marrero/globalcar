@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/globalcar/static/css/main.95dd2a6b.css",
-    "main.js": "/globalcar/static/js/main.99c4f4d8.js",
+    "main.css": "/globalcar/static/css/main.f9e6afb5.css",
+    "main.js": "/globalcar/static/js/main.6c9b3641.js",
     "static/js/239.89b12351.chunk.js": "/globalcar/static/js/239.89b12351.chunk.js",
     "static/js/213.e1f64aca.chunk.js": "/globalcar/static/js/213.e1f64aca.chunk.js",
     "static/js/732.725f7697.chunk.js": "/globalcar/static/js/732.725f7697.chunk.js",
@@ -12,15 +12,15 @@
     "static/media/globalcarlogo.png": "/globalcar/static/media/globalcarlogo.1480cb01c0f57ee56e96.png",
     "static/media/ingco-logo.png": "/globalcar/static/media/ingco-logo.a70cd47f1f0526e598d1.png",
     "index.html": "/globalcar/index.html",
-    "main.95dd2a6b.css.map": "/globalcar/static/css/main.95dd2a6b.css.map",
-    "main.99c4f4d8.js.map": "/globalcar/static/js/main.99c4f4d8.js.map",
+    "main.f9e6afb5.css.map": "/globalcar/static/css/main.f9e6afb5.css.map",
+    "main.6c9b3641.js.map": "/globalcar/static/js/main.6c9b3641.js.map",
     "239.89b12351.chunk.js.map": "/globalcar/static/js/239.89b12351.chunk.js.map",
     "213.e1f64aca.chunk.js.map": "/globalcar/static/js/213.e1f64aca.chunk.js.map",
     "732.725f7697.chunk.js.map": "/globalcar/static/js/732.725f7697.chunk.js.map",
     "453.2e67ab8e.chunk.js.map": "/globalcar/static/js/453.2e67ab8e.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.95dd2a6b.css",
-    "static/js/main.99c4f4d8.js"
+    "static/css/main.f9e6afb5.css",
+    "static/js/main.6c9b3641.js"
   ]
 }
