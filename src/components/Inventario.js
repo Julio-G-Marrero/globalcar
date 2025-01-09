@@ -113,6 +113,9 @@ const Inventario = () => {
                     <span className="font-bold">Errores:</span>{" "}
                     {Array.isArray(syncResults.errors) ? syncResults.errors.length : 0}
                 </p>
+                <p className="text-gray-600 text-lg mt-4">
+                    Última sincronización: <span className="font-bold">{syncResults.lastUpdated ? formatDateTime(syncResults.lastUpdated) : 'Sin información'}</span>
+                </p>
             </div>
 
             <h2 className="text-xl font-semibold text-gray-700 mt-6">Errores en la Actualización</h2>
