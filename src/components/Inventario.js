@@ -8,7 +8,7 @@ const Inventario = () => {
     const fetchResults = async () => {
         setLoading(true);
         try {
-            const response = await fetch('/shopify/lastSyncResults'); // Endpoint para últimos resultados
+            const response = await fetch('https://34.169.26.104/shopify/lastSyncResults'); // Endpoint para últimos resultados
             const data = await response.json();
             setSyncResults(data);
         } catch (error) {
