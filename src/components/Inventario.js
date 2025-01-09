@@ -10,6 +10,8 @@ const Inventario = () => {
         updated: [],
     });
     const [loading, setLoading] = useState(true);
+    const [searchTerm, setSearchTerm] = useState(""); // Para el término de búsqueda
+    const [filteredResults, setFilteredResults] = useState([]); // Resultados filtrados
 
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
@@ -28,6 +30,7 @@ const Inventario = () => {
 
             if (data && data.status === "success") {
                 setSyncResults(data);
+                setFilteredResults(data.notFound || []); // Inicializar los resultados filtrados
             } else {
                 setSyncResults({
                     status: "",
@@ -57,6 +60,19 @@ const Inventario = () => {
         fetchResults();
     }, []);
 
+    useEffect(() => {
+        // Filtrar resultados cada vez que cambia el término de búsqueda
+        if (searchTerm) {
+            const filtered = syncResults.notFound.filter((product) =>
+                product.barcode.toString().toLowerCase().includes(searchTerm.toLowerCase())
+            );
+            setFilteredResults(filtered);
+            setCurrentPage(1); // Reinicia a la primera página al filtrar
+        } else {
+            setFilteredResults(syncResults.notFound); // Muestra todo si no hay búsqueda
+        }
+    }, [searchTerm, syncResults.notFound]);
+
     if (loading) {
         return (
             <div className="flex items-center justify-center h-screen">
@@ -85,6 +101,7 @@ const Inventario = () => {
         };
         return new Intl.DateTimeFormat('es-MX', options).format(new Date(isoString));
     };
+
 
     const currentErrors = Array.isArray(syncResults.updateErrorCount)
 
@@ -130,6 +147,17 @@ const Inventario = () => {
                 </p>
             </div>
 
+            {/* Input de búsqueda */}
+            <div className="mt-6">
+                <input
+                    type="text"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    placeholder="Buscar código de barras..."
+                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+            </div>
+
             <h2 className="text-xl font-semibold text-gray-700 mt-6">Errores en la Actualización</h2>
 
             {/* Tabla de errores */}
@@ -143,14 +171,10 @@ const Inventario = () => {
                     </thead>
                     <tbody>
                         {currentNotFoundItems.length > 0 ? (
-                            currentNotFoundItems.map((error, index) => (
-                                <tr key={index} className="hover:bg-gray-100">
-                                    <td className="border border-gray-300 px-4 py-2">
-                                        {indexOfFirstItem + index + 1}
-                                    </td>
-                                    <td className="border border-gray-300 px-4 py-2">
-                                        {error.barcode}
-                                    </td>
+                            filteredResults.map((item, index) => (
+                                <tr key={item.barcode} className="hover:bg-gray-100">
+                                    <td className="border border-gray-300 px-4 py-2">{indexOfFirstItem + index + 1}</td>
+                                    <td className="border border-gray-300 px-4 py-2">{item.barcode}</td>
                                 </tr>
                             ))
                         ) : (
