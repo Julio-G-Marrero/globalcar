@@ -118,11 +118,11 @@ function OrderPopupCreate(props) {
                     errorMessage: err.message,
                 });
             });
-    }, [debouncedSearchClient, props.api.addressEndpoints, props.jwt]);
+    }, [debouncedSearchClient, api.addressEndpoints, props.jwt]);
 
     function logPerformance(type, details) {
         // Envía los datos de rendimiento a un servidor o los guarda localmente
-        fetch(`${props.api.addressEndpoints}/logs/performance`, {
+        fetch(`${api.addressEndpoints}/logs/performance`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
