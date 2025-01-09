@@ -80,7 +80,7 @@ function OrderPopupCreate(props) {
             return;
         }
 
-        fetch(`${props.api.addressEndpoints}/clients/busqueda?search=${debouncedSearchClient}`, {
+        fetch(`${api.addressEndpoints}/clients/busqueda?search=${debouncedSearchClient}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -96,7 +96,7 @@ function OrderPopupCreate(props) {
                 }
             })
             .catch((err) => console.error("Error fetching clients:", err));
-    }, [debouncedSearchClient, props.api.addressEndpoints, props.jwt]);
+    }, [debouncedSearchClient, api.addressEndpoints, props.jwt]);
 
     React.useEffect(() => {
         const fetchProducts = async () => {
