@@ -74,6 +74,18 @@ const Inventario = () => {
         );
     }
 
+    const formatDateTime = (isoString) => {
+        const options = { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric', 
+            hour: 'numeric', 
+            minute: 'numeric', 
+            second: 'numeric' 
+        };
+        return new Intl.DateTimeFormat('es-MX', options).format(new Date(isoString));
+    };
+
     const currentErrors = Array.isArray(syncResults.updateErrorCount)
 
     const currentNotFoundItems = Array.isArray(syncResults.notFound)
