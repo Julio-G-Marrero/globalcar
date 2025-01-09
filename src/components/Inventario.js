@@ -24,7 +24,7 @@ const Inventario = () => {
     const fetchResults = async () => {
         setLoading(true);
         try {
-            const response = await fetch("https://34.169.26.104/shopify/lastSyncResults");
+            const response = await fetch("https://www.backorders.chickenkiller.com/shopify/lastSyncResults");
             const data = await response.json();
             console.log("Datos obtenidos del backend:", data);
 
