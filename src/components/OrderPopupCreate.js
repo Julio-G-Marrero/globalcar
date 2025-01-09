@@ -80,6 +80,8 @@ function OrderPopupCreate(props) {
             return;
         }
 
+        const startTime = Date.now(); // Marca de tiempo al inicio de la consulta
+
         fetch(`${api.addressEndpoints}/clients/busqueda?search=${debouncedSearchClient}`, {
             method: "GET",
             headers: {
@@ -87,7 +89,18 @@ function OrderPopupCreate(props) {
                 "Authorization": `Bearer ${props.jwt}`,
             },
         })
-            .then((response) => response.json())
+            .then((response) => {
+                const duration = Date.now() - startTime; // Tiempo de respuesta
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                logPerformance("client_search", {
+                    searchQuery: debouncedSearchClient,
+                    duration,
+                    status: "success",
+                });
+                return response.json();
+            })            
             .then((data) => {
                 if (data.clientes) {
                     setSearchedClients(data.clientes);
@@ -95,8 +108,32 @@ function OrderPopupCreate(props) {
                     setSearchedClients([]);
                 }
             })
-            .catch((err) => console.error("Error fetching clients:", err));
-    }, [debouncedSearchClient, api.addressEndpoints, props.jwt]);
+            .catch((err) => {
+                const duration = Date.now() - startTime;
+                console.error("Error fetching clients:", err);
+                logPerformance("client_search", {
+                    searchQuery: debouncedSearchClient,
+                    duration,
+                    status: "error",
+                    errorMessage: err.message,
+                });
+            });
+    }, [debouncedSearchClient, props.api.addressEndpoints, props.jwt]);
+
+    function logPerformance(type, details) {
+        // Envía los datos de rendimiento a un servidor o los guarda localmente
+        fetch(`${props.api.addressEndpoints}/logs/performance`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                type,
+                timestamp: new Date().toISOString(),
+                ...details,
+            }),
+        }).catch((err) => console.error("Error logging performance:", err));
+    }
 
     React.useEffect(() => {
         const fetchProducts = async () => {
