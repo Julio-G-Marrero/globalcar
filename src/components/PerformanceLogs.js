@@ -88,6 +88,22 @@ function PerformanceLogs() {
     }));
   };
   
+  const clearPerformanceLogs = async () => {
+    try {
+      const response = await fetch("https://www.backorders.chickenkiller.com/logs/performance", {
+        method: "DELETE",
+      });
+      if (response.ok) {
+        alert("Logs eliminados correctamente.");
+      } else {
+        const error = await response.json();
+        alert(error.message || "No se pudieron eliminar los logs.");
+      }
+    } catch (error) {
+      console.error("Error al eliminar los logs:", error);
+      alert("Error al conectar con el servidor.");
+    }
+  };
 
   const createChartData = (groupedLogs) => {
     return {
@@ -120,6 +136,12 @@ function PerformanceLogs() {
   return (
     <div className="p-8 bg-gray-100 min-h-screen">
       <h1 className="text-3xl font-bold mb-6">Dashboard de Logs de Rendimiento</h1>
+      <button
+          onClick={clearPerformanceLogs}
+          className="px-4 py-2 mb-4 bg-red-500 text-white rounded hover:bg-red-600 focus:outline-none"
+        >
+          Limpiar Logs de Rendimiento
+        </button>
       {groupedLogs.length === 0 ? (
         <p className="text-center text-gray-600">No hay logs disponibles.</p>
       ) : (
@@ -149,8 +171,8 @@ function PerformanceLogs() {
                     </div>
                 </div>
             </div>
-            <div class="md:col-span-2 lg:col-span-1">
-                <div class=" p-5 bg-white">
+            <div class="md:col-span-2 lg:col-span-1 min-h-screen">
+                <div class=" p-5 bg-white min-h-screen">
                     <div className="">
                         <h2 className="text-xl font-semibold mb-4">Duración Promedio por Tipo</h2>
                         <Bar data={barChartData} options={{ responsive: true, plugins: { legend: { display: false } } }} />
@@ -204,7 +226,7 @@ function PerformanceLogs() {
               <div class=" p-5 bg-white min-h-screen">
                 {/* Consola de Logs */}
                 <div className="h-full flex items-center justify-center mt-8">
-                <div className=" bg-gray-800 text-white p-4 rounded-md text-left" >
+                <div className=" bg-gray-800 text-white p-4 rounded-md text-left w-11/12" >
                   <div className="flex justify-between items-center">
                     <h2 className="text-lg font-bold mb-4">Consola de Logs</h2>
                     <button
