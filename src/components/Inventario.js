@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import ErrorLogConsole from "./ErrorLogConsole";
 
 const Inventario = () => {
     const [syncResults, setSyncResults] = useState({
@@ -8,18 +9,11 @@ const Inventario = () => {
         notFound: [],
         errors: [],
         updated: [],
+        errorLogs: [],
     });
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState(""); // Para el término de búsqueda
     const [filteredResults, setFilteredResults] = useState([]); // Resultados filtrados
-
-    const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 10;
-    const totalItems = Array.isArray(syncResults.notFound) ? syncResults.notFound.length : 0;
-    const totalPages = Math.ceil(totalItems / itemsPerPage);
- 
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
     const fetchResults = async () => {
         setLoading(true);
@@ -30,7 +24,7 @@ const Inventario = () => {
 
             if (data && data.status === "success") {
                 setSyncResults(data);
-                setFilteredResults(data.notFound || []); // Inicializar los resultados filtrados
+                setFilteredResults([]); // Inicialmente vacío hasta que se realice una búsqueda
             } else {
                 setSyncResults({
                     status: "",
@@ -39,6 +33,7 @@ const Inventario = () => {
                     notFound: [],
                     errors: [],
                     updated: [],
+                    errorLogs: [],
                 });
             }
         } catch (error) {
@@ -50,6 +45,7 @@ const Inventario = () => {
                 notFound: [],
                 errors: [],
                 updated: [],
+                errorLogs: [],
             });
         } finally {
             setLoading(false);
@@ -63,13 +59,14 @@ const Inventario = () => {
     useEffect(() => {
         // Filtrar resultados cada vez que cambia el término de búsqueda
         if (searchTerm) {
-            const filtered = syncResults.notFound.filter((product) =>
-                product.barcode.toString().toLowerCase().includes(searchTerm.toLowerCase())
-            );
+            const filtered = syncResults.notFound
+                .filter((product) =>
+                    product.barcode.toString().toLowerCase().includes(searchTerm.toLowerCase())
+                )
+                .slice(0, 10); // Limitar a los primeros 10 resultados
             setFilteredResults(filtered);
-            setCurrentPage(1); // Reinicia a la primera página al filtrar
         } else {
-            setFilteredResults(syncResults.notFound); // Muestra todo si no hay búsqueda
+            setFilteredResults([]); // Si no hay búsqueda, no muestra nada
         }
     }, [searchTerm, syncResults.notFound]);
 
@@ -91,36 +88,16 @@ const Inventario = () => {
     }
 
     const formatDateTime = (isoString) => {
-        const options = { 
-            year: 'numeric', 
-            month: 'long', 
-            day: 'numeric', 
-            hour: 'numeric', 
-            minute: 'numeric', 
-            second: 'numeric' 
+        const options = {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+            second: "numeric",
         };
-        return new Intl.DateTimeFormat('es-MX', options).format(new Date(isoString));
+        return new Intl.DateTimeFormat("es-MX", options).format(new Date(isoString));
     };
-
-
-    const currentErrors = Array.isArray(syncResults.updateErrorCount)
-
-    const currentNotFoundItems = Array.isArray(syncResults.notFound)
-        ? syncResults.notFound.slice(indexOfFirstItem, indexOfLastItem)
-        : [];
-
-    const handleNextPage = () => {
-        if (currentPage < totalPages) {
-            setCurrentPage((prevPage) => prevPage + 1);
-        }
-    };
-
-    const handlePreviousPage = () => {
-        if (currentPage > 1) {
-            setCurrentPage((prevPage) => prevPage - 1);
-        }
-    };
-
 
     return (
         <div className="max-w-6xl mx-auto mt-8 p-6 bg-white shadow-md rounded-md">
@@ -143,7 +120,10 @@ const Inventario = () => {
                     {Array.isArray(syncResults.errors) ? syncResults.errors.length : 0}
                 </p>
                 <p className="text-gray-600 text-lg mt-4">
-                    Última sincronización: <span className="font-bold">{syncResults.lastUpdated ? formatDateTime(syncResults.lastUpdated) : 'Sin información'}</span>
+                    Última sincronización:{" "}
+                    <span className="font-bold">
+                        {syncResults.lastUpdated ? formatDateTime(syncResults.lastUpdated) : "Sin información"}
+                    </span>
                 </p>
             </div>
 
@@ -158,93 +138,35 @@ const Inventario = () => {
                 />
             </div>
 
-            <h2 className="text-xl font-semibold text-gray-700 mt-6">Errores en la Actualización</h2>
+            <h2 className="text-xl font-semibold text-gray-700 mt-6">Buequeda de Productos en la Actualización</h2>
 
             {/* Tabla de errores */}
-            <div className="overflow-x-auto mt-4">
-                <table className="table-auto w-2/3 mx-auto border-collapse border border-gray-300">
-                    <thead>
-                        <tr className="bg-gray-200">
-                            <th className="border border-gray-300 px-4 py-2 text-left">#</th>
-                            <th className="border border-gray-300 px-4 py-2 text-left">Código de Barras</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {currentNotFoundItems.length > 0 ? (
-                            filteredResults.map((item, index) => (
+            {searchTerm && filteredResults.length > 0 ? (
+                <div className="overflow-x-auto mt-4">
+                    <table className="table-auto w-2/3 mx-auto border-collapse border border-gray-300">
+                        <thead>
+                            <tr className="bg-gray-200">
+                                <th className="border border-gray-300 px-4 py-2 text-left">#</th>
+                                <th className="border border-gray-300 px-4 py-2 text-left">Código de Barras</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {filteredResults.map((item, index) => (
                                 <tr key={item.barcode} className="hover:bg-gray-100">
-                                    <td className="border border-gray-300 px-4 py-2">{indexOfFirstItem + index + 1}</td>
+                                    <td className="border border-gray-300 px-4 py-2">{index + 1}</td>
                                     <td className="border border-gray-300 px-4 py-2">{item.barcode}</td>
                                 </tr>
-                            ))
-                        ) : (
-                            <tr>
-                                <td colSpan="2" className="text-center text-gray-500 py-4">
-                                    No hay errores registrados.
-                                </td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
-            </div>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            ) : searchTerm ? (
+                <div className="text-center mt-4 text-gray-500">No se encontraron resultados.</div>
+            ) : null}
 
-            {/* Paginación */}
-            <div className="flex w-2/3 mx-auto justify-between items-center mt-4">
-                <button
-                    className={`px-4 py-2 bg-gray-300 rounded ${
-                        currentPage === 1 ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-400 text-gray-800"
-                    }`}
-                    disabled={currentPage === 1}
-                    onClick={handlePreviousPage}
-                >
-                    Anterior
-                </button>
-                <span className="text-gray-600">
-                    Página {currentPage} de {totalPages}
-                </span>
-                <button
-                    className={`px-4 py-2 bg-gray-300 rounded ${
-                        currentPage === totalPages ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-400 text-gray-800"
-                    }`}
-                    disabled={currentPage === totalPages}
-                    onClick={handleNextPage}
-                >
-                    Siguiente
-                </button>
-            </div>
-
-            
-            {/* Tabla de errores */}
-            <div className="overflow-x-auto mt-4">
-                <table
-                  className={`${currentErrors.length > 0 ? "table-auto w-full border-collapse border border-gray-300": "hidden"}`}
-                >
-                    <thead>
-                        <tr className="bg-gray-200">
-                            <th className="border border-gray-300 px-4 py-2 text-left">Mensaje</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {currentErrors.length > 0 ? (
-                            currentErrors.map((error, index) => (
-                                <tr key={index} className="hover:bg-gray-100">
-                                    <td className="border border-gray-300 px-4 py-2">
-                                        {indexOfFirstItem + index + 1}
-                                    </td>
-                                    <td className="border border-gray-300 px-4 py-2">
-                                        {error.message}
-                                    </td>
-                                </tr>
-                            ))
-                        ) : (
-                            <tr>
-                                <td colSpan="2" className="text-center text-gray-500 py-4">
-                                    No hay errores registrados.
-                                </td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
+            {/* Consola de Logs */}
+            <div className="bg-gray-100 flex items-center justify-center mt-8">
+                <ErrorLogConsole logs={syncResults.errorLogs} />
             </div>
         </div>
     );

@@ -2,28 +2,52 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Bar, Doughnut } from "react-chartjs-2";
 import "chart.js/auto";
+import clearLogs from "./clearlogs" // Ruta de la función
 
 function PerformanceLogs() {
   const [logs, setLogs] = useState([]);
   const [error, setError] = useState(null);
+  const [errorLogsConsole, setErrorLogsConsole] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchLogs = async () => {
       try {
         const response = await axios.get("https://www.backorders.chickenkiller.com/logs/performance");
-        setLogs(response.data);
+        const fetchedLogs = response.data.logs; // Asegúrate de que `logs` esté dentro de `data`
+        setLogs(Array.isArray(fetchedLogs) ? fetchedLogs : []); // Valida si es un array
         setIsLoading(false);
       } catch (err) {
         setError(err.message);
         setIsLoading(false);
       }
     };
-
+    
+    const fetchResults = async () => {
+      try {
+        const response = await fetch("https://www.backorders.chickenkiller.com/logs/errors-performance");
+        const data = await response.json();
+        setErrorLogsConsole(Array.isArray(data.logs) ? data.logs : []); // Asegúrate de que sea un array
+      } catch (error) {
+        console.error("Error al obtener los resultados:", error);
+        setErrorLogsConsole([]); // En caso de error, inicializa como array vacío
+      }
+    };
+    fetchResults();
     fetchLogs();
   }, []);
 
+  const handleClearLogs = async () => {
+    await clearLogs();
+    // Aquí puedes realizar otras acciones después de limpiar los logs, como actualizar la UI
+  };
+  
   const processLogs = (logs) => {
+    // Asegúrate de que logs sea un array válido
+    if (!Array.isArray(logs) || logs.length === 0) {
+      return []; // Retorna un array vacío si logs no es válido
+    }
+  
     const groupedLogs = logs.reduce(
       (acc, log) => {
         const type = log.type || "unknown";
@@ -50,17 +74,20 @@ function PerformanceLogs() {
       },
       {}
     );
-
+  
     return Object.entries(groupedLogs).map(([type, data]) => ({
       type,
       averageDuration: data.totalDuration / data.count,
       successCount: data.successCount,
       errorCount: data.errorCount,
-      totalRequests: data.count, // Calculamos el total de solicitudes
+      totalRequests: data.count, // Total de solicitudes
       errorPercentage: ((data.errorCount / data.count) * 100).toFixed(2),
-      commonErrors: Object.entries(data.errorMessages).sort((a, b) => b[1] - a[1]).slice(0, 3), // Top 3 errores
+      commonErrors: Object.entries(data.errorMessages)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 3), // Top 3 errores
     }));
   };
+  
 
   const createChartData = (groupedLogs) => {
     return {
@@ -85,6 +112,10 @@ function PerformanceLogs() {
 
   const groupedLogs = processLogs(logs);
   const barChartData = createChartData(groupedLogs);
+
+  if (!groupedLogs.length) {
+    return <p className="text-center text-gray-600">No hay logs disponibles.</p>;
+  }
 
   return (
     <div className="p-8 bg-gray-100 min-h-screen">
@@ -168,6 +199,62 @@ function PerformanceLogs() {
                         ))}
                     </div>
                 </div>
+            </div>
+            <div class="md:col-span-2 lg:col-span-1">
+              <div class=" p-5 bg-white min-h-screen">
+                {/* Consola de Logs */}
+                <div className="h-full flex items-center justify-center mt-8">
+                <div className=" bg-gray-800 text-white p-4 rounded-md text-left" >
+                  <div className="flex justify-between items-center">
+                    <h2 className="text-lg font-bold mb-4">Consola de Logs</h2>
+                    <button
+                        onClick={handleClearLogs}
+                        className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                      >
+                        Limpiar Logs
+                      </button>
+                  </div>
+                  <div className=" min-h-screen mt-4 max-h-64 overflow-y-auto w-full pr-5">
+                  {errorLogsConsole && errorLogsConsole.length > 0 ? (
+                      errorLogsConsole.map((log, index) => (
+                        <div
+                          key={index}
+                          className="text-sm font-mono whitespace-pre-wrap text-yellow-400 mb-4 border-b border-gray-600 pb-2"
+                        >
+                          <p>
+                            <span className="font-bold text-blue-400">Timestamp:</span> {log.timestamp}
+                          </p>
+                          <p>
+                            <span className="font-bold text-blue-400">Level:</span> {log.level}
+                          </p>
+                          <p>
+                            <span className="font-bold text-blue-400">Type:</span> {log.message.type}
+                          </p>
+                          <p>
+                            <span className="font-bold text-blue-400">Status:</span> {log.message.status}
+                          </p>
+                          <p>
+                            <span className="font-bold text-blue-400">Duration:</span> {log.message.duration} ms
+                          </p>
+                          <p>
+                            <span className="font-bold text-blue-400">Search Query:</span> {log.message.searchQuery}
+                          </p>
+                          {log.message.errorMessage && (
+                            <p>
+                              <span className="font-bold text-red-400">Error Message:</span> {log.message.errorMessage}
+                            </p>
+                          )}
+                        </div>
+                        
+                      ))
+                    ) : (
+                      <p className="text-gray-400">No hay logs disponibles.</p>
+                    )}
+              
+                  </div>
+                </div>
+                </div>
+              </div>
             </div>
  
         </div>
