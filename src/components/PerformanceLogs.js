@@ -9,11 +9,13 @@ function PerformanceLogs() {
   const [error, setError] = useState(null);
   const [errorLogsConsole, setErrorLogsConsole] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [statistics, setStatistics] = useState(true);
 
   useEffect(() => {
     const fetchLogs = async () => {
       try {
         const response = await axios.get("https://www.backorders.chickenkiller.com/logs/performance");
+        setStatistics(response.data.statistics ? response.data.statistics : [])
         const fetchedLogs = response.data.logs; // Asegúrate de que `logs` esté dentro de `data`
         setLogs(Array.isArray(fetchedLogs) ? fetchedLogs : []); // Valida si es un array
         setIsLoading(false);
@@ -36,7 +38,6 @@ function PerformanceLogs() {
     fetchResults();
     fetchLogs();
   }, []);
-
   const handleClearLogs = async () => {
     await clearLogs();
     // Aquí puedes realizar otras acciones después de limpiar los logs, como actualizar la UI
@@ -177,13 +178,34 @@ function PerformanceLogs() {
                         <h2 className="text-xl font-semibold mb-4">Duración Promedio por Tipo</h2>
                         <Bar data={barChartData} options={{ responsive: true, plugins: { legend: { display: false } } }} />
                     </div>
+                    <div className="mt-4">
+                        <h2 className="text-xl font-semibold mb-4">Respuestas del Servidor</h2>
+                            <div className="mb-8">
+                            <table className="table-auto w-full bg-white shadow-md rounded-lg overflow-hidden">
+                                <thead className="bg-gray-200">
+                                <tr>
+                                    <th className="px-4 py-2 text-center">Firebird Niux</th>
+                                    <th className="px-4 py-2 text-center">Cache Redis</th>
+                                    <th className="px-4 py-2 text-center">Total</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                  <tr>
+                                    <td>{statistics.firebirdQueryCount}</td>
+                                    <td>{statistics.redisQueryCount}</td>
+                                    <td>{statistics.totalQueries}</td>
+                                  </tr>
+                                </tbody>
+                            </table>
+                            </div>
+                    </div>
                     <div className="mt-2">
                         <h2 className="text-xl font-semibold mb-4">Solicitudes Totales por Tipo</h2>
                         <table className="table-auto w-full bg-white shadow-md rounded-lg overflow-hidden">
                             <thead className="bg-gray-200">
                             <tr>
-                                <th className="px-4 py-2 text-left">Tipo</th>
-                                <th className="px-4 py-2 text-left">Solicitudes Totales</th>
+                                <th className="px-4 py-2 text-center">Tipo</th>
+                                <th className="px-4 py-2 text-center">Solicitudes Totales</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -204,8 +226,8 @@ function PerformanceLogs() {
                             <table className="table-auto w-full bg-white shadow-md rounded-lg overflow-hidden">
                                 <thead className="bg-gray-200">
                                 <tr>
-                                    <th className="px-4 py-2 text-left">Mensaje de Error</th>
-                                    <th className="px-4 py-2 text-left">Ocurrencias</th>
+                                    <th className="px-4 py-2 text-center">Mensaje de Error</th>
+                                    <th className="px-4 py-2 text-center">Ocurrencias</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -220,6 +242,7 @@ function PerformanceLogs() {
                             </div>
                         ))}
                     </div>
+
                 </div>
             </div>
             <div class="md:col-span-2 lg:col-span-1">
